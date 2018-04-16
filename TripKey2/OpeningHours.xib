@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="HoursOfOperation" customModule="TripKey" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="592"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hours of Operation" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ad7-7y-Rej">
+                    <rect key="frame" x="48" y="45" width="278" height="21"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="21" id="Qc4-og-QYw"/>
+                        <constraint firstAttribute="width" constant="278" id="dJv-wB-0fR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="rDi-cS-WLo">
+                    <rect key="frame" x="48" y="79" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="56" id="LXz-f2-izM"/>
+                        <constraint firstAttribute="width" constant="278" id="Xwz-I5-Z76"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="aJk-WK-qvu">
+                    <rect key="frame" x="48" y="143" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="56" id="DVY-f3-kKU"/>
+                        <constraint firstAttribute="width" constant="278" id="udB-jP-Bzq"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Yfc-gS-r3Y">
+                    <rect key="frame" x="48" y="207" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="56" id="4LD-fr-0ye"/>
+                        <constraint firstAttribute="width" constant="278" id="zkf-XS-0WP"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="pzk-gv-zwq">
+                    <rect key="frame" x="48" y="271" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="56" id="p6M-Yx-Byg"/>
+                        <constraint firstAttribute="width" constant="278" id="qeo-Vm-KmC"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="fmk-Db-38j">
+                    <rect key="frame" x="48" y="335" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="56" id="03c-is-iKh"/>
+                        <constraint firstAttribute="width" constant="278" id="HEz-a4-w5r"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="9SK-PN-jQX">
+                    <rect key="frame" x="48" y="399" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="278" id="ZNK-Ap-h6g"/>
+                        <constraint firstAttribute="height" constant="56" id="mZU-iF-VIu"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="W28-db-DCJ">
+                    <rect key="frame" x="48" y="463" width="278" height="56"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="278" id="E0S-MN-nCt"/>
+                        <constraint firstAttribute="height" constant="56" id="Yq8-aJ-9wr"/>
+                    </constraints>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </textView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="204-gT-IF0">
+                    <rect key="frame" x="126" y="527" width="122" height="45"/>
+                    <color key="backgroundColor" red="0.9410253167" green="0.94094055889999995" blue="0.9573872685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="45" id="a1P-lh-Ck4"/>
+                        <constraint firstAttribute="width" constant="122" id="buv-Kf-YNa"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                    <state key="normal" title="Close"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </button>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="aJk-WK-qvu" firstAttribute="top" secondItem="rDi-cS-WLo" secondAttribute="bottom" constant="8" id="067-OK-RS9"/>
+                <constraint firstItem="Yfc-gS-r3Y" firstAttribute="top" secondItem="aJk-WK-qvu" secondAttribute="bottom" constant="8" id="13X-0b-bmN"/>
+                <constraint firstItem="rDi-cS-WLo" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="2gs-XK-WyW"/>
+                <constraint firstItem="W28-db-DCJ" firstAttribute="top" secondItem="9SK-PN-jQX" secondAttribute="bottom" constant="8" id="80V-VC-COU"/>
+                <constraint firstItem="pzk-gv-zwq" firstAttribute="top" secondItem="Yfc-gS-r3Y" secondAttribute="bottom" constant="8" id="9p0-Tv-m6B"/>
+                <constraint firstItem="fmk-Db-38j" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="D0D-gg-9bw"/>
+                <constraint firstItem="9SK-PN-jQX" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="OE5-tL-xsN"/>
+                <constraint firstItem="Yfc-gS-r3Y" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Srz-LY-JWZ"/>
+                <constraint firstItem="rDi-cS-WLo" firstAttribute="top" secondItem="Ad7-7y-Rej" secondAttribute="bottom" constant="13" id="Vg0-oC-sOZ"/>
+                <constraint firstItem="9SK-PN-jQX" firstAttribute="top" secondItem="fmk-Db-38j" secondAttribute="bottom" constant="8" id="YyW-9w-4Qz"/>
+                <constraint firstItem="Ad7-7y-Rej" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="45" id="bht-YF-BnF"/>
+                <constraint firstItem="204-gT-IF0" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="bki-zO-ycU"/>
+                <constraint firstItem="Ad7-7y-Rej" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="gbE-S3-FVP"/>
+                <constraint firstItem="204-gT-IF0" firstAttribute="top" secondItem="W28-db-DCJ" secondAttribute="bottom" constant="8" id="lg2-ae-Hrh"/>
+                <constraint firstItem="aJk-WK-qvu" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="m3T-Sw-6oa"/>
+                <constraint firstItem="fmk-Db-38j" firstAttribute="top" secondItem="pzk-gv-zwq" secondAttribute="bottom" constant="8" id="p65-dU-M7D"/>
+                <constraint firstItem="W28-db-DCJ" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="rEM-YF-Gnd"/>
+                <constraint firstItem="pzk-gv-zwq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="ykJ-qd-dgq"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="close" destination="204-gT-IF0" id="xl5-v7-PcH"/>
+                <outlet property="friday" destination="fmk-Db-38j" id="NBC-r9-YLn"/>
+                <outlet property="hoursOfOperationTitle" destination="Ad7-7y-Rej" id="eXn-So-gsW"/>
+                <outlet property="monday" destination="rDi-cS-WLo" id="rXL-6k-Jkp"/>
+                <outlet property="saturday" destination="9SK-PN-jQX" id="Q2c-ce-B9D"/>
+                <outlet property="sunday" destination="W28-db-DCJ" id="pYG-Ru-OIK"/>
+                <outlet property="thursday" destination="pzk-gv-zwq" id="9PV-AJ-Xw2"/>
+                <outlet property="tuesday" destination="aJk-WK-qvu" id="95q-xU-AYP"/>
+                <outlet property="wedsnday" destination="Yfc-gS-r3Y" id="iKn-OA-Hds"/>
+            </connections>
+            <point key="canvasLocation" x="62.5" y="132"/>
+        </view>
+    </objects>
+</document>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" restorationIdentifier="notificationManager" id="iN0-l3-epB" customClass="NotificationsManagerView" customModule="TripKey" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="282" height="438"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1PG-Dy-uel">
+                    <rect key="frame" x="8" y="34" width="51" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="49" id="lQe-1f-o08"/>
+                        <constraint firstAttribute="height" constant="31" id="oTH-86-MfG"/>
+                    </constraints>
+                    <connections>
+                        <action selector="twoDaysBeforeFlight:" destination="iN0-l3-epB" eventType="valueChanged" id="siV-kG-fkO"/>
+                    </connections>
+                </switch>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AFe-9t-7qU">
+                    <rect key="frame" x="8" y="102" width="51" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="49" id="bCT-eo-hRl"/>
+                        <constraint firstAttribute="height" constant="31" id="vfW-QX-Q7p"/>
+                    </constraints>
+                    <connections>
+                        <action selector="fourHoursBeforeFlight:" destination="iN0-l3-epB" eventType="valueChanged" id="uJd-ul-gTf"/>
+                    </connections>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notify me 2 days before flight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tq6-CR-S9j">
+                    <rect key="frame" x="66" y="34" width="200" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="200" id="YOG-B5-Zeh"/>
+                        <constraint firstAttribute="height" constant="31" id="ZIR-bV-Hrz"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notify me 4 hours before flight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="89r-SK-4TT">
+                    <rect key="frame" x="66" y="102" width="216" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="31" id="1EW-pz-i5P"/>
+                        <constraint firstAttribute="width" constant="216" id="dgd-Gi-Df8"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Avf-GY-xhq">
+                    <rect key="frame" x="8" y="170" width="51" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="31" id="BVa-Hq-igV"/>
+                        <constraint firstAttribute="width" constant="49" id="rD4-Ko-EX1"/>
+                    </constraints>
+                    <connections>
+                        <action selector="twoHoursBeforeFlight:" destination="iN0-l3-epB" eventType="valueChanged" id="XMV-es-6xr"/>
+                    </connections>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notify me 2 hours before flight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nAU-7V-s4Y">
+                    <rect key="frame" x="66" y="170" width="216" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="31" id="2Mh-XV-6xH"/>
+                        <constraint firstAttribute="width" constant="216" id="qBG-Xk-OH7"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notify me when flight departs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6GE-rt-elN">
+                    <rect key="frame" x="66" y="306" width="216" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="31" id="41u-KY-kSY"/>
+                        <constraint firstAttribute="width" constant="216" id="SeX-Ad-dbG"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notify me when flight lands" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JvP-H8-0ML">
+                    <rect key="frame" x="66" y="374" width="216" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="216" id="3RZ-uz-HdK"/>
+                        <constraint firstAttribute="height" constant="31" id="sDj-kX-iOS"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eSd-Rj-R4y">
+                    <rect key="frame" x="8" y="238" width="51" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="31" id="4Vx-aZ-HE8"/>
+                        <constraint firstAttribute="width" constant="49" id="EfH-4t-PER"/>
+                    </constraints>
+                    <connections>
+                        <action selector="oneHourBeforeFlight:" destination="iN0-l3-epB" eventType="valueChanged" id="SEN-od-zTh"/>
+                    </connections>
+                </switch>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Notify me 1 hour before flight" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0ip-SY-dxY">
+                    <rect key="frame" x="66" y="238" width="216" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="216" id="4M3-Ek-xmM"/>
+                        <constraint firstAttribute="height" constant="31" id="vIJ-qD-3ct"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0YE-TD-yPS">
+                    <rect key="frame" x="8" y="306" width="51" height="31"/>
+                    <connections>
+                        <action selector="takeOffNotificationAction:" destination="iN0-l3-epB" eventType="valueChanged" id="UH0-Wp-5mw"/>
+                    </connections>
+                </switch>
+                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n96-il-Wg5">
+                    <rect key="frame" x="8" y="374" width="51" height="31"/>
+                    <connections>
+                        <action selector="landingNotificationAction:" destination="iN0-l3-epB" eventType="valueChanged" id="drF-wp-zbr"/>
+                    </connections>
+                </switch>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="1PG-Dy-uel" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="34" id="0hY-WQ-RK3"/>
+                <constraint firstItem="Tq6-CR-S9j" firstAttribute="centerY" secondItem="1PG-Dy-uel" secondAttribute="centerY" id="1eg-Oo-zLj"/>
+                <constraint firstItem="0ip-SY-dxY" firstAttribute="centerY" secondItem="eSd-Rj-R4y" secondAttribute="centerY" id="2Ls-Dg-FpZ"/>
+                <constraint firstItem="89r-SK-4TT" firstAttribute="leading" secondItem="AFe-9t-7qU" secondAttribute="trailing" constant="9" id="78X-kD-fmv"/>
+                <constraint firstItem="0YE-TD-yPS" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="9mN-Nd-cMn"/>
+                <constraint firstItem="Avf-GY-xhq" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="Dgf-uR-51a"/>
+                <constraint firstItem="eSd-Rj-R4y" firstAttribute="top" secondItem="Avf-GY-xhq" secondAttribute="bottom" constant="37" id="HqL-f3-AJy"/>
+                <constraint firstItem="nAU-7V-s4Y" firstAttribute="centerY" secondItem="Avf-GY-xhq" secondAttribute="centerY" id="OiO-Aa-sgY"/>
+                <constraint firstItem="AFe-9t-7qU" firstAttribute="top" secondItem="1PG-Dy-uel" secondAttribute="bottom" constant="37" id="QYS-d3-6Sw"/>
+                <constraint firstItem="n96-il-Wg5" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="RYK-Q1-N5m"/>
+                <constraint firstItem="0YE-TD-yPS" firstAttribute="top" secondItem="eSd-Rj-R4y" secondAttribute="bottom" constant="37" id="RpI-gx-6H6"/>
+                <constraint firstItem="Tq6-CR-S9j" firstAttribute="leading" secondItem="1PG-Dy-uel" secondAttribute="trailing" constant="9" id="Tof-Zq-l9h"/>
+                <constraint firstItem="AFe-9t-7qU" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="UHg-h1-mQY"/>
+                <constraint firstItem="JvP-H8-0ML" firstAttribute="centerY" secondItem="n96-il-Wg5" secondAttribute="centerY" id="UT9-3V-RnT"/>
+                <constraint firstItem="Avf-GY-xhq" firstAttribute="top" secondItem="AFe-9t-7qU" secondAttribute="bottom" constant="37" id="ZqY-fs-rD9"/>
+                <constraint firstItem="6GE-rt-elN" firstAttribute="centerY" secondItem="0YE-TD-yPS" secondAttribute="centerY" id="a7S-1d-D9f"/>
+                <constraint firstItem="nAU-7V-s4Y" firstAttribute="leading" secondItem="Avf-GY-xhq" secondAttribute="trailing" constant="9" id="hYE-HO-7bf"/>
+                <constraint firstItem="1PG-Dy-uel" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="mfV-P7-q7x"/>
+                <constraint firstItem="6GE-rt-elN" firstAttribute="leading" secondItem="0YE-TD-yPS" secondAttribute="trailing" constant="9" id="nVB-2J-YBV"/>
+                <constraint firstItem="JvP-H8-0ML" firstAttribute="leading" secondItem="n96-il-Wg5" secondAttribute="trailing" constant="9" id="oEP-2E-9QG"/>
+                <constraint firstItem="89r-SK-4TT" firstAttribute="centerY" secondItem="AFe-9t-7qU" secondAttribute="centerY" id="rBU-UY-ZOV"/>
+                <constraint firstItem="n96-il-Wg5" firstAttribute="top" secondItem="0YE-TD-yPS" secondAttribute="bottom" constant="37" id="vYm-89-blY"/>
+                <constraint firstItem="eSd-Rj-R4y" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="w6y-sj-O1J"/>
+                <constraint firstItem="0ip-SY-dxY" firstAttribute="leading" secondItem="eSd-Rj-R4y" secondAttribute="trailing" constant="9" id="zG9-Jz-LOM"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                    <integer key="value" value="10"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
+            <connections>
+                <outlet property="fourHours" destination="AFe-9t-7qU" id="88x-iz-MLg"/>
+                <outlet property="landing" destination="n96-il-Wg5" id="X7C-NT-Lb5"/>
+                <outlet property="oneHour" destination="eSd-Rj-R4y" id="01T-oE-IpX"/>
+                <outlet property="takeOff" destination="0YE-TD-yPS" id="MVR-rg-bUj"/>
+                <outlet property="twoDays" destination="1PG-Dy-uel" id="CdR-f2-uEQ"/>
+                <outlet property="twoHours" destination="Avf-GY-xhq" id="SMR-Kc-Byb"/>
+            </connections>
+            <point key="canvasLocation" x="125" y="43"/>
+        </view>
+    </objects>
+</document>
