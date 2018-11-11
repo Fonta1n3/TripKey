@@ -151,7 +151,7 @@ class AddVaccinesViewController: UIViewController, UITableViewDataSource, UITabl
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         
-        cell.textLabel?.text = "\(String(describing: self.vaccineDictionaryArray[indexPath.row]["Vaccine Type"]!) + ": Expiring " + String(describing: self.vaccineDictionaryArray[indexPath.row]["Vaccine Expiry Date"]!))"
+        cell.textLabel?.text = "\(String(describing: self.vaccineDictionaryArray[indexPath.row]?["Vaccine Type"]!) + ": Expiring " + String(describing: self.vaccineDictionaryArray[indexPath.row]?["Vaccine Expiry Date"]!))"
         
         return cell
         

@@ -8,7 +8,7 @@
 	<array/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.fontaine.TripKey</string>
+		<string>group.com.fontaine.TripKeyLite</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>

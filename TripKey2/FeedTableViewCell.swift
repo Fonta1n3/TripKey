@@ -10,32 +10,10 @@ import UIKit
 
 class FeedTableViewCell: UITableViewCell {
     
-    
-    @IBOutlet var shareMyLocationLabel: UIButton!
-    @IBOutlet var seeLocationLabel: UIButton!
     @IBOutlet var shareFlightLabel: UIButton!
-    @IBOutlet var sharePlaceLabel: UIButton!
-    
-    var tapShareLocationAction: ((UITableViewCell) -> Void)?
-    var tapSeeLocationAction: ((UITableViewCell) -> Void)?
     var tapShareFlightAction: ((UITableViewCell) -> Void)?
-    var tapSharePlaceAction: ((UITableViewCell) -> Void)?
-
     @IBOutlet var postedImage: UIImageView!
-    
     @IBOutlet var userName: UILabel!
-    
-    @IBAction func shareLocation(_ sender: Any) {
-        
-        tapShareLocationAction?(self)
-        
-    }
-    
-    @IBAction func seeLocation(_ sender: Any) {
-        
-        tapSeeLocationAction?(self)
-        
-    }
     
     @IBAction func shareFlight(_ sender: Any) {
         
@@ -43,11 +21,7 @@ class FeedTableViewCell: UITableViewCell {
         
     }
     
-    @IBAction func sharePlace(_ sender: Any) {
-        
-        tapSharePlaceAction?(self)
-        
-    }
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -58,6 +32,10 @@ class FeedTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+        self.postedImage.clipsToBounds = true
+        self.postedImage.layer.cornerRadius = self.postedImage.frame.size.width / 2
+        //shareFlightLabel.clipsToBounds = true
+        //shareFlightLabel.layer.cornerRadius = shareFlightLabel.frame.size.width / 2
     }
 
 }

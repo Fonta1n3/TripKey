@@ -39,9 +39,14 @@ class CreateProfilePicViewController: UIViewController, UINavigationControllerDe
         
         do {
             
-            let result = try pngImageData?.write(to: URL(fileURLWithPath: imagePath), options: .atomic)
-            
-            print(result)
+            if let result = try pngImageData?.write(to: URL(fileURLWithPath: imagePath), options: .atomic) {
+                
+              print(result)
+                
+            } else {
+                
+                print("error getting photo")
+            }
             
         } catch {
             
@@ -51,7 +56,7 @@ class CreateProfilePicViewController: UIViewController, UINavigationControllerDe
         
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
             
@@ -64,7 +69,23 @@ class CreateProfilePicViewController: UIViewController, UINavigationControllerDe
         }
         
         self.dismiss(animated: true, completion: nil)
+        
     }
+    
+    /*func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            profilePicView.image = image
+            
+        } else {
+            
+            print("There was a problem getting the image")
+            
+        }
+        
+        self.dismiss(animated: true, completion: nil)
+    }*/
     
     @IBAction func uploadProfilePic(_ sender: AnyObject) {
         let imagePickerController = UIImagePickerController()

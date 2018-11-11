@@ -8,20 +8,20 @@
 
 import UIKit
 import MapKit
-import GoogleMobileAds
+//import GoogleMobileAds
 import StoreKit
 import UserNotifications
 
 class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     
-    @IBOutlet var flightNotificationsButton: UIButton!
+    //@IBOutlet var flightNotificationsButton: UIButton!
     let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     var activityLabel = UILabel()
     var flightCount:[Int] = []
     let closeButton = UIButton()
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     @IBOutlet var addFlightButton: UIButton!
-    let notificationsManager = Bundle.main.loadNibNamed("Notification manager", owner: self, options: nil)?[0] as! NotificationsManagerView
+    //let notificationsManager = Bundle.main.loadNibNamed("Notification manager", owner: self, options: nil)?[0] as! NotificationsManagerView
     var notifyBankOfTravel:Bool!
     //var fourHours:Bool!
     var importantChanges:Bool!
@@ -283,79 +283,86 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     @IBAction func addFlight(_ sender: AnyObject) {
         
         //for tripKey
-        self.nonConsumablePurchaseMade = true
+        //self.nonConsumablePurchaseMade = true
         
-       if self.flightCount.count >= 5 && self.nonConsumablePurchaseMade == false {
+       if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
         
-        let alert = UIAlertController(title: NSLocalizedString("You've reached your limit of flights!", comment: ""), message: "TripKey has taken an enourmous amount of work and it costs us money to provide you this service, please support the app and purchase the premium version, we GREATLY appreciate it :)", preferredStyle: UIAlertControllerStyle.alert)
-        
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Sure! :)", comment: ""), style: .default, handler: { (action) in
-        
-            self.purchasePremium()
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: NSLocalizedString("You've reached your limit of flights!", comment: ""), message: "TripKey has taken an enourmous amount of work and it costs us money to provide you this service, please support the app and purchase the premium version, we GREATLY appreciate it :)", preferredStyle: UIAlertControllerStyle.alert)
             
-        }))
-        
-        alert.addAction(UIAlertAction(title: NSLocalizedString("No :(", comment: ""), style: .default, handler: { (action) in
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Sure! :)", comment: ""), style: .default, handler: { (action) in
+                
+                self.purchasePremium()
+                
+            }))
             
+            alert.addAction(UIAlertAction(title: NSLocalizedString("No :(", comment: ""), style: .default, handler: { (action) in
+                
+                
+            }))
             
-        }))
+            self.present(alert, animated: true, completion: nil)
+        }
         
-        self.present(alert, animated: true, completion: nil)
-        
-        
-        
-       } else if self.flightCount.count >= 5 && self.nonConsumablePurchaseMade {
+       } else if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade {
         
         if flightNumber.text == "" && airlineCode.text == "" {
             
-            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-            
-            self.present(alert, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
+                
+                self.present(alert, animated: true, completion: nil)
+            }
             
         } else if flightNumber.text == "" {
             
-            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-            
-            self.present(alert, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
+                
+                self.present(alert, animated: true, completion: nil)
+            }
             
         } else if airlineCode.text == "" {
             
-            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-            
-            self.present(alert, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
+                
+                self.present(alert, animated: true, completion: nil)
+            }
             
         } else {
             
-            formattedTextFieldFlightNumber = flightNumber.text!
-            
-            var characters: [Character] = Array(flightNumber.text!.characters)
-            
-            for _ in characters {
+            DispatchQueue.main.async {
+                self.formattedTextFieldFlightNumber = self.flightNumber.text!
                 
-                if characters[0] == "0" {
+                var characters: [Character] = Array(self.flightNumber.text!.characters)
+                
+                for _ in characters {
                     
-                    characters.remove(at: 0)
-                    self.formattedTextFieldFlightNumber = String(characters)
+                    if characters[0] == "0" {
+                        
+                        characters.remove(at: 0)
+                        self.formattedTextFieldFlightNumber = String(characters)
+                        
+                    }
                     
                 }
                 
+                self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "YYYY/MM/dd"
+                self.departureDate = dateFormatter.string(from: self.myDatePicker.date)
+                self.parseFlightNumber()
             }
-            
-            flightNumberTextField = "\(airlineCode.text!)" + "\(flightNumber.text!)"
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "YYYY/MM/dd"
-            departureDate = dateFormatter.string(from: myDatePicker.date)
-            self.parseFlightNumber()
-            
         }
 
-       } else if self.flightCount.count < 5 {
+       } else if self.flightCount.count < 25 {
         
         if flightNumber.text == "" && airlineCode.text == "" {
             
@@ -383,27 +390,28 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             
         } else {
             
-            formattedTextFieldFlightNumber = flightNumber.text!
-            
-            var characters: [Character] = Array(flightNumber.text!.characters)
-            
-            for _ in characters {
+            DispatchQueue.main.async {
+                self.formattedTextFieldFlightNumber = self.flightNumber.text!
                 
-                if characters[0] == "0" {
+                var characters: [Character] = Array(self.flightNumber.text!.characters)
+                
+                for _ in characters {
                     
-                    characters.remove(at: 0)
-                    self.formattedTextFieldFlightNumber = String(characters)
+                    if characters[0] == "0" {
+                        
+                        characters.remove(at: 0)
+                        self.formattedTextFieldFlightNumber = String(characters)
+                        
+                    }
                     
                 }
                 
+                self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "YYYY/MM/dd"
+                self.departureDate = dateFormatter.string(from: self.myDatePicker.date)
+                self.parseFlightNumber()
             }
-            
-            flightNumberTextField = "\(airlineCode.text!)" + "\(flightNumber.text!)"
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "YYYY/MM/dd"
-            departureDate = dateFormatter.string(from: myDatePicker.date)
-            self.parseFlightNumber()
-            
         }
         
         }
@@ -419,7 +427,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         print("This is viewdidload FlightDetailsViewController")
         //getAirlineCodes()
         
-        flightNotificationsButton.setTitle(NSLocalizedString("Flight Notifications", comment: ""), for: .normal)
+        //flightNotificationsButton.setTitle(NSLocalizedString("Flight Notifications", comment: ""), for: .normal)
         
         departureLabel.text = NSLocalizedString("Departure", comment: "")
         
@@ -501,162 +509,36 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
     }
     
-    func wasDragged(gestureRecognizer: UIPanGestureRecognizer) {
-        
-        let translation = gestureRecognizer.translation(in: self.notificationsManager)
-        
-        let notificationView = gestureRecognizer.view!
-        
-        notificationView.center = CGPoint(x: self.view.bounds.width / 2 + translation.x, y: self.view.bounds.height / 2 + translation.y)
-       // let xFromCenter = notificationView.center.x - self.view.bounds.width / 2
-        let yFromCenter = notificationView.center.y - self.view.bounds.width / 2
-        
-        if gestureRecognizer.state == UIGestureRecognizerState.ended {
-            
-            if yFromCenter >= 200 {
-                
-                UIView.animate(withDuration: 0.5, animations: {
-                    
-                    self.blurEffectView.alpha = 0
-                    self.notificationsManager.alpha = 0
-                    
-                }) { _ in
-                    
-                    self.blurEffectView.removeFromSuperview()
-                    self.notificationsManager.removeFromSuperview()
-                    
-                }
-                
-                print("swiped down")
-                
-            }
-        } else {
-            
-            notificationView.center = CGPoint(x: self.view.bounds.width / 2, y: self.view.bounds.height / 2)
-        }
-        
-        //print(translation)
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
+        
         autoSuggestTable.tableFooterView = UIView()
         autoSuggestTable.reloadData()
         
-        //setNotifications()
-        
         if UserDefaults.standard.bool(forKey: "twoHours") != true && UserDefaults.standard.bool(forKey: "landing") != true && UserDefaults.standard.bool(forKey: "takeOff") != true && UserDefaults.standard.bool(forKey: "fourHours") != true && UserDefaults.standard.bool(forKey: "oneHour") != true && UserDefaults.standard.bool(forKey: "twoDays") != true {
             
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: NSLocalizedString("Notifications are off", comment: ""), message: NSLocalizedString("Would you like to set your notification settings for flights?", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: ""), style: .default, handler: { (action) in
-                    
-                    self.setNotifications()
-                    
-                }))
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: ""), style: .default, handler: { (action) in
-                    
-                }))
-                
-                self.present(alert, animated: true, completion: nil)
-            }
-        }
-        
-    }
-    
-    func setNotifications() {
-        
-        blurEffectView.frame = self.view.frame
-        let draggedDown = UIPanGestureRecognizer(target: self, action: #selector(self.wasDragged(gestureRecognizer:)))
-        notificationsManager.center = self.view.center
-        notificationsManager.addGestureRecognizer(draggedDown)
-        blurEffectView.alpha = 0
-        notificationsManager.alpha = 0
-        view.addSubview(blurEffectView)
-        view.addSubview(notificationsManager)
-        
-        
-        closeButton.frame = CGRect(x: view.frame.maxX - 90, y: view.bounds.minY + 30, width: 30, height: 30)
-        closeButton.backgroundColor = UIColor.red
-        closeButton.setTitle("X", for: .normal)
-        closeButton.layer.cornerRadius = 5
-        closeButton.addTarget(self, action: #selector(self.closeNotifications), for: .touchUpInside)
-        closeButton.alpha = 0
-        view.addSubview(closeButton)
-        
-        UserDefaults.standard.set(notificationsManager.landing.isOn, forKey: "landing")
-        UserDefaults.standard.set(notificationsManager.takeOff.isOn, forKey: "takeOff")
-        UserDefaults.standard.set(notificationsManager.fourHours.isOn, forKey: "fourHours")
-        UserDefaults.standard.set(notificationsManager.twoHours.isOn, forKey: "twoHours")
-        UserDefaults.standard.set(notificationsManager.oneHour.isOn, forKey: "oneHour")
-        UserDefaults.standard.set(notificationsManager.twoDays.isOn, forKey: "twoDays")
-        
-        UIView.animate(withDuration: 0.5, animations: {
-            
-            self.blurEffectView.alpha = 1
-            self.notificationsManager.alpha = 1
-            self.closeButton.alpha = 1
-            
-        }) { _ in
-            
+            UserDefaults.standard.set(true, forKey: "landing")
+            UserDefaults.standard.set(true, forKey: "takeOff")
+            UserDefaults.standard.set(true, forKey: "fourHours")
+            UserDefaults.standard.set(true, forKey: "twoHours")
+            UserDefaults.standard.set(true, forKey: "oneHour")
+            UserDefaults.standard.set(true, forKey: "twoDays")
             
         }
-    }
-    
-    func closeNotifications() {
-      
-        UIView.animate(withDuration: 0.5, animations: {
-            
-            self.blurEffectView.alpha = 0
-            self.notificationsManager.alpha = 0
-            self.closeButton.alpha = 0
-            
-        }) { _ in
-            
-            self.blurEffectView.removeFromSuperview()
-            self.notificationsManager.removeFromSuperview()
-            self.closeButton.removeFromSuperview()
-        }
-
         
     }
-    
-    @IBAction func notificationsButton(_ sender: Any) {
-        
-        setNotifications()
-        
-        
-    }
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         
         self.view.endEditing(true)
         
-        
         if let touch = touches.first {
             let currentPoint = touch.location(in: self.view)
-            //let someFrame = CGRectMake(10,10,100,100)
             let isPointInTable = self.autoSuggestTable.frame.contains(currentPoint)
             
             if isPointInTable == false {
-                
                 self.autoSuggestTable.isHidden = true
-                
             }
-            
-            //let isPointInFlightNumber = self.flightNumber.frame.contains(currentPoint)
-            
-            
         }
-        
-        
     }
     
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
@@ -664,9 +546,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         flightNumber.resignFirstResponder()
         airlineCode.resignFirstResponder()
         departingDateTextField.resignFirstResponder()
-        //referenceNumber.resignFirstResponder()
         return true
-        
     }
 
     func parseFlightNumber() {
@@ -1123,7 +1003,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     self.sortFlightsbyDepartureDate()
                                                     UserDefaults.standard.set(self.flights, forKey: "flights")
                                                     
-                                                    let alert = UIAlertController(title: NSLocalizedString("Flight Added :)", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                                                    let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
                                                     
                                                     alert.addAction(UIAlertAction(title: NSLocalizedString("Finished Adding Flights", comment: ""), style: .default, handler: { (action) in
                                                         
@@ -1571,18 +1451,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         return 3
         
     }
-    
-    /*
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = UITableViewCell(style: UITableViewCellStyle.value1, reuseIdentifier: "Cell")
-        cell.textLabel!.text = "foo"
-        return cell
-        
-    }
-    
-    */
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         

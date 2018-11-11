@@ -8,13 +8,10 @@
 
 import UIKit
 import CoreData
-import Bolts
-import GooglePlaces
 import GoogleMaps
 import UserNotifications
 import Parse
 import Firebase
-import GoogleMobileAds
 
 
 
@@ -22,11 +19,7 @@ import GoogleMobileAds
 class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     var token:String!
-    
-    
     var window: UIWindow?
-    
-    
     
     func switchControllers(viewControllerToBeDismissed:UIViewController,controllerToBePresented:UIViewController) {
         if (viewControllerToBeDismissed.isViewLoaded && (viewControllerToBeDismissed.view.window != nil)) {
@@ -41,21 +34,108 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         }
     }
     
-    //didenterbackground
-    //set userswiped back to false
-    
-    
-    
-    
-    
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return UIInterfaceOrientationMask.all
     }
     
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        
+        // Enable storing and querying data from Local Datastore.
+        // Remove this line if you don't want to use Local Datastore features or want to use cachePolicy.
+        Parse.enableLocalDatastore()
+        
+        let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in
+            
+            ParseMutableClientConfiguration.applicationId = "da4b113f84f8d2467b2c237a63778aa49f29dcee"
+            ParseMutableClientConfiguration.clientKey = "e1d6ba3797e8364252e3cfaa546520ae2c268ed0"
+            ParseMutableClientConfiguration.server = "http://ec2-54-202-119-191.us-west-2.compute.amazonaws.com:80/parse"
+            
+            
+        })
+        
+        Parse.initialize(with: parseConfiguration)
+        
+        //GMSPlacesClient.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
+        GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
+        
+        
+        /*Messaging.messaging().connect { (error) in
+            if error != nil {
+                print("Unable to connect with FCM. \(String(describing: error))")
+            } else {
+                print("Connected to FCM.")
+            }
+            
+        }*/
+        
+        Messaging.messaging().shouldEstablishDirectChannel = true
+        
+        
+        // For iOS 10 display notification (sent via APNS)
+        UNUserNotificationCenter.current().delegate = self
+        
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
+        
+        application.registerForRemoteNotifications()
+        
+        let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
+        let category = UNNotificationCategory(identifier: "statusUpdates", actions: [action], intentIdentifiers: [], options: [])
+        UNUserNotificationCenter.current().setNotificationCategories([category])
+        
+        
+        
+        //GADMobileAds.configure(withApplicationID: "ca-app-pub-1006371177832056~3031560522")
+        
+        
+        
+        
+        // ****************************************************************************
+        // Uncomment and fill in with your Parse credentials:
+        // Parse.setApplicationId("your_application_id", clientKey: "your_client_key")
+        //
+        // If you are using Facebook, uncomment and add your FacebookAppID to your bundle's plist as
+        // described here: https://developers.facebook.com/docs/getting-started/facebook-sdk-for-ios/
+        // Uncomment the line inside ParseStartProject-Bridging-Header and the following line here:
+        // PFFacebookUtils.initializeFacebook()
+        // ****************************************************************************
+        
+        //PFUser.enableAutomaticUser()
+        
+        let defaultACL = PFACL();
+        
+        // If you would like all objects to be private by default, remove this line.
+        defaultACL.hasPublicReadAccess = true
+        //defaultACL.setPublicWriteAccess = true
+        defaultACL.hasPublicWriteAccess = true
+        
+        PFACL.setDefault(defaultACL, withAccessForCurrentUser: true)
+        
+        if application.applicationState != UIApplicationState.background {
+            // Track an app open here if we launch with a push, unless
+            // "content_available" was used to trigger a background push (introduced in iOS 7).
+            // In that case, we skip tracking here to avoid double counting the app-open.
+            /*
+             let preBackgroundPush = !application.responds(to: #selector(getter: UIApplication.backgroundRefreshStatus))
+             let oldPushHandlerOnly = !self.responds(to: #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)))
+             var noPushPayload = false;
+             if let options = launchOptions {
+             noPushPayload = options[UIApplicationLaunchOptionsRemoteNotificationKey] != nil;
+             }
+             if (preBackgroundPush || oldPushHandlerOnly || noPushPayload) {
+             PFAnalytics.trackAppOpened(launchOptions: launchOptions)
+             }
+             */
+        }
+        
+        
+        
+        return true
+    }
     
     
-    
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    /*func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         
         
@@ -76,13 +156,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         Parse.initialize(with: parseConfiguration)
         
-        GMSPlacesClient.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
+        //GMSPlacesClient.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
         GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
         
         
         Messaging.messaging().connect { (error) in
             if error != nil {
-                print("Unable to connect with FCM. \(error)")
+                print("Unable to connect with FCM. \(String(describing: error))")
             } else {
                 print("Connected to FCM.")
             }
@@ -104,7 +184,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         
         
-        GADMobileAds.configure(withApplicationID: "ca-app-pub-1006371177832056~3031560522")
+        //GADMobileAds.configure(withApplicationID: "ca-app-pub-1006371177832056~3031560522")
         
         
         
@@ -124,9 +204,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         let defaultACL = PFACL();
         
         // If you would like all objects to be private by default, remove this line.
-        defaultACL.getPublicReadAccess = true
+        defaultACL.hasPublicReadAccess = true
         //defaultACL.setPublicWriteAccess = true
-        defaultACL.getPublicWriteAccess = true
+        defaultACL.hasPublicWriteAccess = true
         
         PFACL.setDefault(defaultACL, withAccessForCurrentUser: true)
         
@@ -151,16 +231,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         return true
         
-    }
+    }*/
     
-    func messaging(_ messaging: Messaging, didRefreshRegistrationToken fcmToken: String) {
+    @objc(messaging:didReceiveRegistrationToken:) func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         
         //this is where u will get the fcm token and now u can save it to your database for sending notifications to the user in future
         
         //saving the fcm token it to the database
         if PFUser.current() != nil {
             
-            var user = PFUser.current()
+            let user = PFUser.current()
             
             user?["firebaseToken"] = fcmToken
             
@@ -214,34 +294,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         
-        //return FBSDKApplicationDelegate.sharedInstance().application(application, open: url as URL!, sourceApplication: sourceApplication,
-        //annotation: annotation)
-        
         return false
     }
     
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
     
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        
-        //UserDefaults.standard.removeObject(forKey: "userSwipedBack")
-        
     }
     
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        //AppEventsLogger.activate(application)
-        //FBSDKAppEvents.activateApp()
-        
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -262,6 +327,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
          */
         let container = NSPersistentContainer(name: "TripKey2")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            
             if let error = error {
                 
                 print("Uh oh! We had an error: \(error)")
@@ -278,7 +344,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
                  */
-                fatalError("Unresolved error \(error), \(error?._userInfo)")
+                fatalError("Unresolved error \(String(describing: error)), \(String(describing: error?._userInfo))")
                 
             }
             
@@ -555,9 +621,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
     }
     
-    
-    
-    
     func schedule1HourNotification(estimatedDeparture: String, departureDate: String, departureOffset: String, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         let departureDateFormatter = DateFormatter()
@@ -785,9 +848,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         }
     }
     
-    
-    
-    
     func schedulePassportExpiryNotification(expiryDate: Date) {
         
         let expiryDateFormatter = DateFormatter()
@@ -816,13 +876,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
-        
         //this is where the APNS token has to be sent to the FCM
         Messaging.messaging().apnsToken = deviceToken//
-        
-        
-        
-        
         let installation = PFInstallation.current()
         installation?.setDeviceTokenFrom(deviceToken)
         
@@ -837,11 +892,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         installation?.saveInBackground()
         
         self.token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        print("token = \(token)")
+        print("token = \(String(describing: token))")
         
         if PFUser.current() != nil {
             
-            var user = PFUser.current()
+            let user = PFUser.current()
             
             user?["deviceToken"] = self.token
             
@@ -875,7 +930,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
             
         }
         
-        if let refreshedToken = InstanceID.instanceID().token() {
+        InstanceID.instanceID().instanceID { (result, error) in
+            if let error = error {
+                print("Error fetching remote instange ID: \(error)")
+            } else if let result = result {
+                print("Remote instance ID token: \(result.token)")
+                
+                if PFUser.current() != nil {
+                    
+                    if let user = PFUser.current() {
+                       
+                        user["firebaseToken"] = result.token
+                        
+                        user.saveInBackground(block: { (success, error) in
+                            
+                            if success {
+                                
+                                print("save users firebaseToken to parse")
+                                
+                            } else {
+                                
+                                print("could not save users device token to parse")
+                            }
+                        })
+                    }
+                }
+            }
+        }
+        
+        /*if let refreshedToken = InstanceID.instanceID().token() {
             print("InstanceID token: \(refreshedToken)")
             
             if PFUser.current() != nil {
@@ -896,7 +979,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                     }
                 })
             }
-        }
+        }*/
         
         
         

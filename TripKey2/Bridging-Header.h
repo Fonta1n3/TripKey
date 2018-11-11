@@ -10,7 +10,6 @@
 #define Bridging_Header_h
 
 
-#import <GooglePlaces/GooglePlaces.h>
 
 //#import <AWSiOSSDKv2/AWSCore.h>
 //#import <AWSiOSSDKv2/SNS.h>

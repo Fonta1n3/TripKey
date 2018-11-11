@@ -8,7 +8,7 @@
 
 import UIKit
 import MapKit
-import GoogleMobileAds
+//import GoogleMobileAds
 
 class SeatGuruViewController: UIViewController {
     

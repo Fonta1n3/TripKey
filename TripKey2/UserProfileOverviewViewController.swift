@@ -22,14 +22,14 @@ class UserProfileOverviewViewController: UIViewController, UITableViewDelegate, 
         
         if PFUser.current() != nil {
             
-            PFUser.logOut()
-            
-            self.performSegue(withIdentifier: "goToNearMe", sender: self)
-            
+            DispatchQueue.main.async {
+                PFUser.logOut()
+                if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
+                    UserDefaults.standard.removeObject(forKey: "followedUsernames")
+                }
+                self.performSegue(withIdentifier: "goToNearMe", sender: self)
+            }
         }
-        
-        
-        
     }
     
     
@@ -105,8 +105,6 @@ class UserProfileOverviewViewController: UIViewController, UITableViewDelegate, 
                         let pictureQuery = PFQuery(className: "Posts")
                         
                         pictureQuery.whereKey("userid", equalTo: self.users[0])
-                        
-                        //print("\((PFUser.current()?.username)!)")
                         
                         pictureQuery.findObjectsInBackground(block: { (objects, error) in
                             
@@ -274,7 +272,7 @@ class UserProfileOverviewViewController: UIViewController, UITableViewDelegate, 
                 
             let vaccineDetailCell = tableView.dequeueReusableCell(withIdentifier: "VaccineCell", for: indexPath) as! UserVaccineTableViewCell
                 
-            vaccineDetailCell.vaccineCell?.text = "\(String(describing: self.vaccineDictionaryArray[indexPath.row]["Vaccine Type"]!) + ": Expiring " + String(describing: self.vaccineDictionaryArray[indexPath.row]["Vaccine Expiry Date"]!))"
+                vaccineDetailCell.vaccineCell?.text = "\(String(describing: self.vaccineDictionaryArray[indexPath.row]?["Vaccine Type"]!) + ": Expiring " + String(describing: self.vaccineDictionaryArray[indexPath.row]?["Vaccine Expiry Date"]!))"
                 
             return vaccineDetailCell
                 

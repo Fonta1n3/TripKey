@@ -1,87 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11198.3" systemVersion="15G31" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="AddNewTrip" syncable="YES" codeGenerationType="class">
-        <attribute name="tripCountry" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="tripName" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="DestinationContact" syncable="YES" codeGenerationType="class">
-        <attribute name="cityProvince" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="destination" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="facetime" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="homePhone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="houseNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="mobilePhone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="postCode" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="street1" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="street2" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="surname" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="whatsapp" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="workPhone" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="EmergencyContact" syncable="YES" codeGenerationType="class">
-        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="facebookName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="facetime" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="homePhone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="mobilePhone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="surname" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="whatsapp" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="workPhone" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="ListOfUsers" syncable="YES" codeGenerationType="class">
-        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="NewTrip" syncable="YES" codeGenerationType="class">
-        <attribute name="arrAirport" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="arrDateTime" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="depAirport" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="depDateTime" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="flightNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="hotel" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="hotelEmail" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="hotelPhone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="postCode" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="stateProvince" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="street1" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="street2" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="UserLoggedIn" syncable="YES" codeGenerationType="class">
-        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
-    </entity>
-    <entity name="UserSignedUp" syncable="YES" codeGenerationType="class">
-        <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="country" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="dateOfBirth" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="houseAptNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="passportCountry" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="passportExpiry" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="passportNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="postcode" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="state" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="street1" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="street2" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="surname" optional="YES" attributeType="String" syncable="YES"/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.18" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="FollowedUsers" representedClassName="FollowedUsers" syncable="YES" codeGenerationType="class">
+        <attribute name="profilePic" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AddNewTrip" positionX="-81" positionY="249" width="128" height="75"/>
-        <element name="DestinationContact" positionX="349" positionY="153" width="128" height="270"/>
-        <element name="EmergencyContact" positionX="-90" positionY="-63" width="128" height="180"/>
-        <element name="ListOfUsers" positionX="153" positionY="276" width="128" height="75"/>
-        <element name="NewTrip" positionX="-243" positionY="324" width="128" height="255"/>
-        <element name="UserLoggedIn" positionX="151" positionY="159" width="128" height="75"/>
-        <element name="UserSignedUp" positionX="-243" positionY="-18" width="128" height="298"/>
+        <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="75"/>
     </elements>
 </model>
