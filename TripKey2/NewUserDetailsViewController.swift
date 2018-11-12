@@ -75,21 +75,13 @@ class NewUserDetailsViewController: UIViewController, UITextFieldDelegate {
                 self.blurEffectView.alpha = 1
                 self.passportExpiryDatePickerView.alpha = 1
                 
-            }) { _ in
-                
-            }
+            })
             
         } else if textField == self.dateOfBirth {
-            
-            //self.dismissKeyboard()
             
             DispatchQueue.main.async {
                 self.dateOfBirth.resignFirstResponder()
             }
-            
-            
-            
-            
             self.birthdayDatePickerView.save.addTarget(self, action: #selector(self.saveBirthDate), for: .touchUpInside)
             self.birthdayDatePickerView.exit.addTarget(self, action: #selector(self.closeBirthdayDatePicker), for: .touchUpInside)
             self.birthdayDatePickerView.center = self.view.center

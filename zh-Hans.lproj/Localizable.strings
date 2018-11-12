@@ -240,7 +240,7 @@
 "Get Directions to the Airport" = "获取路线到机场";
 "Check Flight Amenities" = "检查飞行设施";
 "Flight #" = "航班号";
-"Departure" = "离开";
+"Departing on:" = "离开";
 "Add Flight" = "添加航班";
 "Flight Added" = "添加航班";
 "Finished Adding Flights" = "完成添加航班";

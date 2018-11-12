@@ -8,32 +8,27 @@
 
 import UIKit
 import MapKit
-//import GoogleMobileAds
 import StoreKit
 import UserNotifications
 
 class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, SKProductsRequestDelegate, SKPaymentTransactionObserver {
     
-    //@IBOutlet var flightNotificationsButton: UIButton!
+    let datePickerView = Bundle.main.loadNibNamed("Date Picker", owner: self, options: nil)?[0] as! DatePickerView
+    let backButton = UIButton()
     let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     var activityLabel = UILabel()
     var flightCount:[Int] = []
     let closeButton = UIButton()
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     @IBOutlet var addFlightButton: UIButton!
-    //let notificationsManager = Bundle.main.loadNibNamed("Notification manager", owner: self, options: nil)?[0] as! NotificationsManagerView
     var notifyBankOfTravel:Bool!
-    //var fourHours:Bool!
     var importantChanges:Bool!
     var notifyTripContacts:Bool!
-    //var oneHour:Bool!
     var passportVisaExpirations:Bool!
     var travelVaccinationExpirations:Bool!
-    //var twoDays:Bool!
-    //var twoHours:Bool!
     var dictionaryIataArray:[Dictionary<String,String>]! = []
     var dictionaryIcaoArray:[Dictionary<String,String>]! = []
-    var fsCode:String!
+    var fsCode = ""
     var autoCompletePossibilitiesArray:[String]! = []
     var autoCompletePossibilitiesDictionary:[Dictionary<String,String>]! = []
     var fsCodes:[String]! = []
@@ -42,25 +37,22 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     var airlineNames:[String]! = []
     var autoComplete = [String]()
     @IBOutlet var autoSuggestTable: UITableView!
-    //@IBOutlet var referenceNumber: UITextField!
     var legs = [Dictionary<String,String>]()
     var sortedLegs = [Dictionary<String,String>]()
-    var currentDateWhole:String!
+    var currentDateWhole = ""
     var activityIndicator:UIActivityIndicatorView!
-    var number:String! = ""
-    var refNumber:String! = " "
-    var airlineNameArrayString:String! = ""
+    var number = ""
+    var refNumber = " "
+    var airlineNameArrayString = ""
     var flights = [Dictionary<String,String>]()
     var sortedFlights = [Dictionary<String,String>]()
-    @IBOutlet var myDatePicker: UIDatePicker!
-    @IBOutlet weak var selectedDate: UILabel!
-    var formattedFlightNumber:String!
-    var formattedDepartureDate:String!
+    var formattedFlightNumber = ""
+    var formattedDepartureDate = ""
     @IBOutlet var airlineCode: UITextField!
     @IBOutlet var flightNumber: UITextField!
-    var flightNumberTextField: String!
-    var formattedTextFieldFlightNumber:String!
-    var departureDate: String!
+    var flightNumberTextField = ""
+    var formattedTextFieldFlightNumber = ""
+    var departureDate = ""
     @IBOutlet var departingDateTextField: UITextField!
     var button = UIButton(type: UIButtonType.custom)
     @IBOutlet var departureLabel: UILabel!
@@ -69,6 +61,21 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     var productsRequest = SKProductsRequest()
     var iapProducts = [SKProduct]()
     var nonConsumablePurchaseMade = UserDefaults.standard.bool(forKey: "nonConsumablePurchaseMade")
+    
+    @objc func saveDate() {
+        print("saveDate")
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "YYYY/MM/dd"
+        self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
+        self.parseFlightNumber()
+        UIView.animate(withDuration: 0.3, animations: {
+            self.datePickerView.alpha = 0
+            self.blurEffectView.alpha = 0
+        }) { _ in
+            self.datePickerView.removeFromSuperview()
+            self.blurEffectView.removeFromSuperview()
+        }
+    }
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         nonConsumablePurchaseMade = true
@@ -171,8 +178,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     // MARK:- IAP PAYMENT QUEUE
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         
-        
-        
         for transaction:AnyObject in transactions {
             
             if let trans = transaction as? SKPaymentTransaction {
@@ -239,9 +244,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     
     func purchasePremium() {
         
-        
-            
-            self.fetchAvailableProducts()
+        self.fetchAvailableProducts()
             
             let alert = UIAlertController(title: NSLocalizedString("Youv'e reached your limit of free flights.", comment: ""), message: NSLocalizedString("This will be a one time charge that is valid even if you switch phones or uninstall TripKey.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
             
@@ -253,11 +256,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                 
             }))
             
-            alert.addAction(UIAlertAction(title: NSLocalizedString("No Thanks", comment: ""), style: .default, handler: { (action) in
-                
-                
-                
-            }))
+            alert.addAction(UIAlertAction(title: NSLocalizedString("No Thanks", comment: ""), style: .default, handler: { (action) in }))
             
             alert.addAction(UIAlertAction(title: NSLocalizedString("Restore Purchases", comment: ""), style: .default, handler: { (action) in
                 
@@ -278,12 +277,50 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
     }
     
+    func pleaseEnterFlightNumber() {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
+            
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
     
+    func addDateView() {
+        
+        self.airlineCode.resignFirstResponder()
+        self.flightNumber.resignFirstResponder()
+        self.view.addSubview(self.blurEffectView)
+        self.view.addSubview(self.datePickerView)
+        UIView.animate(withDuration: 0.5) {
+            self.blurEffectView.alpha = 1
+            self.datePickerView.alpha = 1
+        }
+        
+        self.formattedTextFieldFlightNumber = self.flightNumber.text!
+        
+        var characters: [Character] = Array(self.flightNumber.text!.characters)
+        
+        for _ in characters {
+            
+            if characters[0] == "0" {
+                
+                characters.remove(at: 0)
+                self.formattedTextFieldFlightNumber = String(characters)
+                
+            }
+            
+        }
+        
+        self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
+        
+    }
    
     @IBAction func addFlight(_ sender: AnyObject) {
         
-        //for tripKey
-        //self.nonConsumablePurchaseMade = true
+        
+        
         
        if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
         
@@ -308,33 +345,15 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
         if flightNumber.text == "" && airlineCode.text == "" {
             
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                
-                self.present(alert, animated: true, completion: nil)
-            }
+            pleaseEnterFlightNumber()
             
         } else if flightNumber.text == "" {
             
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                
-                self.present(alert, animated: true, completion: nil)
-            }
+            pleaseEnterFlightNumber()
             
         } else if airlineCode.text == "" {
             
-            DispatchQueue.main.async {
-                let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-                
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                
-                self.present(alert, animated: true, completion: nil)
-            }
+            pleaseEnterFlightNumber()
             
         } else {
             
@@ -357,7 +376,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                 self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "YYYY/MM/dd"
-                self.departureDate = dateFormatter.string(from: self.myDatePicker.date)
+                self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
                 self.parseFlightNumber()
             }
         }
@@ -366,32 +385,24 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
         if flightNumber.text == "" && airlineCode.text == "" {
             
-            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-            
-            self.present(alert, animated: true, completion: nil)
+            pleaseEnterFlightNumber()
             
         } else if flightNumber.text == "" {
             
-            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-            
-            self.present(alert, animated: true, completion: nil)
+            pleaseEnterFlightNumber()
             
         } else if airlineCode.text == "" {
             
-            let alert = UIAlertController(title: NSLocalizedString("Please enter a Flight Number", comment: ""), message: "", preferredStyle: UIAlertControllerStyle.alert)
-            
-            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-            
-            self.present(alert, animated: true, completion: nil)
+            pleaseEnterFlightNumber()
             
         } else {
             
-            DispatchQueue.main.async {
-                self.formattedTextFieldFlightNumber = self.flightNumber.text!
+            //DispatchQueue.main.async {
+                
+                self.addDateView()
+                
+                
+                /*self.formattedTextFieldFlightNumber = self.flightNumber.text!
                 
                 var characters: [Character] = Array(self.flightNumber.text!.characters)
                 
@@ -409,9 +420,9 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                 self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
                 let dateFormatter = DateFormatter()
                 dateFormatter.dateFormat = "YYYY/MM/dd"
-                self.departureDate = dateFormatter.string(from: self.myDatePicker.date)
-                self.parseFlightNumber()
-            }
+                self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
+                self.parseFlightNumber()*/
+            //}
         }
         
         }
@@ -419,20 +430,61 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
      }
     
+    func addButtons() {
+        
+        DispatchQueue.main.async {
+            
+            self.backButton.removeFromSuperview()
+            self.backButton.frame = CGRect(x: 5, y: 20, width: 25, height: 25)
+            self.backButton.showsTouchWhenHighlighted = true
+            let image = UIImage(imageLiteralResourceName: "backButton.png")
+            self.backButton.setImage(image, for: .normal)
+            self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
+            self.view.addSubview(self.backButton)
+            
+        }
+        
+    }
+    
+    @objc func goBack() {
+        
+        self.dismiss(animated: true, completion: nil)
+        
+    }
+    
+    @objc func closeDate() {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.datePickerView.alpha = 0
+            self.blurEffectView.alpha = 0
+        }) { _ in
+            self.datePickerView.removeFromSuperview()
+            self.blurEffectView.removeFromSuperview()
+        }
+    }
+    
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { return UIInterfaceOrientationMask.portrait }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         print("This is viewdidload FlightDetailsViewController")
-        //getAirlineCodes()
         
-        //flightNotificationsButton.setTitle(NSLocalizedString("Flight Notifications", comment: ""), for: .normal)
+        blurEffectView.frame = view.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurEffectView.alpha = 0
+        datePickerView.save.setTitle("Next", for: .normal)
+        datePickerView.save.addTarget(self, action: #selector(saveDate), for: .touchUpInside)
+        datePickerView.exit.addTarget(self, action: #selector(closeDate), for: .touchUpInside)
+        datePickerView.center = view.center
+        datePickerView.alpha = 0
+        datePickerView.title.text = "Please select Departure Date"
+        let currentDate = NSDate()
+        datePickerView.datePicker.date = currentDate as Date
+        flightNumber.keyboardType = .numberPad
+        flightNumber.keyboardAppearance = UIKeyboardAppearance.light
+        airlineCode.keyboardAppearance = UIKeyboardAppearance.light
         
-        departureLabel.text = NSLocalizedString("Departure", comment: "")
         
         addFlightButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        
         addFlightButton.setTitle(NSLocalizedString("Add Flight", comment: ""), for: .normal)
         
         if UserDefaults.standard.object(forKey: "flightCount") != nil {
@@ -455,9 +507,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             
         }
         
-        //googleBanner.adUnitID = "ca-app-pub-1006371177832056/4508293729"
-        //googleBanner.rootViewController = self
-        //googleBanner.load(GADRequest())
+        addButtons()
         
         autoSuggestTable.isHidden = true
         
@@ -465,13 +515,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
         self.airlineCode.delegate = self
         self.flightNumber.delegate = self
-        //self.referenceNumber.delegate = self
         self.autoSuggestTable.delegate = self
-        
-        myDatePicker.datePickerMode = UIDatePickerMode.date
-        let currentDate = NSDate()
-        myDatePicker.date = currentDate as Date
-        
         if (UserDefaults.standard.object(forKey: "flights") != nil) {
             
             flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
@@ -541,6 +585,12 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         }
     }
     
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField == airlineCode {
+            self.autoSuggestTable.isHidden = true
+        }
+    }
+    
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         
         flightNumber.resignFirstResponder()
@@ -555,7 +605,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         addActivityIndicatorCenter()
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
  
-        if let url = URL(string: "https://api.flightstats.com/flex/schedules/rest/v1/json/flight/" + (self.airlineCode.text!) + "/" + (self.formattedTextFieldFlightNumber!) + "/departing/" + (departureDate!) + "?appId=16d11b16&appKey=821a18ad545a57408964a537526b1e87") {
+        if let url = URL(string: "https://api.flightstats.com/flex/schedules/rest/v1/json/flight/" + (self.airlineCode.text!) + "/" + (self.formattedTextFieldFlightNumber) + "/departing/" + (departureDate) + "?appId=16d11b16&appKey=821a18ad545a57408964a537526b1e87") {
             
             let task = URLSession.shared.dataTask(with: url) { (data, response, error) -> Void in
                 
@@ -591,59 +641,48 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                 
                                 let jsonFlightData = try JSONSerialization.jsonObject(with: urlContent, options: JSONSerialization.ReadingOptions.mutableLeaves) as! NSDictionary
                                 
-                                var airport1:NSDictionary! = [:]
-                                var airport2:NSDictionary! = [:]
-                                //var airport3:NSDictionary! = [:]
-                                //var airport4:NSDictionary! = [:]
-                                var airport1FsCode:String! = ""
-                                var airport2FsCode:String! = ""
-                                //var airport3FsCode:String! = ""
-                                //var airport4FsCode:String! = ""
+                                var airport1:NSDictionary = [:]
+                                var airport2:NSDictionary = [:]
+                                var airport1FsCode = ""
+                                var airport2FsCode = ""
                                 var departureAirport:NSDictionary! = [:]
                                 var arrivalAirport:NSDictionary! = [:]
-                                var airlineName:String! = ""
-                                var phoneNumber:String! = ""
-                                var aircraft:String! = ""
-                                var departureAirportCode:String! = ""
-                                var arrivalAirportCode:String! = ""
-                                var airlineCode:String! = ""
-                                var arrivalDate:String! = ""
-                                var flightNumber:String! = ""
-                                var departureDate:String! = ""
-                                var departureTerminal:String! = "-"
-                                var arrivalTerminal:String! = "-"
-                                var departureGate:String! = "-"
-                                var arrivalGate:String! = "-"
-                                var departureCountry:String! = ""
+                                var airlineName = ""
+                                var phoneNumber = ""
+                                var aircraft = ""
+                                var departureAirportCode = ""
+                                var arrivalAirportCode = ""
+                                var airlineCode = ""
+                                var arrivalDate = ""
+                                var flightNumber = ""
+                                var departureDate = ""
+                                var departureTerminal = "-"
+                                var arrivalTerminal = "-"
+                                var departureGate = "-"
+                                var arrivalGate = "-"
+                                var departureCountry = ""
                                 var departureLongitude:Double! = 0
-                                //var departureAirportIata:String!
                                 var departureLatitude:Double! = 0
-                                var departureCity:String! = ""
+                                var departureCity = ""
                                 var departureUtcOffset:Double! = 0
-                                var arrivalCountry:String! = ""
+                                var arrivalCountry = ""
                                 var arrivalLongitude:Double! = 0
-                                //var arrivalAirportIata:String! = ""
                                 var arrivalLatitude:Double! = 0
-                                var arrivalCity:String! = ""
+                                var arrivalCity = ""
                                 var arrivalUtcOffset:Double! = 0
-                                var airlineNameArrayString:String! = ""
+                                var airlineNameArrayString = ""
                                 var airlineNameArray:[String]! = []
                                 var leg1:Dictionary<String,String>! = [:]
-                                //var leg2:Dictionary<String,String>! = [:]
-                                //var leg3:Dictionary<String,String>! = [:]
-                                //var legs:[Dictionary<String,String>] = [[:]]
-                                var convertedDepartureDate:String! = ""
-                                var departureDateNumber:String! = ""
-                                var departureDateUtc:String! = ""
-                                var convertedArrivalDate:String! = ""
-                                var arrivalDateNumber:String! = ""
-                                var arrivalDateUtc:String! = ""
-                                var departureDateUtcNumber:String! = ""
-                                var urlDepartureDate:String! = ""
-                                var urlArrivalDate:String! = ""
-                                //var aircraftIata:String! = ""
-                                //var airplaneIataCode:String! = ""
-                                var arrivalDateUtcNumber:String! = ""
+                                var convertedDepartureDate = ""
+                                var departureDateNumber = ""
+                                var departureDateUtc = ""
+                                var convertedArrivalDate = ""
+                                var arrivalDateNumber = ""
+                                var arrivalDateUtc = ""
+                                var departureDateUtcNumber = ""
+                                var urlDepartureDate = ""
+                                var urlArrivalDate = ""
+                                var arrivalDateUtcNumber = ""
                                 
                                 
                                 if let aircraftCheck = ((((jsonFlightData)["appendix"] as? NSDictionary)?["equipments"] as? NSArray)?[0] as? NSDictionary)?["name"] as? String {
@@ -651,23 +690,19 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                     aircraft = aircraftCheck
                                 }
                                 
-                                /*
-                                if let aircraftIataCheck = ((((jsonFlightData)["appendix"] as? NSDictionary)?["equipments"] as? NSArray)?[0] as? NSDictionary)?["iata"] as? String {
-                                    
-                                    aircraftIata = aircraftIataCheck
-                                }
-                                */
-                                
                                 if let airlinesArray = ((jsonFlightData)["appendix"] as? NSDictionary)?["airlines"] as? NSArray {
                                     
                                     for item in airlinesArray {
                                         
                                         let obj = item as! NSDictionary
-                                        let bookingAirlineName:String! = obj["name"] as? String
-                                        let fs:String! = obj["fs"] as? String
-                                        let iata:String! = obj["iata"] as? String
-                                        let icao:String! = obj["icao"] as? String
-                                        let airlineCode = "\(self.airlineCode.text!)"
+                                        let bookingAirlineName = obj["name"] as! String
+                                        let fs = obj["fs"] as! String
+                                        let iata = obj["iata"] as! String
+                                        let icao = obj["icao"] as! String
+                                        var airlineCode = ""
+                                        DispatchQueue.main.async {
+                                           airlineCode = "\(self.airlineCode.text!)"
+                                        }
                                         
                                         if airlineCode.uppercased() == fs || airlineCode.uppercased() == iata || airlineCode.uppercased() == icao {
                                             
@@ -677,20 +712,14 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                 
                                                 phoneNumber = phoneNumberCheck
                                                 
-                                                if airlineName == "American Airlines" {
-                                                    
-                                                    phoneNumber = "+1 800-433-7300"
+                                                switch airlineName {
+                                                case "American Airlines": phoneNumber = "+1 800-433-7300"
+                                                case "Virgin Australia": phoneNumber = "+61 7 3295 2296"
+                                                case "British Airways": phoneNumber = "+1-800-247-9297"
+                                                default:
+                                                    break
                                                 }
                                                 
-                                                if airlineName == "Virgin Australia" {
-                                                    
-                                                    phoneNumber = "+61 7 3295 2296"
-                                                }
-                                                
-                                                if airlineName == "British Airways" {
-                                                    
-                                                    phoneNumber = "+1-800-247-9297"
-                                                }
                                                 
                                             }
                                             
@@ -723,7 +752,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                     
                                 } else if let scheduledFlightsArray = jsonFlightData["scheduledFlights"] as? NSArray {
                                     
-                                    //if scheduledFlightsArray.count > 3 {
                                     if scheduledFlightsArray.count > 1 {
                                         
                                         var scheduledFlights:[Dictionary<String,String>]! = []
@@ -733,22 +761,16 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             
                                             let arrivalAirport = (flight as! NSDictionary)["arrivalAirportFsCode"] as! String
                                             let departureAirport = (flight as! NSDictionary)["departureAirportFsCode"] as! String
-                                            //let carrierFsCode = (flight as! NSDictionary)["carrierFsCode"] as! String
-                                            //let departureTime = (flight as! NSDictionary)["departureTime"] as! String
-                                            //let arrivalTime = (flight as! NSDictionary)["arrivalTime"] as! String
-                                            
-                                            airlineCode = (flight as! NSDictionary)["carrierFsCode"] as! String!
-                                            flightNumber = (flight as! NSDictionary)["flightNumber"] as! String!
-                                            //airplaneIataCode = (flight as! NSDictionary)["flightEquipmentIataCode"] as! String!
-                                            
-                                            departureDate = (flight as! NSDictionary)["departureTime"] as! String!
+                                            airlineCode = (flight as! NSDictionary)["carrierFsCode"] as! String
+                                            flightNumber = (flight as! NSDictionary)["flightNumber"] as! String
+                                            departureDate = (flight as! NSDictionary)["departureTime"] as! String
                                             convertedDepartureDate = self.convertDateTime(date: departureDate)
                                             departureDateUtc = self.getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
                                             departureDateNumber = self.formatDateTimetoWhole(dateTime: departureDate)
                                             departureDateUtcNumber = self.formatDateTimetoWhole(dateTime: departureDateUtc)
                                             urlDepartureDate = self.convertToURLDate(date: departureDate)
                                             
-                                            arrivalDate = (flight as! NSDictionary)["arrivalTime"] as! String!
+                                            arrivalDate = (flight as! NSDictionary)["arrivalTime"] as! String
                                             convertedArrivalDate = self.convertDateTime(date: arrivalDate)
                                             arrivalDateUtc = self.getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
                                             arrivalDateNumber = self.formatDateTimetoWhole(dateTime: arrivalDate)
@@ -789,76 +811,72 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     
                                                     for (_, airport) in (airportArray?.enumerated())! {
                                                         
-                                                        //let arrivalAirportCode = (airport as! NSDictionary)["fs"] as! String
-                                                        
                                                         if (airport as! NSDictionary)["fs"] as! String == arrivalAirport {
                                                             
                                                             arrivalAirportCode = (airport as! NSDictionary)["fs"] as! String
-                                                            arrivalCountry = (airport as! NSDictionary)["countryName"] as! String!
-                                                            arrivalLongitude = (airport as! NSDictionary)["longitude"] as! Double!
-                                                            //arrivalAirportIata = (airport as! NSDictionary)["iata"] as! String!
-                                                            arrivalLatitude = (airport as! NSDictionary)["latitude"] as! Double!
-                                                            arrivalCity = (airport as! NSDictionary)["city"] as! String!
-                                                            arrivalUtcOffset = (airport as! NSDictionary)["utcOffsetHours"] as! Double!
+                                                            arrivalCountry = (airport as! NSDictionary)["countryName"] as! String
+                                                            arrivalLongitude = (airport as! NSDictionary)["longitude"] as! Double
+                                                            arrivalLatitude = (airport as! NSDictionary)["latitude"] as! Double
+                                                            arrivalCity = (airport as! NSDictionary)["city"] as! String
+                                                            arrivalUtcOffset = (airport as! NSDictionary)["utcOffsetHours"] as! Double
                                                             
                                                             departureAirportCode = (departureAirportDic as! NSDictionary)["fs"] as! String
-                                                            departureCountry = (departureAirportDic as! NSDictionary)["countryName"] as! String!
-                                                            departureLongitude = (departureAirportDic as! NSDictionary)["longitude"] as! Double!
-                                                            //departureAirportIata = (departureAirportDic as! NSDictionary)["iata"] as! String!
-                                                            departureLatitude = (departureAirportDic as! NSDictionary)["latitude"] as! Double!
-                                                            departureCity = (departureAirportDic as! NSDictionary)["city"] as! String!
-                                                            departureUtcOffset = (departureAirportDic as! NSDictionary)["utcOffsetHours"] as! Double!
+                                                            departureCountry = (departureAirportDic as! NSDictionary)["countryName"] as! String
+                                                            departureLongitude = (departureAirportDic as! NSDictionary)["longitude"] as! Double
+                                                            departureLatitude = (departureAirportDic as! NSDictionary)["latitude"] as! Double
+                                                            departureCity = (departureAirportDic as! NSDictionary)["city"] as! String
+                                                            departureUtcOffset = (departureAirportDic as! NSDictionary)["utcOffsetHours"] as! Double
                                                             
                                                             
                                                                 
                                                                 leg1 = [
                                                                     
                                                                     "Leg 0":"false",
-                                                                    "Reference Number":"\(self.refNumber!)",
+                                                                    "Reference Number":"\(self.refNumber)",
                                                                     
                                                                     //Info that applies to both origin and destination
-                                                                    "Airline Code":"\(airlineCode!)",
-                                                                    "Flight Number":"\(flightNumber!)",
-                                                                    "Airline Name":"\(airlineName!)",
-                                                                    "Partner Airlines":"\(airlineNameArrayString!)",
-                                                                    "Aircraft Type Name":"\(aircraft!)",
-                                                                    "Phone Number":"\(phoneNumber!)",
+                                                                    "Airline Code":"\(airlineCode)",
+                                                                    "Flight Number":"\(flightNumber)",
+                                                                    "Airline Name":"\(airlineName)",
+                                                                    "Partner Airlines":"\(airlineNameArrayString)",
+                                                                    "Aircraft Type Name":"\(aircraft)",
+                                                                    "Phone Number":"\(phoneNumber)",
                                                                     
                                                                     //Departure airport info
-                                                                    "Departure Airport Code":"\(departureAirportCode!)",
-                                                                    "Departure Country":"\(departureCountry!)",
-                                                                    "Departure City":"\(departureCity!)",
-                                                                    "Airport Departure Terminal":"\(departureTerminal!)",
-                                                                    "Departure Gate":"\(departureGate!)",
+                                                                    "Departure Airport Code":"\(departureAirportCode)",
+                                                                    "Departure Country":"\(departureCountry)",
+                                                                    "Departure City":"\(departureCity)",
+                                                                    "Airport Departure Terminal":"\(departureTerminal)",
+                                                                    "Departure Gate":"\(departureGate)",
                                                                     "Departure Airport UTC Offset":"\(departureUtcOffset!)",
                                                                     "Airport Departure Longitude":"\(departureLongitude!)",
                                                                     "Airport Departure Latitude":"\(departureLatitude!)",
                                                                     
                                                                     //Departure times
-                                                                    "Published Departure":"\(departureDate!)",
-                                                                    "Departure Date Number":"\(departureDateNumber!)",
-                                                                    "Published Departure UTC":"\(departureDateUtc!)",
-                                                                    "Published Departure UTC Number":"\(departureDateUtcNumber!)",
-                                                                    "URL Departure Date":"\(urlDepartureDate!)",
-                                                                    "Converted Published Departure":"\(convertedDepartureDate!)",
+                                                                    "Published Departure":"\(departureDate)",
+                                                                    "Departure Date Number":"\(departureDateNumber)",
+                                                                    "Published Departure UTC":"\(departureDateUtc)",
+                                                                    "Published Departure UTC Number":"\(departureDateUtcNumber)",
+                                                                    "URL Departure Date":"\(urlDepartureDate)",
+                                                                    "Converted Published Departure":"\(convertedDepartureDate)",
                                                                     
                                                                     //Arrival Airport Info
-                                                                    "Arrival Airport Code":"\(arrivalAirportCode!)",
+                                                                    "Arrival Airport Code":"\(arrivalAirportCode)",
                                                                     "Airport Arrival Longitude":"\(arrivalLongitude!)",
                                                                     "Airport Arrival Latitude":"\(arrivalLatitude!)",
-                                                                    "Arrival Country":"\(arrivalCountry!)",
-                                                                    "Arrival City":"\(arrivalCity!)",
-                                                                    "Airport Arrival Terminal":"\(arrivalTerminal!)",
-                                                                    "Arrival Gate":"\(arrivalGate!)",
+                                                                    "Arrival Country":"\(arrivalCountry)",
+                                                                    "Arrival City":"\(arrivalCity)",
+                                                                    "Airport Arrival Terminal":"\(arrivalTerminal)",
+                                                                    "Arrival Gate":"\(arrivalGate)",
                                                                     "Arrival Airport UTC Offset":"\(arrivalUtcOffset!)",
                                                                     
                                                                     //Given in schedules json
-                                                                    "Converted Published Arrival":"\(convertedArrivalDate!)",
-                                                                    "Published Arrival":"\(arrivalDate!)",
-                                                                    "Arrival Date Number":"\(arrivalDateNumber!)",
-                                                                    "Published Arrival UTC":"\(arrivalDateUtc!)",
-                                                                    "Published Arrival UTC Number":"\(arrivalDateUtcNumber!)",
-                                                                    "URL Arrival Date":"\(urlArrivalDate!)",
+                                                                    "Converted Published Arrival":"\(convertedArrivalDate)",
+                                                                    "Published Arrival":"\(arrivalDate)",
+                                                                    "Arrival Date Number":"\(arrivalDateNumber)",
+                                                                    "Published Arrival UTC":"\(arrivalDateUtc)",
+                                                                    "Published Arrival UTC Number":"\(arrivalDateUtcNumber)",
+                                                                    "URL Arrival Date":"\(urlArrivalDate)",
                                                                     
                                                                     //given in statuses json
                                                                     "Flight Status":"",
@@ -999,7 +1017,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     
                                                     self.airlineCode.text = ""
                                                     self.flightNumber.text = ""
-                                                    //self.referenceNumber.text = ""
                                                     self.sortFlightsbyDepartureDate()
                                                     UserDefaults.standard.set(self.flights, forKey: "flights")
                                                     
@@ -1013,11 +1030,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                         
                                                     }))
                                                     
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Add Another Flight", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                    //self.setNotifications()
-                                                    
-                                                    }))
+                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Add Another Flight", comment: ""), style: .default, handler: { (action) in }))
                                                     
                                                     self.present(alert, animated: true, completion: nil)
                                                     
@@ -1103,34 +1116,31 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             }
                                             
                                             //assigns correct airport variables to departure
-                                            departureCountry = departureAirport["countryName"] as! String!
-                                            departureLongitude = departureAirport["longitude"] as! Double!
-                                            //departureAirportIata = departureAirport["iata"] as! String!
-                                            departureLatitude = departureAirport["latitude"] as! Double!
-                                            departureCity = departureAirport["city"] as! String!
-                                            departureUtcOffset = departureAirport["utcOffsetHours"] as! Double!
+                                            departureCountry = departureAirport["countryName"] as! String
+                                            departureLongitude = departureAirport["longitude"] as! Double
+                                            departureLatitude = departureAirport["latitude"] as! Double
+                                            departureCity = departureAirport["city"] as! String
+                                            departureUtcOffset = departureAirport["utcOffsetHours"] as! Double
                                             
                                             //assigns correct airport variables to arrival
-                                            arrivalCountry = arrivalAirport["countryName"] as! String!
-                                            arrivalLongitude = arrivalAirport["longitude"] as! Double!
-                                            //arrivalAirportIata = arrivalAirport["iata"] as! String!
-                                            arrivalLatitude = arrivalAirport["latitude"] as! Double!
-                                            arrivalCity = arrivalAirport["city"] as! String!
-                                            arrivalUtcOffset = arrivalAirport["utcOffsetHours"] as! Double!
+                                            arrivalCountry = arrivalAirport["countryName"] as! String
+                                            arrivalLongitude = arrivalAirport["longitude"] as! Double
+                                            arrivalLatitude = arrivalAirport["latitude"] as! Double
+                                            arrivalCity = arrivalAirport["city"] as! String
+                                            arrivalUtcOffset = arrivalAirport["utcOffsetHours"] as! Double
                                             
                                             
-                                            airlineCode = leg0Check["carrierFsCode"] as! String!
-                                            flightNumber = leg0Check["flightNumber"] as! String!
-                                            //airplaneIataCode = leg0Check["flightEquipmentIataCode"] as! String!
+                                            airlineCode = leg0Check["carrierFsCode"] as! String
+                                            flightNumber = leg0Check["flightNumber"] as! String
                                             
-                                            departureDate = leg0Check["departureTime"] as! String!
+                                            departureDate = leg0Check["departureTime"] as! String
                                             convertedDepartureDate = self.convertDateTime(date: departureDate)
                                             departureDateUtc = self.getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
                                             departureDateNumber = self.formatDateTimetoWhole(dateTime: departureDate)
                                             departureDateUtcNumber = self.formatDateTimetoWhole(dateTime: departureDateUtc)
                                             urlDepartureDate = self.convertToURLDate(date: departureDate)
                                             
-                                            arrivalDate = leg0Check["arrivalTime"] as! String!
+                                            arrivalDate = leg0Check["arrivalTime"] as! String
                                             convertedArrivalDate = self.convertDateTime(date: arrivalDate)
                                             arrivalDateUtc = self.getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
                                             arrivalDateNumber = self.formatDateTimetoWhole(dateTime: arrivalDate)
@@ -1140,51 +1150,51 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             leg1 = [
                                                 
                                                 "Leg 0":"false",
-                                                "Reference Number":"\(self.refNumber!)",
+                                                "Reference Number":"\(self.refNumber)",
                                                 
                                                 //Info that applies to both origin and destination
-                                                "Airline Code":"\(airlineCode!)",
-                                                "Flight Number":"\(flightNumber!)",
-                                                "Airline Name":"\(airlineName!)",
-                                                "Partner Airlines":"\(airlineNameArrayString!)",
-                                                "Aircraft Type Name":"\(aircraft!)",
-                                                "Phone Number":"\(phoneNumber!)",
+                                                "Airline Code":"\(airlineCode)",
+                                                "Flight Number":"\(flightNumber)",
+                                                "Airline Name":"\(airlineName)",
+                                                "Partner Airlines":"\(airlineNameArrayString)",
+                                                "Aircraft Type Name":"\(aircraft)",
+                                                "Phone Number":"\(phoneNumber)",
                                                 
                                                 //Departure airport info
-                                                "Departure Airport Code":"\(departureAirportCode!)",
-                                                "Departure Country":"\(departureCountry!)",
-                                                "Departure City":"\(departureCity!)",
-                                                "Airport Departure Terminal":"\(departureTerminal!)",
-                                                "Departure Gate":"\(departureGate!)",
+                                                "Departure Airport Code":"\(departureAirportCode)",
+                                                "Departure Country":"\(departureCountry)",
+                                                "Departure City":"\(departureCity)",
+                                                "Airport Departure Terminal":"\(departureTerminal)",
+                                                "Departure Gate":"\(departureGate)",
                                                 "Departure Airport UTC Offset":"\(departureUtcOffset!)",
                                                 "Airport Departure Longitude":"\(departureLongitude!)",
                                                 "Airport Departure Latitude":"\(departureLatitude!)",
                                                 
                                                 //Departure times
-                                                "Published Departure":"\(departureDate!)",
-                                                "Departure Date Number":"\(departureDateNumber!)",
-                                                "Published Departure UTC":"\(departureDateUtc!)",
-                                                "Published Departure UTC Number":"\(departureDateUtcNumber!)",
-                                                "URL Departure Date":"\(urlDepartureDate!)",
-                                                "Converted Published Departure":"\(convertedDepartureDate!)",
+                                                "Published Departure":"\(departureDate)",
+                                                "Departure Date Number":"\(departureDateNumber)",
+                                                "Published Departure UTC":"\(departureDateUtc)",
+                                                "Published Departure UTC Number":"\(departureDateUtcNumber)",
+                                                "URL Departure Date":"\(urlDepartureDate)",
+                                                "Converted Published Departure":"\(convertedDepartureDate)",
                                                 
                                                 //Arrival Airport Info
-                                                "Arrival Airport Code":"\(arrivalAirportCode!)",
+                                                "Arrival Airport Code":"\(arrivalAirportCode)",
                                                 "Airport Arrival Longitude":"\(arrivalLongitude!)",
                                                 "Airport Arrival Latitude":"\(arrivalLatitude!)",
-                                                "Arrival Country":"\(arrivalCountry!)",
-                                                "Arrival City":"\(arrivalCity!)",
-                                                "Airport Arrival Terminal":"\(arrivalTerminal!)",
-                                                "Arrival Gate":"\(arrivalGate!)",
+                                                "Arrival Country":"\(arrivalCountry)",
+                                                "Arrival City":"\(arrivalCity)",
+                                                "Airport Arrival Terminal":"\(arrivalTerminal)",
+                                                "Arrival Gate":"\(arrivalGate)",
                                                 "Arrival Airport UTC Offset":"\(arrivalUtcOffset!)",
                                                 
                                                 //Given in schedules json
-                                                "Converted Published Arrival":"\(convertedArrivalDate!)",
-                                                "Published Arrival":"\(arrivalDate!)",
-                                                "Arrival Date Number":"\(arrivalDateNumber!)",
-                                                "Published Arrival UTC":"\(arrivalDateUtc!)",
-                                                "Published Arrival UTC Number":"\(arrivalDateUtcNumber!)",
-                                                "URL Arrival Date":"\(urlArrivalDate!)",
+                                                "Converted Published Arrival":"\(convertedArrivalDate)",
+                                                "Published Arrival":"\(arrivalDate)",
+                                                "Arrival Date Number":"\(arrivalDateNumber)",
+                                                "Published Arrival UTC":"\(arrivalDateUtc)",
+                                                "Published Arrival UTC Number":"\(arrivalDateUtcNumber)",
+                                                "URL Arrival Date":"\(urlArrivalDate)",
                                                 
                                                 //given in statuses json
                                                 "Flight Status":"",
@@ -1248,7 +1258,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                 
                                                 let flightNumber = "\(leg1["Airline Code"]!)" + "\(leg1["Flight Number"]!)"
                                                 
-                                                let alert = UIAlertController(title: NSLocalizedString("Non-stop flight", comment: ""), message: "\(NSLocalizedString("Flight", comment: "")) \(flightNumber) \(NSLocalizedString("with", comment: "")) \(airlineName!) \(NSLocalizedString("departs", comment: "")) \(leg1DepCity) \(NSLocalizedString("on", comment: "")) \(convertedDepartureDate!) \(NSLocalizedString("and arrives in", comment: "")) \(leg1ArrCity) \(NSLocalizedString("on", comment: "")) \(convertedArrivalDate!)\n\(NSLocalizedString("Please tap to add.", comment: ""))", preferredStyle: UIAlertControllerStyle.actionSheet)
+                                                let alert = UIAlertController(title: NSLocalizedString("Non-stop flight", comment: ""), message: "\(NSLocalizedString("Flight", comment: "")) \(flightNumber) \(NSLocalizedString("with", comment: "")) \(airlineName) \(NSLocalizedString("departs", comment: "")) \(leg1DepCity) \(NSLocalizedString("on", comment: "")) \(convertedDepartureDate) \(NSLocalizedString("and arrives in", comment: "")) \(leg1ArrCity) \(NSLocalizedString("on", comment: "")) \(convertedArrivalDate)\n\(NSLocalizedString("Please tap to add.", comment: ""))", preferredStyle: UIAlertControllerStyle.actionSheet)
                                                 
                                                 alert.addAction(UIAlertAction(title: "\(leg1DepCity) \(NSLocalizedString("to", comment: "")) \(leg1ArrCity)", style: .default, handler: { (action) in
                                                     
@@ -1333,7 +1343,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     self.sortFlightsbyDepartureDate()
                                                     UserDefaults.standard.set(self.flights, forKey: "flights")
                                                     
-                                                    let alert = UIAlertController(title: NSLocalizedString("Flight Added :)", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                                                    let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
                                                     
                                                     alert.addAction(UIAlertAction(title: NSLocalizedString("Finished Adding Flights", comment: ""), style: .default, handler: { (action) in
                                                         
@@ -1373,7 +1383,10 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                         let departingYear = (((jsonFlightData)["request"] as? NSDictionary)?["date"] as? NSDictionary)?["year"] as? String
                                     
                                         self.formattedDepartureDate = "\(departingDay!)/\(departingMonth!)/\(departingYear!)"
-                                        self.formattedFlightNumber = "\(self.airlineCode.text!)" + "\(number)"
+                                        DispatchQueue.main.async {
+                                            self.formattedFlightNumber = "\(self.airlineCode.text!)" + "\(number)"
+                                        }
+                                        
                                          
                                         DispatchQueue.main.async {
                                             
@@ -1384,7 +1397,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             UIApplication.shared.isNetworkActivityIndicatorVisible = false
                                                 
 
-                                                let alert = UIAlertController(title: "\(NSLocalizedString("There are no scheduled flights for flight number", comment: "")) \(self.formattedFlightNumber!), \(NSLocalizedString("departing on", comment: "")) \(self.formattedDepartureDate!)", message: "\n\(NSLocalizedString("Please make sure you input the correct flight number and departure date.", comment: ""))", preferredStyle: UIAlertControllerStyle.alert)
+                                            let alert = UIAlertController(title: "\(NSLocalizedString("There are no scheduled flights for flight number", comment: "")) \(self.formattedFlightNumber), \(NSLocalizedString("departing on", comment: "")) \(self.formattedDepartureDate)", message: "\n\(NSLocalizedString("Please make sure you input the correct flight number and departure date.", comment: ""))", preferredStyle: UIAlertControllerStyle.alert)
                                             
                                                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
                                                     
@@ -1782,11 +1795,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let autoCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) 
-        
-        //autoCell.attributionText.attributedText = self.attributedTextArray[indexPath.row]
         autoCell.textLabel?.text = autoComplete[indexPath.row]
-        
-        
         return autoCell
         
     }
@@ -1813,7 +1822,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         let cellArray = selectedCellString?.components(separatedBy: "- ")
         let airlineCodeString = cellArray?[1]
         
-        self.airlineCode.text = airlineCodeString!
+        self.airlineCode.text = airlineCodeString
         
         self.flightNumber.becomeFirstResponder()
         autoSuggestTable.isHidden = true
@@ -1846,7 +1855,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
         for key in self.autoCompletePossibilitiesArray {
             
-            let myString:NSString! = key as NSString
+            let myString:NSString = key as NSString
             let substringRange:NSRange! = myString.range(of: substring)
             
             if (substringRange.location == 0) {
@@ -1885,16 +1894,11 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                     
                     do {
                         
-                        
-                        
                         let airlineJsonResult = try JSONSerialization.jsonObject(with: urlContent, options: JSONSerialization.ReadingOptions.mutableContainers) as! NSDictionary
                         
-                        //print("airlineJsonResult = \(airlineJsonResult)")
-                        
-                        var airlineName:String! = ""
-                        var airlineIcao:String! = ""
-                        var airlineIata:String! = ""
-                        //var airlineFs:String! = ""
+                        var airlineName = ""
+                        var airlineIcao = ""
+                        var airlineIata = ""
                         
                         if let airlines = airlineJsonResult["airlines"] as? NSArray {
                             
@@ -1918,22 +1922,14 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                         
                                     }
                                     
-                                    /*
-                                    if let fsCheck = airlineDictionary["fs"] as? String {
-                                        
-                                        airlineFs = fsCheck
-                                        
-                                    }
-                                    */
-                                    
                                     if airlineIcao != "" {
                                         
-                                       self.autoCompletePossibilitiesArray.append("\(airlineName.lowercased()) - \(airlineIcao!)")
+                                       self.autoCompletePossibilitiesArray.append("\(airlineName.lowercased()) - \(airlineIcao)")
                                     }
                                     
                                     if airlineIata != "" {
                                         
-                                    self.autoCompletePossibilitiesArray.append("\(airlineName.lowercased()) - \(airlineIata!)")
+                                    self.autoCompletePossibilitiesArray.append("\(airlineName.lowercased()) - \(airlineIata)")
                                         
                                     }
                                     

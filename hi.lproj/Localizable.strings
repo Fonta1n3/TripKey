@@ -240,7 +240,7 @@
 "Get Directions to the Airport" = "हवाई अड्डे के लिए दिशा निर्देश प्राप्त करें ";
 "Check Flight Amenities" = "उड़ान सुविधा जाचें";
 "Flight #" = "उड़ान #";
-"Departure" = "प्रस्थान";
+"Departing on:" = "प्रस्थान";
 "Add Flight" = "उड़ान जोडें";
 "Flight Added" = "उड़ान जुड़ गया";
 "Finished Adding Flights" = "उड़ाने जोड़ना समाप्त";
