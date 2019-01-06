@@ -45,23 +45,36 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     var departureDateString:String!
     var flightTookOff:Bool!
     var flightLanded:Bool!
-    
     var flightEstimatedArrivalString:String!
     var flightActualDepartureString:String!
-    
     @IBOutlet weak var flightTable: UITableView!
-    var button = UIButton()
-
+    let button = UIButton()
+    let addButton = UIButton()
+    
+    
+    @IBAction func goCommunity(_ sender: Any) {
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "goToCommunity", sender: self)
+        }
+    }
+    
+    @IBAction func goToMap(_ sender: Any) {
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "goToMap", sender: self)
+        }
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         flightTable.delegate = self
         flightTable.dataSource = self
         addBackButton()
+        addAddButton()
         refresher = UIRefreshControl()
         refresher.attributedTitle = NSAttributedString(string: "Checking for shared flights")
         refresher.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
-        
         flightTable.addSubview(refresher)
     }
     
@@ -72,6 +85,20 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         button.setImage(backButtonImage, for: .normal)
         button.addTarget(self, action: #selector(goBack), for: .touchUpInside)
         view.addSubview(button)
+    }
+    
+    func addAddButton() {
+        addButton.frame = CGRect(x: view.frame.maxX - 35, y: 25, width: 25, height: 25)
+        let backButtonImage = UIImage(named: "Add Pin - Trip key.png")
+        addButton.setImage(backButtonImage, for: .normal)
+        addButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+        view.addSubview(addButton)
+    }
+    
+    @objc func addFlight() {
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "goToAddFlight", sender: self)
+        }
     }
     
     @objc func goBack() {
@@ -1372,74 +1399,78 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     func refresh() {
         
-        
-        let getSharedFlightQuery = PFQuery(className: "SharedFlight")
-        
-        getSharedFlightQuery.whereKey("shareToUsername", equalTo: (PFUser.current()?.username)!)
-        
-        getSharedFlightQuery.findObjectsInBackground { (sharedFlights, error) in
+        if PFUser.current() != nil {
             
-            if error != nil {
-                self.refresher.endRefreshing()
-                print("error = \(error as Any)")
+            let getSharedFlightQuery = PFQuery(className: "SharedFlight")
+            
+            getSharedFlightQuery.whereKey("shareToUsername", equalTo: (PFUser.current()?.username)!)
+            
+            getSharedFlightQuery.findObjectsInBackground { (sharedFlights, error) in
                 
-            } else {
-                
-                print("sharedFlight = \(sharedFlights as Any)")
-                
-                for flight in sharedFlights! {
+                if error != nil {
+                    self.refresher.endRefreshing()
+                    print("error = \(error as Any)")
                     
-                    print("flight = \(flight)")
+                } else {
                     
-                    //parse flight
-                    //self.addActivityIndicatorCenter()
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
-                    let flightDictionary = flight["flightDictionary"]
-                    let dictionary = flightDictionary as! NSDictionary
-                    self.flights.append(dictionary as! Dictionary<String, String>)
-                    self.sortFlightsbyDepartureDate()
-                    UserDefaults.standard.set(self.flights, forKey: "flights")
-                    self.flightTable.reloadData()
+                    print("sharedFlight = \(sharedFlights as Any)")
                     
-                    DispatchQueue.main.async {
-                        self.refresher.endRefreshing()
-                    }
-                    
-                    
-                    flight.deleteInBackground(block: { (success, error) in
+                    for flight in sharedFlights! {
                         
-                        if error != nil {
-                            
-                            print("error = \(error as Any)")
-                            
-                            
-                        } else {
-                            
-                            print("place deleted")
-                            
+                        print("flight = \(flight)")
+                        
+                        //parse flight
+                        //self.addActivityIndicatorCenter()
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+                        let flightDictionary = flight["flightDictionary"]
+                        let dictionary = flightDictionary as! NSDictionary
+                        self.flights.append(dictionary as! Dictionary<String, String>)
+                        self.sortFlightsbyDepartureDate()
+                        UserDefaults.standard.set(self.flights, forKey: "flights")
+                        self.flightTable.reloadData()
+                        
+                        DispatchQueue.main.async {
+                            self.refresher.endRefreshing()
                         }
                         
-                    })
+                        
+                        flight.deleteInBackground(block: { (success, error) in
+                            
+                            if error != nil {
+                                
+                                print("error = \(error as Any)")
+                                
+                                
+                            } else {
+                                
+                                print("place deleted")
+                                
+                            }
+                            
+                        })
+                        
+                        
+                        
+                    }
                     
                     
                     
                 }
                 
-                
+                DispatchQueue.main.async {
+                    self.refresher.endRefreshing()
+                }
                 
             }
+            flightTable.reloadData()
+            
+        } else {
             
             DispatchQueue.main.async {
                 self.refresher.endRefreshing()
-                //self.activityIndicator.stopAnimating()
             }
             
         }
-        
-        
-        
-        flightTable.reloadData()
-        
     }
     
     func parseFlightID(dictionary: Dictionary<String,String>, index: Int) {

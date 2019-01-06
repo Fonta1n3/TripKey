@@ -27,6 +27,9 @@
 		D020C8061E31DDBF0089D572 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D020C8051E31DDBF0089D572 /* GoogleService-Info.plist */; };
 		D0231E2B1F5A6A18009064B1 /* landingIconTwo.png in Resources */ = {isa = PBXBuildFile; fileRef = D0231E2A1F5A6A18009064B1 /* landingIconTwo.png */; };
 		D0231E2D1F5A6A1E009064B1 /* takingOffIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0231E2C1F5A6A1E009064B1 /* takingOffIcon.png */; };
+		D024982A219C4E3000BC6823 /* whiteCommunitySmall.png in Resources */ = {isa = PBXBuildFile; fileRef = D0249829219C4E2E00BC6823 /* whiteCommunitySmall.png */; };
+		D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */ = {isa = PBXBuildFile; fileRef = D024982B219C565400BC6823 /* Add Pin - Trip key.png */; };
+		D0286D6721E27AF300954991 /* ReadMe in Resources */ = {isa = PBXBuildFile; fileRef = D0286D6621E27AF300954991 /* ReadMe */; };
 		D03D5FAE2185BA8C004D8DE7 /* AddUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */; };
 		D03DA81F1F4A982600920A90 /* airPlane.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA81E1F4A982600920A90 /* airPlane.png */; };
 		D03DA8211F4A9A1700920A90 /* plane100by100.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA8201F4A9A1700920A90 /* plane100by100.png */; };
@@ -128,6 +131,9 @@
 		D020C8051E31DDBF0089D572 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D0231E2A1F5A6A18009064B1 /* landingIconTwo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = landingIconTwo.png; sourceTree = "<group>"; };
 		D0231E2C1F5A6A1E009064B1 /* takingOffIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = takingOffIcon.png; sourceTree = "<group>"; };
+		D0249829219C4E2E00BC6823 /* whiteCommunitySmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCommunitySmall.png; sourceTree = "<group>"; };
+		D024982B219C565400BC6823 /* Add Pin - Trip key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Add Pin - Trip key.png"; sourceTree = "<group>"; };
+		D0286D6621E27AF300954991 /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
 		D03420211F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03420221F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersTableViewController.swift; sourceTree = "<group>"; };
@@ -252,6 +258,7 @@
 		D01EE9A91D692B780048D6CE = {
 			isa = PBXGroup;
 			children = (
+				D0286D6621E27AF300954991 /* ReadMe */,
 				D00187202197A67A00EEE21E /* TripKey2.xcdatamodeld */,
 				D0E760F3217F016F00B6D31D /* TripKey.entitlements */,
 				D0C49B411F19EEB700D47983 /* Localizable.strings */,
@@ -331,7 +338,9 @@
 				D0231E2A1F5A6A18009064B1 /* landingIconTwo.png */,
 				D085D90E1F5BF28D00A868B3 /* Near me- Tripkey.png */,
 				D0231E2C1F5A6A1E009064B1 /* takingOffIcon.png */,
+				D0249829219C4E2E00BC6823 /* whiteCommunitySmall.png */,
 				D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */,
+				D024982B219C565400BC6823 /* Add Pin - Trip key.png */,
 				D0DEB8161F09E8E9001B5B7D /* output1.png */,
 				D0CACD3F1E16BA6C00FA4DA2 /* heavy_rain_25.png */,
 				D0CACD401E16BA6C00FA4DA2 /* light_rain_25.png */,
@@ -503,6 +512,7 @@
 			files = (
 				D01EE9C31D692B780048D6CE /* LaunchScreen.storyboard in Resources */,
 				D0231E2D1F5A6A1E009064B1 /* takingOffIcon.png in Resources */,
+				D0286D6721E27AF300954991 /* ReadMe in Resources */,
 				D085D90F1F5BF28D00A868B3 /* Near me- Tripkey.png in Resources */,
 				D0BE53741F721ECB0068F9AD /* User-Profile-2.png in Resources */,
 				D0BE53721F7219AE0068F9AD /* User-Profile.png in Resources */,
@@ -533,6 +543,7 @@
 				D0CC85FA1F7FE44200B8E105 /* info.png in Resources */,
 				D03DA81F1F4A982600920A90 /* airPlane.png in Resources */,
 				D085D90B1F5BF19500A868B3 /* Landing Plane- Tripkey.png in Resources */,
+				D024982A219C4E3000BC6823 /* whiteCommunitySmall.png in Resources */,
 				D0CB60C01F16F05600CFE872 /* left.png in Resources */,
 				D0C49B3F1F19EEB700D47983 /* Localizable.strings in Resources */,
 				D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */,
@@ -546,6 +557,7 @@
 				D020C8061E31DDBF0089D572 /* GoogleService-Info.plist in Resources */,
 				D0D52B6F1D6E4DCA00F00AB7 /* default.icon.png in Resources */,
 				D0CACD3E1E16B66C00FA4DA2 /* clear_night_25.png in Resources */,
+				D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */,
 				D0CACD491E16BA6C00FA4DA2 /* medium_rain_25.png in Resources */,
 				D00187242199226100EEE21E /* whiteList.png in Resources */,
 				D0CCD1DF1E17D3350095D45A /* plane_gray_45.png in Resources */,

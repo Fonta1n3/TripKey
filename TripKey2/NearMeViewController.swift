@@ -974,27 +974,39 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     }
     
     @objc func showTable() {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "goToTable", sender: self)
+        if flights.count > 0 {
+            
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "goToTable", sender: self)
+            }
+        } else {
+            
+            displayAlert(title: "No Flights", message: "You havent added a flight yet, tap the plane button to get started.")
         }
+        
     }
     
     func showUsers() {
         
         if self.isUserLoggedIn() == true {
-            if let followedUsers = UserDefaults.standard.object(forKey: "followedUsernames") as? [Dictionary<String,Any>] {
-                    self.followedUsers = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
+            if let followedUsersCheck = UserDefaults.standard.object(forKey: "followedUsernames") as? [Dictionary<String,Any>] {
+                    self.followedUsers = followedUsersCheck
                     if self.followedUsers.count > 0 {
-                        for user in followedUsers {
+                        for user in self.followedUsers {
                             self.userNames.append(user["Username"] as! String)
                         }
                     }
                 }
-            DispatchQueue.main.async {
-                self.performSegue(withIdentifier: "Show User Feed", sender: self)
-            }
+            self.goToUserFeed()
         } else {
             self.promptUserToLogIn()
+        }
+    }
+    
+    func goToUserFeed() {
+        
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "Show User Feed", sender: self)
         }
     }
     
