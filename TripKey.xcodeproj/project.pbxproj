@@ -29,7 +29,7 @@
 		D0231E2D1F5A6A1E009064B1 /* takingOffIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0231E2C1F5A6A1E009064B1 /* takingOffIcon.png */; };
 		D024982A219C4E3000BC6823 /* whiteCommunitySmall.png in Resources */ = {isa = PBXBuildFile; fileRef = D0249829219C4E2E00BC6823 /* whiteCommunitySmall.png */; };
 		D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */ = {isa = PBXBuildFile; fileRef = D024982B219C565400BC6823 /* Add Pin - Trip key.png */; };
-		D0286D6721E27AF300954991 /* ReadMe in Resources */ = {isa = PBXBuildFile; fileRef = D0286D6621E27AF300954991 /* ReadMe */; };
+		D0286D6721E27AF300954991 /* ReadMe.md in Resources */ = {isa = PBXBuildFile; fileRef = D0286D6621E27AF300954991 /* ReadMe.md */; };
 		D03D5FAE2185BA8C004D8DE7 /* AddUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */; };
 		D03DA81F1F4A982600920A90 /* airPlane.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA81E1F4A982600920A90 /* airPlane.png */; };
 		D03DA8211F4A9A1700920A90 /* plane100by100.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA8201F4A9A1700920A90 /* plane100by100.png */; };
@@ -133,7 +133,7 @@
 		D0231E2C1F5A6A1E009064B1 /* takingOffIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = takingOffIcon.png; sourceTree = "<group>"; };
 		D0249829219C4E2E00BC6823 /* whiteCommunitySmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCommunitySmall.png; sourceTree = "<group>"; };
 		D024982B219C565400BC6823 /* Add Pin - Trip key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Add Pin - Trip key.png"; sourceTree = "<group>"; };
-		D0286D6621E27AF300954991 /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
+		D0286D6621E27AF300954991 /* ReadMe.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReadMe.md; sourceTree = "<group>"; };
 		D03420211F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03420221F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersTableViewController.swift; sourceTree = "<group>"; };
@@ -258,7 +258,7 @@
 		D01EE9A91D692B780048D6CE = {
 			isa = PBXGroup;
 			children = (
-				D0286D6621E27AF300954991 /* ReadMe */,
+				D0286D6621E27AF300954991 /* ReadMe.md */,
 				D00187202197A67A00EEE21E /* TripKey2.xcdatamodeld */,
 				D0E760F3217F016F00B6D31D /* TripKey.entitlements */,
 				D0C49B411F19EEB700D47983 /* Localizable.strings */,
@@ -512,7 +512,7 @@
 			files = (
 				D01EE9C31D692B780048D6CE /* LaunchScreen.storyboard in Resources */,
 				D0231E2D1F5A6A1E009064B1 /* takingOffIcon.png in Resources */,
-				D0286D6721E27AF300954991 /* ReadMe in Resources */,
+				D0286D6721E27AF300954991 /* ReadMe.md in Resources */,
 				D085D90F1F5BF28D00A868B3 /* Near me- Tripkey.png in Resources */,
 				D0BE53741F721ECB0068F9AD /* User-Profile-2.png in Resources */,
 				D0BE53721F7219AE0068F9AD /* User-Profile.png in Resources */,
