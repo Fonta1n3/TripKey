@@ -386,7 +386,7 @@
                                                         <imageView userInteractionEnabled="NO" alpha="0.10000000149011612" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-tripkey test.png" translatesAutoresizingMaskIntoConstraints="NO" id="cPp-LS-25C">
                                                             <rect key="frame" x="0.0" y="0.0" width="375" height="441.5"/>
                                                         </imageView>
-                                                        <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="airplane-landing-icon-256.png" translatesAutoresizingMaskIntoConstraints="NO" id="x70-DI-8sa">
+                                                        <imageView userInteractionEnabled="NO" alpha="0.20000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="airplane-landing-icon-256.png" translatesAutoresizingMaskIntoConstraints="NO" id="x70-DI-8sa">
                                                             <rect key="frame" x="8" y="334" width="49" height="49"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="49" id="gJ4-d2-QEn"/>
@@ -695,7 +695,7 @@
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                     </userDefinedRuntimeAttributes>
                                                 </view>
-                                                <imageView userInteractionEnabled="NO" alpha="0.45000000000000001" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="26_Airplane_take_off-512.png" translatesAutoresizingMaskIntoConstraints="NO" id="btf-mK-xah">
+                                                <imageView userInteractionEnabled="NO" alpha="0.14999999999999999" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="26_Airplane_take_off-512.png" translatesAutoresizingMaskIntoConstraints="NO" id="btf-mK-xah">
                                                     <rect key="frame" x="7" y="156" width="49" height="49"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="49" id="1oV-oZ-IFX"/>
