@@ -314,9 +314,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             UserDefaults.standard.removeObject(forKey: "userDetailsArray")
         }
         
-        if (UserDefaults.standard.object(forKey: "flights") != nil) {
+        /*if (UserDefaults.standard.object(forKey: "flights") != nil) {
             UserDefaults.standard.removeObject(forKey: "flights")
-        }
+        }*/
         
         if (UserDefaults.standard.object(forKey: "tripDictionaries") != nil) {
             UserDefaults.standard.removeObject(forKey: "tripDictionaries")
