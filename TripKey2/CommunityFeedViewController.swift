@@ -39,7 +39,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         DispatchQueue.main.async {
             
             self.backButton.removeFromSuperview()
-            self.backButton.frame = CGRect(x: 5, y: 20, width: 25, height: 25)
+            self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
             self.backButton.showsTouchWhenHighlighted = true
             let image = UIImage(imageLiteralResourceName: "backButton.png")
             self.backButton.setImage(image, for: .normal)

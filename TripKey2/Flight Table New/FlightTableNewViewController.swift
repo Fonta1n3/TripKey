@@ -52,19 +52,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     let addButton = UIButton()
     
     
-    @IBAction func goCommunity(_ sender: Any) {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "goToCommunity", sender: self)
-        }
-    }
-    
-    @IBAction func goToMap(_ sender: Any) {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "goToMap", sender: self)
-        }
-    }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -80,7 +67,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
 
     func addBackButton() {
-        button.frame = CGRect(x: 10, y: 25, width: 25, height: 25)
+        button.frame = CGRect(x: 10, y: 40, width: 25, height: 25)
         let backButtonImage = UIImage(named: "backButton.png")
         button.setImage(backButtonImage, for: .normal)
         button.addTarget(self, action: #selector(goBack), for: .touchUpInside)
@@ -88,10 +75,10 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func addAddButton() {
-        addButton.frame = CGRect(x: view.frame.maxX - 35, y: 25, width: 25, height: 25)
+        addButton.frame = CGRect(x: view.frame.maxX - 35, y: 40, width: 25, height: 25)
         let backButtonImage = UIImage(named: "Add Pin - Trip key.png")
         addButton.setImage(backButtonImage, for: .normal)
-        addButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+        addButton.addTarget(self, action: #selector(addFlight), for: .touchUpInside)
         view.addSubview(addButton)
     }
     
@@ -100,6 +87,8 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             self.performSegue(withIdentifier: "goToAddFlight", sender: self)
         }
     }
+    
+    
     
     @objc func goBack() {
         
