@@ -17,7 +17,8 @@ class ArrivalInfoWindow: UIView {
     @IBOutlet var call: UIButton!
     @IBOutlet var deleteFlight: UIButton!
     
-
+    @IBOutlet weak var flightIcon: UIImageView!
+    
     @IBOutlet var terminalLabel: UILabel!
    
     @IBOutlet var baggageLabel: UILabel!

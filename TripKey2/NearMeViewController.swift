@@ -672,8 +672,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         arrivalInfoWindow.topView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         arrivalInfoWindow.bottomView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         arrivalInfoWindow.frame = view.frame
-        blurEffectViewFlightInfoWindowBottom.frame = CGRect(x: 0, y: view.frame.maxY - 106, width: view.frame.width, height: 106)
-        blurEffectViewFlightInfoWindowTop.frame = CGRect(x: 0, y: view.frame.minY, width: view.frame.width, height: 166)
+        blurEffectViewFlightInfoWindowBottom.frame = CGRect(x: 0, y: view.frame.maxY - 140, width: view.frame.width, height: 140)
+        blurEffectViewFlightInfoWindowTop.frame = CGRect(x: 0, y: view.frame.minY, width: view.frame.width, height: 180)
         arrivalInfoWindow.directions.addTarget(self, action: #selector(directionsToArrivalAirport), for: .touchUpInside)
         arrivalInfoWindow.flightAmenities.addTarget(self, action: #selector(flightAmenities), for: .touchUpInside)
         arrivalInfoWindow.share.addTarget(self, action: #selector(shareFlight), for: .touchUpInside)
@@ -3096,7 +3096,11 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 DispatchQueue.main.async {
                     self.arrivalInfoWindow.topView.alpha = 1
                     self.arrivalInfoWindow.bottomView.alpha = 1
+                    self.arrivalInfoWindow.flightIcon.alpha = 0.25
+                    self.arrivalInfoWindow.flightIcon.image = UIImage(named: "airplane-landing-icon-256.png")
                 }
+                
+                
                 
                 var departureTimeDuration = ""
                 let departureOffset = self.flights[index]["Departure Airport UTC Offset"]!
@@ -3167,6 +3171,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     self.arrivalInfoWindow.arrivalFlightDuration.text = flightDuration
                     }
                 }
+                
+                
                 
                 if self.flights[index]["Converted Scheduled Gate Arrival"]! != "" {
                     
@@ -3413,6 +3419,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 }
                 
             } else if (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! == "Departure Airport" {
+                
                 
                 self.showDepartureWindow(index: index)
                 
@@ -4203,6 +4210,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             flightDuration = self.getFlightDuration(departureDate: departureTimeDuration, arrivalDate: arrivalDate, departureOffset: departureOffset, arrivalOffset: arrivalOffset)
             DispatchQueue.main.async {
                 self.arrivalInfoWindow.arrivalFlightDuration.text = flightDuration
+                self.arrivalInfoWindow.flightIcon.alpha = 0.25
+                self.arrivalInfoWindow.flightIcon.image = UIImage(named: "26_Airplane_take_off-512.png")
             }
             
             publishedDeparture = departureTimeDuration
