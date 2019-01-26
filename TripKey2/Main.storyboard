@@ -1348,7 +1348,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0xb-FX-zpl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2361" y="1964"/>
+            <point key="canvasLocation" x="2360.8000000000002" y="1963.2683658170915"/>
         </scene>
         <!--Add Vaccines View Controller-->
         <scene sceneID="hKd-Bi-dte">

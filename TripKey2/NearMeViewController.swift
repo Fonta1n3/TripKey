@@ -184,10 +184,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             let index = Int((overlay.accessibilityLabel?.components(separatedBy: ", ")[1])!)
             self.parseLeg2Only(dictionary: flights[index!], index: index!)
             let newPosition = GMSCameraPosition.camera(withLatitude: self.position.latitude, longitude: self.position.longitude, zoom: 14, bearing: self.bearing, viewingAngle: 25)
-            CATransaction.begin()
+            /*CATransaction.begin()
             CATransaction.setValue(Int(5), forKey: kCATransactionAnimationDuration)
             self.googleMapsView.animate(to: newPosition)
-            CATransaction.commit()
+            CATransaction.commit()*/
             self.trackAirplaneTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: true) {
                 (_) in
                 self.parseFlightIDForTracking(index: index!)
@@ -4149,12 +4149,12 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                                     
                                                 self.updateFlightFirstTime = false
                                                 
-                                                CATransaction.begin()
+                                                /*CATransaction.begin()
                                                 CATransaction.setValue(Int(2), forKey: kCATransactionAnimationDuration)
                                                 self.googleMapsView.animate(to: newPosition)
-                                                CATransaction.commit()
+                                                CATransaction.commit()*/
                                                     
-                                                     }
+                                                    }
                                             }
                                     }
                                     
@@ -4184,8 +4184,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
     }
     
-    @IBAction func backToNearMe(segue:UIStoryboardSegue) {
-    }
+    @IBAction func backToNearMe(segue:UIStoryboardSegue) {}
     
     func showDepartureWindow(index: Int) {
         
