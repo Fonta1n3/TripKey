@@ -36,7 +36,7 @@ class SeatGuruViewController: UIViewController {
         //googleBanner.rootViewController = self
         //googleBanner.load(GADRequest())
         
-        UserDefaults.standard.set(true, forKey: "userSwipedBack")
+        UserDefaults.standard.set(false, forKey: "userSwipedBack")
         
         if UserDefaults.standard.object(forKey: "selectedFlight") != nil {
             

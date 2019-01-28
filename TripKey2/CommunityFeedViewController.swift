@@ -180,7 +180,19 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     
     @IBAction func goToProfile(_ sender: Any) {
         
-        performSegue(withIdentifier: "goToProfile", sender: self)
+        //performSegue(withIdentifier: "goToProfile", sender: self)
+        //log out and refresh table
+        if PFUser.current() != nil {
+            
+            DispatchQueue.main.async {
+                PFUser.logOut()
+                if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
+                    UserDefaults.standard.removeObject(forKey: "followedUsernames")
+                }
+                //self.performSegue(withIdentifier: "goToNearMe", sender: self)
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
         
     }
     
@@ -267,7 +279,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
         addButtons()
         addUserButton.title = NSLocalizedString("Add Users", comment: "")
-        goToProfile.title = NSLocalizedString("My Profile", comment: "")
+        goToProfile.title = NSLocalizedString("Log Out", comment: "")
         
         if (UserDefaults.standard.object(forKey: "flights") != nil) {
             flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
@@ -291,8 +303,12 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         blurEffectView.alpha = 0
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        createDictionaryArray()
+        //createDictionaryArray()
         //updateProfileImages()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        refreshNow()
     }
     
     func refreshNow() {
@@ -308,7 +324,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             let cell = feedTable.dequeueReusableCell(withIdentifier: "Community Feed", for: indexPath) as! FeedTableViewCell
             cell.userName.text = followedUserDictionaryArray[indexPath.row]["Username"] as? String
             cell.alpha = 0
-            cell.postedImage.image = followedUserDictionaryArray[indexPath.row]["Profile Image"] as? UIImage
+            //cell.postedImage.image = followedUserDictionaryArray[indexPath.row]["Profile Image"] as? UIImage
         UIView.animate(withDuration: 0.3) {
             cell.alpha = 1
         }
@@ -453,7 +469,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                                                 self.followedUserDictionaryArray[index]["Profile Image"] = downloadedImage
                                                 let indexPath = IndexPath(item: index, section: 0)
                                                 print("index = \(index)")
-                                                if index == 0 {
+                                                //DispatchQueue.main.async {
+                                                  //  self.feedTable.reloadRows(at: [indexPath], with: .none)
+                                                //}
+                                                /*if index == 0 {
                                                     DispatchQueue.main.async {
                                                         self.feedTable.reloadData()
                                                     }
@@ -461,7 +480,9 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                                                     DispatchQueue.main.async {
                                                         self.feedTable.reloadRows(at: [indexPath], with: .none)
                                                     }
-                                                }
+                                                }*/
+                                                
+                                                
                                                 //let image = UIImage(named: "User-Profile.png")
                                                 //let imageData = UIImagePNGRepresentation(image!)!
                                                 /*let success = self.saveProfileImageToCoreData(imageData: imageData, username: username)
@@ -479,8 +500,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                             
                         }
                         
-                        
-                        
                     }
                     
                 })
@@ -496,11 +515,14 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
         if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
             
-            self.followedUserDictionaryArray.removeAll()
+            //self.followedUserDictionaryArray.removeAll()
             self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
             let sortedArray = (self.followedUserDictionaryArray as NSArray).sortedArray(using: [NSSortDescriptor(key: "Username", ascending: true)]) as! [[String:AnyObject]]
             self.followedUserDictionaryArray = sortedArray
-            self.updateProfileImages()
+            //self.updateProfileImages()
+            DispatchQueue.main.async {
+                self.feedTable.reloadData()
+            }
             
         } else {
             

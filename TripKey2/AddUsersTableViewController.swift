@@ -107,26 +107,7 @@ class AddUsersTableViewController: UITableViewController, UISearchBarDelegate {
         let selectedUser = autoComplete[indexPath.row]
         print("selectedUser = \(selectedUser)")
         
-        //self.autoCompleteTable.isHidden = true
-        //self.searchBar.isHidden = true
-        //self.searchBar.resignFirstResponder()
         
-        
-        let dictionary = [
-            
-            "Username":"\(selectedUser)",
-            "Profile Image":""
-            
-        ]
-        
-        self.followedUserDictionaryArray.append(dictionary)
-        
-        for (index, user) in followedUserDictionaryArray.enumerated() {
-            
-            self.followedUserDictionaryArray[index]["Profile Image"] = ""
-        }
-        
-        UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
         
         let query = PFUser.query()
         
@@ -146,6 +127,22 @@ class AddUsersTableViewController: UITableViewController, UISearchBarDelegate {
                     following.saveInBackground { (success, error) in
                         
                         if success == true {
+                            
+                            let dictionary = [
+                                
+                                "Username":"\(selectedUser)",
+                                "Profile Image":""
+                                
+                            ]
+                            
+                            self.followedUserDictionaryArray.append(dictionary)
+                            
+                            for (index, _) in self.followedUserDictionaryArray.enumerated() {
+                                
+                                self.followedUserDictionaryArray[index]["Profile Image"] = ""
+                            }
+                            
+                            UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
                             
                             self.autoComplete.removeAll()
                             self.autoCompleteTable.reloadData()

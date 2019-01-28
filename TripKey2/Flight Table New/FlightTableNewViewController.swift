@@ -54,7 +54,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        checkFlightStatusOffline()
         flightTable.delegate = self
         flightTable.dataSource = self
         addBackButton()
@@ -91,14 +91,11 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     
     @objc func goBack() {
-        
-         UserDefaults.standard.set(true, forKey: "userSwipedBack")
+        UserDefaults.standard.set(true, forKey: "userSwipedBack")
         self.dismiss(animated: true, completion: nil)
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
         refresh()
         flightTable.reloadData()
     }
@@ -135,12 +132,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             let flightDuration = self.getFlightDuration(departureDate: departureDate, arrivalDate: arrivalDate, departureOffset: departureOffset, arrivalOffset: arrivalOffset)
             
             cell.flightDuration.text = flightDuration
-            
-            
-            
             //Below is info that is provided by schedules and or constants
-            // cell.flightNumber.text = self.flights[indexPath.row]["Airline Code"]! + self.flights[indexPath.row]["Flight Number"]!
-            
             if self.flights[indexPath.row]["Flight Status"] == "" {
                 
                 cell.status.text = NSLocalizedString("Flight status: Tap to update", comment: "")
@@ -224,10 +216,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 self.actualDeparture = self.flights[indexPath.row]["Actual Gate Departure"]!
                 departureTime = self.flights[indexPath.row]["Actual Gate Departure"]!
             }
-            
-            print("actualDeparture = \(self.actualDeparture)")
-            
-            
             
             //Arrival heirarchy
             if self.flights[indexPath.row]["Converted Published Arrival"]! != "" {
