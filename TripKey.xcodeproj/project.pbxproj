@@ -12,7 +12,6 @@
 		D00187242199226100EEE21E /* whiteList.png in Resources */ = {isa = PBXBuildFile; fileRef = D00187232199226100EEE21E /* whiteList.png */; };
 		D0018732219948A000EEE21E /* FlightTableNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0018731219948A000EEE21E /* FlightTableNewViewController.swift */; };
 		D00187342199556B00EEE21E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00187332199556B00EEE21E /* TableViewCell.swift */; };
-		D0018736219976F600EEE21E /* plane_45.png in Resources */ = {isa = PBXBuildFile; fileRef = D0018735219976F600EEE21E /* plane_45.png */; };
 		D0030CFC1EE77F9B005B7271 /* CommunitySettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0030CFB1EE77F9B005B7271 /* CommunitySettings.xib */; };
 		D0030CFE1EE7820A005B7271 /* userLocationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0030CFD1EE7820A005B7271 /* userLocationPermission.swift */; };
 		D00BBF7F1D73C05500057B58 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = D00BBF7E1D73C05500057B58 /* Podfile */; };
@@ -31,7 +30,6 @@
 		D03DA81F1F4A982600920A90 /* airPlane.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA81E1F4A982600920A90 /* airPlane.png */; };
 		D03DA8211F4A9A1700920A90 /* plane100by100.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA8201F4A9A1700920A90 /* plane100by100.png */; };
 		D03DA8231F4AA1B200920A90 /* airPlane75by75.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA8221F4AA1B200920A90 /* airPlane75by75.png */; };
-		D03E74E81F270842002E1357 /* hand.png in Resources */ = {isa = PBXBuildFile; fileRef = D03E74E71F270842002E1357 /* hand.png */; };
 		D0440E711E7E5394006D0AE1 /* search grey icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0440E701E7E5394006D0AE1 /* search grey icon.png */; };
 		D05454411F13267A00CBF129 /* back-butto6769.png in Resources */ = {isa = PBXBuildFile; fileRef = D05454401F13267A00CBF129 /* back-butto6769.png */; };
 		D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D05F116F1ECD474A00BFA3F2 /* Main.storyboard */; };
@@ -42,12 +40,19 @@
 		D069FBA321FFE44700864659 /* whiteLanding50x50mirror.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA221FFE44700864659 /* whiteLanding50x50mirror.png */; };
 		D069FBA521FFE4ED00864659 /* whiteTakingOff50x50mirror.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA421FFE4ED00864659 /* whiteTakingOff50x50mirror.png */; };
 		D069FBA721FFFF2000864659 /* white-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA621FFFF2000864659 /* white-plus.png */; };
+		D069FBA922001CC000864659 /* sliderIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA822001CC000864659 /* sliderIcon.png */; };
+		D069FBAD2200242100864659 /* newPlaneRotated.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBAC2200242100864659 /* newPlaneRotated.png */; };
+		D069FBAF22002DED00864659 /* Flights copy.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBAE22002DED00864659 /* Flights copy.png */; };
+		D069FBB122002E9100864659 /* Flights.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB022002E9100864659 /* Flights.png */; };
+		D069FBB322002F2300864659 /* newPlane.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB222002F2200864659 /* newPlane.png */; };
+		D069FBB5220033F600864659 /* trackFlight.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB4220033F600864659 /* trackFlight.png */; };
+		D069FBB7220037DF00864659 /* 1111.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB6220037DF00864659 /* 1111.png */; };
+		D069FBB9220039AA00864659 /* 300.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB8220039AA00864659 /* 300.png */; };
 		D075D8431F68CD1C004831B0 /* delete-512.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8421F68CD1C004831B0 /* delete-512.png */; };
 		D075D8451F68D38B004831B0 /* whitePhone.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8441F68D38B004831B0 /* whitePhone.png */; };
 		D075D8471F68D3FB004831B0 /* whiteCommunity.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8461F68D3FB004831B0 /* whiteCommunity.png */; };
 		D085D9031F5BEB3000A868B3 /* Search - tripkey.png in Resources */ = {isa = PBXBuildFile; fileRef = D085D8FB1F5BEB3000A868B3 /* Search - tripkey.png */; };
 		D085D9051F5BEB3000A868B3 /* Taking Off- Tripkey.png in Resources */ = {isa = PBXBuildFile; fileRef = D085D8FD1F5BEB3000A868B3 /* Taking Off- Tripkey.png */; };
-		D085D90B1F5BF19500A868B3 /* Landing Plane- Tripkey.png in Resources */ = {isa = PBXBuildFile; fileRef = D085D90A1F5BF19500A868B3 /* Landing Plane- Tripkey.png */; };
 		D085D90F1F5BF28D00A868B3 /* Near me- Tripkey.png in Resources */ = {isa = PBXBuildFile; fileRef = D085D90E1F5BF28D00A868B3 /* Near me- Tripkey.png */; };
 		D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */; };
 		D0964D331EED311000B2C015 /* 39711543-blank-wallpapers.png in Resources */ = {isa = PBXBuildFile; fileRef = D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */; };
@@ -112,7 +117,6 @@
 		D00187232199226100EEE21E /* whiteList.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteList.png; sourceTree = "<group>"; };
 		D0018731219948A000EEE21E /* FlightTableNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightTableNewViewController.swift; sourceTree = "<group>"; };
 		D00187332199556B00EEE21E /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
-		D0018735219976F600EEE21E /* plane_45.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plane_45.png; sourceTree = "<group>"; };
 		D0030CFB1EE77F9B005B7271 /* CommunitySettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunitySettings.xib; sourceTree = "<group>"; };
 		D0030CFD1EE7820A005B7271 /* userLocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = userLocationPermission.swift; sourceTree = "<group>"; };
 		D00BBF7E1D73C05500057B58 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -135,7 +139,6 @@
 		D03DA81E1F4A982600920A90 /* airPlane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airPlane.png; sourceTree = "<group>"; };
 		D03DA8201F4A9A1700920A90 /* plane100by100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plane100by100.png; sourceTree = "<group>"; };
 		D03DA8221F4AA1B200920A90 /* airPlane75by75.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airPlane75by75.png; sourceTree = "<group>"; };
-		D03E74E71F270842002E1357 /* hand.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hand.png; sourceTree = "<group>"; };
 		D03E74ED1F271928002E1357 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03E74EE1F271928002E1357 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D03EE6ED1F79F84300FA053F /* Landing Plane- Tripkey upside.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Landing Plane- Tripkey upside.png"; sourceTree = "<group>"; };
@@ -150,12 +153,19 @@
 		D069FBA221FFE44700864659 /* whiteLanding50x50mirror.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteLanding50x50mirror.png; sourceTree = "<group>"; };
 		D069FBA421FFE4ED00864659 /* whiteTakingOff50x50mirror.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteTakingOff50x50mirror.png; sourceTree = "<group>"; };
 		D069FBA621FFFF2000864659 /* white-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-plus.png"; sourceTree = "<group>"; };
+		D069FBA822001CC000864659 /* sliderIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sliderIcon.png; sourceTree = "<group>"; };
+		D069FBAC2200242100864659 /* newPlaneRotated.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newPlaneRotated.png; sourceTree = "<group>"; };
+		D069FBAE22002DED00864659 /* Flights copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flights copy.png"; sourceTree = "<group>"; };
+		D069FBB022002E9100864659 /* Flights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Flights.png; sourceTree = "<group>"; };
+		D069FBB222002F2200864659 /* newPlane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = newPlane.png; path = ../../../Desktop/newPlane.png; sourceTree = "<group>"; };
+		D069FBB4220033F600864659 /* trackFlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackFlight.png; sourceTree = "<group>"; };
+		D069FBB6220037DF00864659 /* 1111.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1111.png; sourceTree = "<group>"; };
+		D069FBB8220039AA00864659 /* 300.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 300.png; sourceTree = "<group>"; };
 		D075D8421F68CD1C004831B0 /* delete-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete-512.png"; sourceTree = "<group>"; };
 		D075D8441F68D38B004831B0 /* whitePhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whitePhone.png; sourceTree = "<group>"; };
 		D075D8461F68D3FB004831B0 /* whiteCommunity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCommunity.png; sourceTree = "<group>"; };
 		D085D8FB1F5BEB3000A868B3 /* Search - tripkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Search - tripkey.png"; sourceTree = "<group>"; };
 		D085D8FD1F5BEB3000A868B3 /* Taking Off- Tripkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Taking Off- Tripkey.png"; sourceTree = "<group>"; };
-		D085D90A1F5BF19500A868B3 /* Landing Plane- Tripkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Landing Plane- Tripkey.png"; sourceTree = "<group>"; };
 		D085D90E1F5BF28D00A868B3 /* Near me- Tripkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Near me- Tripkey.png"; sourceTree = "<group>"; };
 		D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "39711543-blank-wallpapers.png"; sourceTree = "<group>"; };
@@ -328,26 +338,31 @@
 				D0BE53731F721ECB0068F9AD /* User-Profile-2.png */,
 				D0BB62AA2187081900D3B5B9 /* back2.png */,
 				D0BE53711F7219AE0068F9AD /* User-Profile.png */,
+				D069FBB4220033F600864659 /* trackFlight.png */,
 				D099B8A41F6CA9F40047EEE5 /* directions.png */,
+				D069FBB8220039AA00864659 /* 300.png */,
 				D0D114481F23018D0020D8C5 /* back arrow-big.png */,
 				D075D8461F68D3FB004831B0 /* whiteCommunity.png */,
 				D075D8441F68D38B004831B0 /* whitePhone.png */,
 				D0E24B971F584C11004FBF96 /* searchIconNew.png */,
-				D03E74E71F270842002E1357 /* hand.png */,
 				D075D8421F68CD1C004831B0 /* delete-512.png */,
-				D085D90A1F5BF19500A868B3 /* Landing Plane- Tripkey.png */,
 				D085D8FB1F5BEB3000A868B3 /* Search - tripkey.png */,
 				D085D8FD1F5BEB3000A868B3 /* Taking Off- Tripkey.png */,
-				D0018735219976F600EEE21E /* plane_45.png */,
 				D05454401F13267A00CBF129 /* back-butto6769.png */,
+				D069FBAE22002DED00864659 /* Flights copy.png */,
+				D069FBB022002E9100864659 /* Flights.png */,
+				D069FBB222002F2200864659 /* newPlane.png */,
 				D0231E2A1F5A6A18009064B1 /* landingIconTwo.png */,
 				D085D90E1F5BF28D00A868B3 /* Near me- Tripkey.png */,
+				D069FBAC2200242100864659 /* newPlaneRotated.png */,
 				D0231E2C1F5A6A1E009064B1 /* takingOffIcon.png */,
 				D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */,
 				D024982B219C565400BC6823 /* Add Pin - Trip key.png */,
 				D0DEB8161F09E8E9001B5B7D /* output1.png */,
+				D069FBB6220037DF00864659 /* 1111.png */,
 				D0CACD3F1E16BA6C00FA4DA2 /* heavy_rain_25.png */,
 				D0CACD401E16BA6C00FA4DA2 /* light_rain_25.png */,
+				D069FBA822001CC000864659 /* sliderIcon.png */,
 				D0CACD411E16BA6C00FA4DA2 /* medium_rain_25.png */,
 				D0CACD421E16BA6C00FA4DA2 /* mostly_cloudy_25.png */,
 				D0CACD431E16BA6C00FA4DA2 /* prtly_cloudy_sun_25.png */,
@@ -504,9 +519,12 @@
 				D0BE53721F7219AE0068F9AD /* User-Profile.png in Resources */,
 				D0DFA0C121F7DD6B00E74AB7 /* 26_Airplane_take_off-512.png in Resources */,
 				D069FBA521FFE4ED00864659 /* whiteTakingOff50x50mirror.png in Resources */,
+				D069FBB5220033F600864659 /* trackFlight.png in Resources */,
+				D069FBB7220037DF00864659 /* 1111.png in Resources */,
 				D0030CFC1EE77F9B005B7271 /* CommunitySettings.xib in Resources */,
 				D00BBF7F1D73C05500057B58 /* Podfile in Resources */,
 				D085D9051F5BEB3000A868B3 /* Taking Off- Tripkey.png in Resources */,
+				D069FBB9220039AA00864659 /* 300.png in Resources */,
 				D0E24B981F584C11004FBF96 /* searchIconNew.png in Resources */,
 				D03DA8231F4AA1B200920A90 /* airPlane75by75.png in Resources */,
 				D0CACD481E16BA6C00FA4DA2 /* light_rain_25.png in Resources */,
@@ -526,21 +544,22 @@
 				D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */,
 				D075D8471F68D3FB004831B0 /* whiteCommunity.png in Resources */,
 				D0D526181E24917C004738DA /* Arrival Info Window.xib in Resources */,
+				D069FBAF22002DED00864659 /* Flights copy.png in Resources */,
 				D0CACD521E16FA1C00FA4DA2 /* haze_25.png in Resources */,
 				D0CACD471E16BA6C00FA4DA2 /* heavy_rain_25.png in Resources */,
 				D0B8D0621E2E1BBA0096613F /* Tripkey-logo-white.png in Resources */,
 				D01EE9C01D692B780048D6CE /* Assets.xcassets in Resources */,
 				D0CC85FA1F7FE44200B8E105 /* info.png in Resources */,
+				D069FBA922001CC000864659 /* sliderIcon.png in Resources */,
 				D03DA81F1F4A982600920A90 /* airPlane.png in Resources */,
-				D085D90B1F5BF19500A868B3 /* Landing Plane- Tripkey.png in Resources */,
 				D0CB60C01F16F05600CFE872 /* left.png in Resources */,
 				D069FB9B21FFD99000864659 /* whiteLanding.png in Resources */,
 				D0C49B3F1F19EEB700D47983 /* Localizable.strings in Resources */,
 				D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */,
 				D069FBA721FFFF2000864659 /* white-plus.png in Resources */,
 				D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */,
+				D069FBB322002F2300864659 /* newPlane.png in Resources */,
 				D069FB9D21FFD9E700864659 /* whiteLanding50x50.png in Resources */,
-				D03E74E81F270842002E1357 /* hand.png in Resources */,
 				D069FBA321FFE44700864659 /* whiteLanding50x50mirror.png in Resources */,
 				D0CACD4B1E16BA6C00FA4DA2 /* prtly_cloudy_sun_25.png in Resources */,
 				D0DEB8171F09E8E9001B5B7D /* output1.png in Resources */,
@@ -553,14 +572,15 @@
 				D0CACD3E1E16B66C00FA4DA2 /* clear_night_25.png in Resources */,
 				D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */,
 				D0CACD491E16BA6C00FA4DA2 /* medium_rain_25.png in Resources */,
+				D069FBAD2200242100864659 /* newPlaneRotated.png in Resources */,
 				D00187242199226100EEE21E /* whiteList.png in Resources */,
 				D0CCD1DF1E17D3350095D45A /* plane_gray_45.png in Resources */,
+				D069FBB122002E9100864659 /* Flights.png in Resources */,
 				D0A465291F6AF97800E27FEB /* wireless-512.png in Resources */,
 				D075D8451F68D38B004831B0 /* whitePhone.png in Resources */,
 				D03DA8211F4A9A1700920A90 /* plane100by100.png in Resources */,
 				D0CACD4E1E16BA6C00FA4DA2 /* thunderstorm_25.png in Resources */,
 				D0BB62AB2187081900D3B5B9 /* back2.png in Resources */,
-				D0018736219976F600EEE21E /* plane_45.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

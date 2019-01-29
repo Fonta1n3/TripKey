@@ -987,6 +987,19 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     @objc func nextFlight() {
         
+        DispatchQueue.main.async {
+            if self.overlay != nil {
+                
+                DispatchQueue.main.async {
+                    
+                    self.overlay.map = nil
+                    self.icon = nil
+                }
+                
+            }
+        }
+        
+        
         func updateLabelText() {
             if self.flightIndex + 1 == self.flights.count {
                 DispatchQueue.main.async {
@@ -1003,6 +1016,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         if self.flights.count > self.flightIndex + 1 {
             
+            if self.connected {
+                parseLeg2Only(dictionary: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
+            }
             self.getAirportCoordinates(flight: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
             self.flightIndex = self.flightIndex + 1
             updateLabelText()
@@ -1010,6 +1026,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         } else if self.flights.count == self.flightIndex + 1 {
             
             self.flightIndex = 0
+            if self.connected {
+                parseLeg2Only(dictionary: self.flights[self.flightIndex], index: self.flightIndex)
+            }
             self.getAirportCoordinates(flight: self.flights[self.flightIndex], index: self.flightIndex)
             updateLabelText()
             
@@ -4286,9 +4305,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                         if altitude != nil && latitude != nil && longitude != nil && speed != nil {
                                                 
                                                 DispatchQueue.main.async {
-                                                    var newPosition:GMSCameraPosition!
                                                     self.position = CLLocationCoordinate2DMake(latitude!, longitude!)
-                                                    self.icon = UIImage(named: "airPlane75by75.png")
+                                                    self.icon = UIImage(named: "300.png")
                                                     self.overlay = GMSGroundOverlay(position: self.position, icon: self.icon, zoomLevel: CGFloat(self.googleMapsView.camera.zoom))
                                                     self.overlay.bearing = self.bearing
                                                     self.overlay.accessibilityLabel = "Airplane Location, \(index)"
@@ -4296,23 +4314,11 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                                     self.overlay.isTappable = true
                                                     self.overlay.map = self.googleMapsView
                                                 
-                                                    if self.updateFlightFirstTime == true {
-                                                        
-                                                      newPosition = GMSCameraPosition.camera(withLatitude: self.position.latitude, longitude: self.position.longitude, zoom: 14, bearing: self.bearing, viewingAngle: 25)
-                                                    } else {
-                                                        
-                                                        newPosition = GMSCameraPosition.camera(withLatitude: self.position.latitude, longitude: self.position.longitude, zoom: self.googleMapsView.camera.zoom, bearing: self.googleMapsView.camera.bearing, viewingAngle: self.googleMapsView.camera.viewingAngle)
-                                                    }
                                                 
                                                     
                                                 self.updateFlightFirstTime = false
                                                 
-                                                /*CATransaction.begin()
-                                                CATransaction.setValue(Int(2), forKey: kCATransactionAnimationDuration)
-                                                self.googleMapsView.animate(to: newPosition)
-                                                CATransaction.commit()*/
-                                                    
-                                                    }
+                                                }
                                             }
                                     }
                                     

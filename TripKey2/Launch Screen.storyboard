@@ -31,9 +31,17 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" red="0.14509803921568629" green="0.46666666666666667" blue="0.67450980392156867" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Tripkey-logo-white.png" translatesAutoresizingMaskIntoConstraints="NO" id="79Q-Zq-Dlr">
+                                <rect key="frame" x="99" y="20" width="177" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="177" id="CW5-bE-Rd9"/>
+                                    <constraint firstAttribute="height" constant="60" id="jg2-jd-VyQ"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="79Q-Zq-Dlr" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="4GR-Gk-az0"/>
                             <constraint firstAttribute="centerX" secondItem="obG-Y5-kRd" secondAttribute="centerX" id="5cz-MP-9tL"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="izH-Wi-qCt" secondAttribute="bottom" id="SKX-5N-gKb"/>
                             <constraint firstItem="obG-Y5-kRd" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="20" symbolic="YES" id="SfN-ll-jLj"/>
@@ -41,6 +49,7 @@
                             <constraint firstAttribute="trailing" secondItem="izH-Wi-qCt" secondAttribute="trailing" id="hbb-sY-3wr"/>
                             <constraint firstItem="izH-Wi-qCt" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="jpY-QE-3Hg"/>
                             <constraint firstItem="izH-Wi-qCt" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="nDd-2I-UY3"/>
+                            <constraint firstItem="79Q-Zq-Dlr" firstAttribute="top" secondItem="Llm-lL-Icb" secondAttribute="bottom" id="udc-se-tj6"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -50,6 +59,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Tripkey-logo-white.png" width="962" height="339"/>
         <image name="icon-tripkey test.png" width="1024" height="1024"/>
     </resources>
 </document>

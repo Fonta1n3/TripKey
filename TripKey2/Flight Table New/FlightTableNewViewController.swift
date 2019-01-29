@@ -110,7 +110,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         cell.arrivalBaggageLabel.text = NSLocalizedString("Baggage", comment: "")
         cell.arrivalTerminalLabel.text = NSLocalizedString("Terminal", comment: "")
         
-        cell.slider.setThumbImage(UIImage(named: "plane_45.png"), for: UIControlState.normal)
+        cell.slider.setThumbImage(UIImage(named: "newPlaneRotated.png"), for: UIControlState.normal)
         cell.slider.maximumValue = 1.0
         cell.slider.minimumValue = 0.0
         cell.slider.value = cell.slider.minimumValue
@@ -135,11 +135,11 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             //Below is info that is provided by schedules and or constants
             if self.flights[indexPath.row]["Flight Status"] == "" {
                 
-                cell.status.text = NSLocalizedString("Flight status: Tap to update", comment: "")
+                cell.status.text = NSLocalizedString("Tap to update", comment: "")
                 
             } else {
                 
-                cell.status.text = NSLocalizedString("Flight status:", comment: "") + " \(self.flights[indexPath.row]["Flight Status"]!)"
+                cell.status.text = "\(self.flights[indexPath.row]["Flight Status"]!)"
             }
             
             if self.flights[indexPath.row]["Updated Flight Equipment"] != "" {
@@ -449,7 +449,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             
             DispatchQueue.main.async {
                 
-                cell.status.text = NSLocalizedString("Flight status: Tap to update", comment: "")
+                cell.status.text = NSLocalizedString("Tap to update", comment: "")
                 cell.slider.maximumValue = 1.0
                 cell.slider.minimumValue = 0.0
                 cell.slider.value = cell.slider.minimumValue
@@ -459,7 +459,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             
             DispatchQueue.main.async {
                 
-                cell.status.text =  NSLocalizedString("Flight status:", comment: "") + " \(self.flights[indexPath.row]["Flight Status"]!)"
+                cell.status.text =  "\(self.flights[indexPath.row]["Flight Status"]!)"
                 let flightDurationScheduled = self.flights[indexPath.row]["Flight Duration Scheduled"]!
                 let convertedDuration = self.convertDuration(flightDurationScheduled: flightDurationScheduled)
                 cell.flightDuration.text = convertedDuration
@@ -504,7 +504,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             
             DispatchQueue.main.async {
                 
-                cell.status.text = NSLocalizedString("Flight status:", comment: "") + " \(self.flights[indexPath.row]["Flight Status"]!)"
+                cell.status.text = "\(self.flights[indexPath.row]["Flight Status"]!)"
                 
                 
                 let arrivalTimeDifference = self.getTimeDifference(publishedTime: self.publishedArrival, actualTime: self.actualArrival)
@@ -555,12 +555,14 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 cell.slider.minimumValue = Float(0)
                 cell.slider.value = Float(timeSinceTakeOff)
                 
+                
+                
             }
             
         } else if flights[indexPath.row]["Flight Status"]! == "Landed" || flights[indexPath.row]["Actual Gate Arrival Whole"]! != "" || flights[indexPath.row]["Actual Runway Arrival Whole Number"]! != "" {
             
             DispatchQueue.main.async {
-                cell.status.text = NSLocalizedString("Flight status: Landed", comment: "")
+                cell.status.text = NSLocalizedString("Landed", comment: "")
                 
                 let arrivalTimeDifference = self.getTimeDifference(publishedTime: self.publishedArrival, actualTime: self.actualArrival)
                 
@@ -608,7 +610,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             
         } else if flights[indexPath.row]["Flight Status"]! == "Cancelled" {
             
-            cell.status.text = NSLocalizedString("Flight status: Cancelled", comment: "")
+            cell.status.text = NSLocalizedString("Cancelled", comment: "")
             cell.slider.maximumValue = 1.0
             cell.slider.minimumValue = 0.0
             cell.slider.value = cell.slider.minimumValue

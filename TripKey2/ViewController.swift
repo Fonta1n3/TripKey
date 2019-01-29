@@ -14,6 +14,7 @@ import SystemConfiguration
 
 class ViewController: UIViewController, UITextFieldDelegate {
     
+    let backButton = UIButton()
     var connected:Bool!
     let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
     @IBOutlet var logInView: UIView!
@@ -27,6 +28,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var emailTextField: UITextField!
     @IBOutlet var passwordTextField: UITextField!
     @IBOutlet var signupOrLoginButton: UIButton!
+    
+    func addButtons() {
+        
+        DispatchQueue.main.async {
+            
+            self.backButton.removeFromSuperview()
+            self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
+            self.backButton.showsTouchWhenHighlighted = true
+            let image = UIImage(imageLiteralResourceName: "backButton.png")
+            self.backButton.setImage(image, for: .normal)
+            self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
+            self.view.addSubview(self.backButton)
+            
+        }
+        
+    }
+    
+    @objc func goBack() {
+        
+        self.dismiss(animated: true, completion: nil)
+        
+    }
     
     func isInternetAvailable() -> Bool {
         
@@ -347,6 +370,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         print("viewdidload viwcontroller")
         
+        addButtons()
+        
         if launchedBefore == true {
             print("Not first launch.")
             UserDefaults.standard.set(true, forKey: "launchedBefore")
@@ -359,9 +384,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
         
-        self.blurEffectView.frame = self.view.bounds
-        self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.blurEffectView.alpha = 0
+        //self.blurEffectView.frame = self.view.bounds
+        //self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        //self.blurEffectView.alpha = 0
         
         self.changeSignupModeButton.alpha = 0
         self.messageLabel.alpha = 0
@@ -374,6 +399,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         passwordTextField.placeholder = NSLocalizedString("Password", comment: "")
         signupOrLoginButton.setTitle(NSLocalizedString("Sign Up", comment: ""), for: [])
         changeSignupModeButton.setTitle(NSLocalizedString("Log In", comment: ""), for: [])
+        messageLabel.textColor = UIColor.white
         messageLabel.text = NSLocalizedString("Already have an account?", comment: "")
        
     }
@@ -394,9 +420,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 
                 UIView.animate(withDuration: 0.5, animations: {
                     
-                    self.blurEffectView.frame = self.view.bounds
+                    /*self.blurEffectView.frame = self.view.bounds
                     self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                    self.blurEffectView.alpha = 1
+                    self.blurEffectView.alpha = 1*/
                     
                     
                     self.changeSignupModeButton.alpha = 1
@@ -408,7 +434,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     
                 }) { _ in
                     
-                    self.view.addSubview(self.blurEffectView)
+                    //self.view.addSubview(self.blurEffectView)
                     self.view.addSubview(self.logInView)
                     
                 }
