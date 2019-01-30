@@ -88,23 +88,14 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                         
                     } else {
                         
-                        
-                        
-                        
                         self.activityIndicator.stopAnimating()
                         let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
-                        
-                       
                         let getUserFCM = PFUser.query()
-                        
                         getUserFCM?.whereKey("username", equalTo: user)
-                        
                         getUserFCM?.findObjectsInBackground { (tokens, error) in
                             
                             if error != nil {
-                                
                                 print("error = \(String(describing: error))")
-                                
                             } else {
                                 
                                 for token in tokens! {
@@ -112,7 +103,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                                     if let fcmToken = token["firebaseToken"] as? String {
                                                                                 
                                         let username = (PFUser.current()?.username)!
-                                        
                                         
                                         if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
                                             
@@ -124,64 +114,29 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                                             URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
                                                 
                                                 if error != nil {
-                                                    
                                                     print(error!)
                                                 }
-                                                
-                                                
                                             }).resume()
-                                            
                                         }
-                                        
-                                    } else {
-                                        
-                                       //user not enabled push notifications
-                                        
                                     }
-                                    
                                 }
                             }
                         }
-                        
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                            
-                        }))
-                        
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
                         self.present(alert, animated: true, completion: nil)
-                        
                     }
                 })
-                
-                
-            }))
-            
+           }))
         }
         
-        
-        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-            
             alert.dismiss(animated: true, completion: nil)
-            
         }))
-        
         self.present(alert, animated: true, completion: nil)
-        
-        
-        print("shareflight")
-        
-    
-    
     }
-    
-    
-
-    
     
     @IBAction func goToProfile(_ sender: Any) {
         
-        //performSegue(withIdentifier: "goToProfile", sender: self)
-        //log out and refresh table
         if PFUser.current() != nil {
             
             DispatchQueue.main.async {
@@ -189,25 +144,17 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                 if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
                     UserDefaults.standard.removeObject(forKey: "followedUsernames")
                 }
-                //self.performSegue(withIdentifier: "goToNearMe", sender: self)
                 self.dismiss(animated: true, completion: nil)
             }
         }
-        
     }
     
     @IBAction func goToUsers(_ sender: Any) {
-        
         print("searchUsers")
         self.performSegue(withIdentifier: "addUsers", sender: self)
-        
-        
     }
     
-
-    
     @IBAction func back(_ sender: Any) {
-        
         UserDefaults.standard.set(true, forKey: "userSwipedBack")
         dismiss(animated: true, completion: nil)
     }
@@ -225,7 +172,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             
             if error != nil {
                 
-                self.displayAlert(title: "Error", message: "Please try later.")
+                displayAlert(viewController: self, title: "Error", message: "Please try later.")
                 
             } else {
                 
@@ -236,8 +183,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                         self.followedUserDictionaryArray.removeAll()
                         
                         for object in objects {
-                            
-                            print("object = \(object)")
                             
                             let dictionary = [
                                 
@@ -261,9 +206,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                         self.refresher.endRefreshing()
                         
                     }
-                    
-                } else {
-                    
                     
                 }
                 
@@ -289,7 +231,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             userAddedPlaceDictionaryArray = UserDefaults.standard.object(forKey: "userAddedPlaceDictionaryArray") as! [Dictionary<String,String>]
         }
         
-        
         if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
             self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
         }
@@ -303,8 +244,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         blurEffectView.alpha = 0
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        //createDictionaryArray()
-        //updateProfileImages()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -312,100 +251,78 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func refreshNow() {
-        
         self.createDictionaryArray()
-        //self.updateProfileImages()
         refresher.endRefreshing()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let cell = feedTable.dequeueReusableCell(withIdentifier: "Community Feed", for: indexPath) as! FeedTableViewCell
+        cell.userName.text = followedUserDictionaryArray[indexPath.row]["Username"] as? String
+        cell.alpha = 0
         
-            let cell = feedTable.dequeueReusableCell(withIdentifier: "Community Feed", for: indexPath) as! FeedTableViewCell
-            cell.userName.text = followedUserDictionaryArray[indexPath.row]["Username"] as? String
-            cell.alpha = 0
-            //cell.postedImage.image = followedUserDictionaryArray[indexPath.row]["Profile Image"] as? UIImage
         UIView.animate(withDuration: 0.3) {
             cell.alpha = 1
         }
-            cell.tapShareFlightAction = {
-                (cell) in self.shareFlight(indexPath: (tableView.indexPath(for: cell)!.row))
-            }
-            return cell
+        
+        cell.tapShareFlightAction = {
+            (cell) in self.shareFlight(indexPath: (tableView.indexPath(for: cell)!.row))
+        }
+        
+        return cell
  
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("tapped row \(indexPath.row)")
-    }
-    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if tableView == self.feedTable {
-            
-            return self.followedUserDictionaryArray.count
-            
-        } else {
-            
-            return 0
-        }
-        
-        
-        
+        return self.followedUserDictionaryArray.count
     }
     
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return "Unfollow"
     }
     
-    
-    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == UITableViewCellEditingStyle.delete {
             
-            if tableView == feedTable {
-                
-                let query = PFQuery(className: "Followers")
-                query.whereKey("followerUsername", equalTo: (PFUser.current()?.username!)!)
-                query.whereKey("followedUsername", equalTo: self.followedUserDictionaryArray[indexPath.row]["Username"] as! String)
-                query.findObjectsInBackground(block: { (objects, error) in
+            let query = PFQuery(className: "Followers")
+            query.whereKey("followerUsername", equalTo: (PFUser.current()?.username!)!)
+            query.whereKey("followedUsername", equalTo: self.followedUserDictionaryArray[indexPath.row]["Username"] as! String)
+            query.findObjectsInBackground(block: { (objects, error) in
                     
-                    if error != nil {
+                if error != nil {
                         
-                        DispatchQueue.main.async {
-                            self.displayAlert(title: "Error", message: "Unable to unfollow. Please check your connection and try again later.")
-                        }
-                        
-                    } else {
-                        
-                        if let objects = objects {
-                            
-                            for object in objects {
-                                    
-                                    DispatchQueue.main.async {
-                                        
-                                        let userUnfollowed = self.followedUserDictionaryArray[indexPath.row]["Username"] as! String
-                                        self.followedUserDictionaryArray.remove(at: indexPath.row)
-                                        for (index, _) in self.followedUserDictionaryArray.enumerated() {
-                                            self.followedUserDictionaryArray[index]["Profile Image"] = ""
-                                        }
-                                        UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
-                                        self.displayAlert(title: "\(NSLocalizedString("You unfollowed", comment: "")) \(userUnfollowed)", message: "")
-                                        object.deleteInBackground()
-                                        self.feedTable.deleteRows(at: [indexPath], with: .fade)
-                                    }
-                                 }
-                            
-                            }
+                    DispatchQueue.main.async {
+                        displayAlert(viewController: self, title: "Error", message: "Unable to unfollow. Please check your connection and try again later.")
                     }
-                })
-            }
+                        
+                } else {
+                        
+                    if let objects = objects {
+                            
+                        for object in objects {
+                                    
+                                DispatchQueue.main.async {
+                                        
+                                    let userUnfollowed = self.followedUserDictionaryArray[indexPath.row]["Username"] as! String
+                                    self.followedUserDictionaryArray.remove(at: indexPath.row)
+                                    for (index, _) in self.followedUserDictionaryArray.enumerated() {
+                                        self.followedUserDictionaryArray[index]["Profile Image"] = ""
+                                    }
+                                    UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
+                                    displayAlert(viewController: self, title: "\(NSLocalizedString("You unfollowed", comment: "")) \(userUnfollowed)", message: "")
+                                    object.deleteInBackground()
+                                    self.feedTable.deleteRows(at: [indexPath], with: .fade)
+                                    
+                                }
+                        }
+                    }
+                }
+            })
         }
     }
     
@@ -420,15 +337,8 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
     }
     
-    func displayAlert(title: String, message: String) {
-        
-        let alertcontroller = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertcontroller.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-        self.present(alertcontroller, animated: true, completion: nil)
-        
-    }
     
-    func updateProfileImages() {
+    /*func updateProfileImages() {
         print("updateProfileImages")
         
         if self.followedUserDictionaryArray.count > 0 {
@@ -508,18 +418,16 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
            
         }
         
-    }
+    }*/
     
     func createDictionaryArray() {
         print("createDictionaryArray")
         
         if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
             
-            //self.followedUserDictionaryArray.removeAll()
             self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
             let sortedArray = (self.followedUserDictionaryArray as NSArray).sortedArray(using: [NSSortDescriptor(key: "Username", ascending: true)]) as! [[String:AnyObject]]
             self.followedUserDictionaryArray = sortedArray
-            //self.updateProfileImages()
             DispatchQueue.main.async {
                 self.feedTable.reloadData()
             }
@@ -545,7 +453,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             
         } else {
             
-            displayAlert(title: "Error", message: "Something strange has happened and we do not have access to app delegate, please try again.")
+            displayAlert(viewController: self, title: "Error", message: "Something strange has happened and we do not have access to app delegate, please try again.")
             success = false
             
         }

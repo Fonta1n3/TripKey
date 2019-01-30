@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MapKit
 import StoreKit
 import UserNotifications
 
@@ -64,16 +63,27 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     
     @objc func saveDate() {
         print("saveDate")
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "YYYY/MM/dd"
-        self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
-        self.parseFlightNumber()
+        
         UIView.animate(withDuration: 0.3, animations: {
             self.datePickerView.alpha = 0
             self.blurEffectView.alpha = 0
         }) { _ in
-            self.datePickerView.removeFromSuperview()
-            self.blurEffectView.removeFromSuperview()
+            
+            DispatchQueue.main.async {
+                
+                if self.flightNumber.text!.first == "0" {
+                    self.formattedTextFieldFlightNumber = String(self.flightNumber.text!.dropFirst())
+                } else {
+                    self.formattedTextFieldFlightNumber = self.flightNumber.text!
+                }
+                self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "YYYY/MM/dd"
+                self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
+                self.parseFlightNumber()
+                self.datePickerView.removeFromSuperview()
+                self.blurEffectView.removeFromSuperview()
+            }
         }
     }
     
@@ -90,9 +100,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             
         }
         
-        UIAlertView(title: NSLocalizedString("TripKey", comment: ""),
-                    message: NSLocalizedString("You've successfully restored your purchase!", comment: ""),
-                    delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: "")).show()
+        displayAlert(viewController: self, title: NSLocalizedString("TripKey", comment: ""), message: NSLocalizedString("You've successfully restored your purchase!", comment: ""))
     }
     
     // MARK: - FETCH AVAILABLE IAP PRODUCTS
@@ -100,7 +108,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
         // Put here your IAP Products ID's
         let productIdentifiers = NSSet(objects: PREMIUM_PRODUCT_ID)
-        
         productsRequest = SKProductsRequest(productIdentifiers: productIdentifiers as! Set<String>)
         productsRequest.delegate = self
         productsRequest.start()
@@ -108,8 +115,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     
     // MARK: - REQUEST IAP PRODUCTS
     func productsRequest (_ request:SKProductsRequest, didReceive response:SKProductsResponse) {
-        
-        
         
         if (response.products.count > 0) {
             
@@ -128,9 +133,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             // Show its description
             //upgradePrice = firstProduct.localizedDescription + "\nfor just \(price1Str!)"
             // ------------------------------------------------
-            
-            
-            
         }
     }
     
@@ -145,16 +147,12 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
         }
         
-        
         if self.canMakePurchases() {
+            
             let payment = SKPayment(product: product)
             SKPaymentQueue.default().add(self)
             SKPaymentQueue.default().add(payment)
-            
             productID = product.productIdentifier
-            
-            
-            
             // IAP Purchases dsabled on the Device
         } else {
             
@@ -167,9 +165,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                 
             }
             
-            UIAlertView(title: NSLocalizedString("TripKey", comment: ""),
-                        message: NSLocalizedString("Purchases are disabled in your device!", comment: ""),
-                        delegate: nil, cancelButtonTitle: NSLocalizedString("OK", comment: "")).show()
+            displayAlert(viewController: self, title: NSLocalizedString("TripKey", comment: ""), message: NSLocalizedString("Purchases are disabled in your device!", comment: ""))
         }
     }
     
@@ -187,15 +183,12 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                 case .purchased:
                     SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
                     
-                    
                     // The Non-Consumable product (Premium) has been purchased!
                     if productID == PREMIUM_PRODUCT_ID {
                         
                         // Save your purchase locally (needed only for Non-Consumable IAP)
                         nonConsumablePurchaseMade = true
                         UserDefaults.standard.set(nonConsumablePurchaseMade, forKey: "nonConsumablePurchaseMade")
-                        
-                        //premiumLabel.text = "Premium version PURCHASED!"
                         
                         DispatchQueue.main.async {
                             
@@ -206,16 +199,15 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                             
                         }
                         
-                        UIAlertView(title: NSLocalizedString("TripKey", comment: ""),
-                                    message: NSLocalizedString("You've successfully unlocked the Premium version!", comment: ""),
-                                    delegate: nil,
-                                    cancelButtonTitle: NSLocalizedString("OK", comment: "")).show()
+                        displayAlert(viewController: self, title: NSLocalizedString("TripKey", comment: ""), message: NSLocalizedString("You've successfully unlocked the Premium version!", comment: ""))
                     }
                     
                     break
                     
                 case .failed:
+                    
                     SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
+                    
                     DispatchQueue.main.async {
                         
                         self.activityIndicator.stopAnimating()
@@ -224,21 +216,32 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                         UIApplication.shared.isNetworkActivityIndicatorVisible = false
                         
                     }
-                    break
-                case .restored:
-                    SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
-                    DispatchQueue.main.async {
-                        
-                        self.activityIndicator.stopAnimating()
-                        self.activityLabel.removeFromSuperview()
-                        self.blurEffectViewActivity.removeFromSuperview()
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                        
-                    }
+                    
+                    displayAlert(viewController: self, title: NSLocalizedString("Error", comment: ""), message: NSLocalizedString("Sorry we had a problem processing your payment", comment: ""))
+                    
                     break
                     
-                default: break
-                }}}
+                case .restored:
+                    
+                    SKPaymentQueue.default().finishTransaction(transaction as! SKPaymentTransaction)
+                    
+                    DispatchQueue.main.async {
+                        self.activityIndicator.stopAnimating()
+                        self.activityLabel.removeFromSuperview()
+                        self.blurEffectViewActivity.removeFromSuperview()
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                    
+                    displayAlert(viewController: self, title: NSLocalizedString("TripKey", comment: ""), message: NSLocalizedString("You've successfully unlocked the Premium version!", comment: ""))
+                    
+                    break
+                    
+                default:
+                    break
+                    
+                }
+            }
+        }
     }
 
     
@@ -251,9 +254,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             alert.addAction(UIAlertAction(title: NSLocalizedString("Unlock Premium for $2.99", comment: ""), style: .default, handler: { (action) in
                 
                 self.purchaseMyProduct(product: self.iapProducts[0])
-                
-                
-                
             }))
             
             alert.addAction(UIAlertAction(title: NSLocalizedString("No Thanks", comment: ""), style: .default, handler: { (action) in }))
@@ -298,33 +298,16 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             self.datePickerView.alpha = 1
         }
         
-        self.formattedTextFieldFlightNumber = self.flightNumber.text!
         
-        var characters: [Character] = Array(self.flightNumber.text!.characters)
-        
-        for _ in characters {
-            
-            if characters[0] == "0" {
-                
-                characters.remove(at: 0)
-                self.formattedTextFieldFlightNumber = String(characters)
-                
-            }
-            
-        }
-        
-        self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
         
     }
    
     @IBAction func addFlight(_ sender: AnyObject) {
         
-        
-        
-        
        if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
         
         DispatchQueue.main.async {
+            
             let alert = UIAlertController(title: NSLocalizedString("You've reached your limit of flights!", comment: ""), message: "TripKey has taken an enourmous amount of work and it costs us money to provide you this service, please support the app and purchase the premium version, we GREATLY appreciate it :)", preferredStyle: UIAlertControllerStyle.alert)
             
             alert.addAction(UIAlertAction(title: NSLocalizedString("Sure! :)", comment: ""), style: .default, handler: { (action) in
@@ -343,97 +326,24 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
        } else if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade {
         
-        if flightNumber.text == "" && airlineCode.text == "" {
-            
+        if flightNumber.text == "" || airlineCode.text == "" {
             pleaseEnterFlightNumber()
-            
-        } else if flightNumber.text == "" {
-            
-            pleaseEnterFlightNumber()
-            
-        } else if airlineCode.text == "" {
-            
-            pleaseEnterFlightNumber()
-            
         } else {
-            
-            DispatchQueue.main.async {
-                self.formattedTextFieldFlightNumber = self.flightNumber.text!
-                
-                var characters: [Character] = Array(self.flightNumber.text!.characters)
-                
-                for _ in characters {
-                    
-                    if characters[0] == "0" {
-                        
-                        characters.remove(at: 0)
-                        self.formattedTextFieldFlightNumber = String(characters)
-                        
-                    }
-                    
-                }
-                
-                self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "YYYY/MM/dd"
-                self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
-                self.parseFlightNumber()
-            }
+            self.addDateView()
         }
-
+            
        } else if self.flightCount.count < 25 {
         
-        if flightNumber.text == "" && airlineCode.text == "" {
-            
-            pleaseEnterFlightNumber()
-            
-        } else if flightNumber.text == "" {
-            
-            pleaseEnterFlightNumber()
-            
-        } else if airlineCode.text == "" {
-            
-            pleaseEnterFlightNumber()
-            
-        } else {
-            
-            //DispatchQueue.main.async {
-                
+            if flightNumber.text == "" || airlineCode.text == "" {
+                pleaseEnterFlightNumber()
+            } else {
                 self.addDateView()
-                
-                
-                /*self.formattedTextFieldFlightNumber = self.flightNumber.text!
-                
-                var characters: [Character] = Array(self.flightNumber.text!.characters)
-                
-                for _ in characters {
-                    
-                    if characters[0] == "0" {
-                        
-                        characters.remove(at: 0)
-                        self.formattedTextFieldFlightNumber = String(characters)
-                        
-                    }
-                    
-                }
-                
-                self.flightNumberTextField = "\(self.airlineCode.text!)" + "\(self.flightNumber.text!)"
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "YYYY/MM/dd"
-                self.departureDate = dateFormatter.string(from: self.datePickerView.datePicker.date)
-                self.parseFlightNumber()*/
-            //}
+            }
         }
-        
-        }
-
-        
-     }
+    }
     
     func addButtons() {
-        
         DispatchQueue.main.async {
-            
             self.backButton.removeFromSuperview()
             self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
             self.backButton.showsTouchWhenHighlighted = true
@@ -441,15 +351,11 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             self.backButton.setImage(image, for: .normal)
             self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
             self.view.addSubview(self.backButton)
-            
         }
-        
     }
     
     @objc func goBack() {
-        
         self.dismiss(animated: true, completion: nil)
-        
     }
     
     @objc func closeDate() {
@@ -499,7 +405,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
         if UserDefaults.standard.object(forKey: "airlines") != nil {
             
-            self.autoCompletePossibilitiesArray = UserDefaults.standard.object(forKey: "airlines") as! [String]
+            self.autoCompletePossibilitiesArray = (UserDefaults.standard.object(forKey: "airlines") as! [String])
             
         } else {
             
@@ -538,7 +444,8 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                     alertController.addAction(UIAlertAction(title: "Update Settings", style: .default, handler: { (action) in
                         
                         if let url = NSURL(string:UIApplicationOpenSettingsURLString) {
-                            UIApplication.shared.openURL(url as URL)
+                            //UIApplication.shared.openURL(url as URL)
+                            UIApplication.shared.open(url as URL, options: [:], completionHandler: { _ in })
                         }
                         
                     }))
@@ -764,18 +671,18 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             airlineCode = (flight as! NSDictionary)["carrierFsCode"] as! String
                                             flightNumber = (flight as! NSDictionary)["flightNumber"] as! String
                                             departureDate = (flight as! NSDictionary)["departureTime"] as! String
-                                            convertedDepartureDate = self.convertDateTime(date: departureDate)
-                                            departureDateUtc = self.getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
-                                            departureDateNumber = self.formatDateTimetoWhole(dateTime: departureDate)
-                                            departureDateUtcNumber = self.formatDateTimetoWhole(dateTime: departureDateUtc)
+                                            convertedDepartureDate = convertDateTime(date: departureDate)
+                                            departureDateUtc = getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
+                                            departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
+                                            departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
                                             urlDepartureDate = self.convertToURLDate(date: departureDate)
                                             
                                             arrivalDate = (flight as! NSDictionary)["arrivalTime"] as! String
-                                            convertedArrivalDate = self.convertDateTime(date: arrivalDate)
-                                            arrivalDateUtc = self.getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
-                                            arrivalDateNumber = self.formatDateTimetoWhole(dateTime: arrivalDate)
+                                            convertedArrivalDate = convertDateTime(date: arrivalDate)
+                                            arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
+                                            arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
                                             urlArrivalDate = self.convertToURLDate(date: arrivalDate)
-                                            arrivalDateUtcNumber = self.formatDateTimetoWhole(dateTime: arrivalDateUtc)
+                                            arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
                                             
                                             if let departureTerminalCheck = (flight as! NSDictionary)["departureTerminal"] as? String {
                                                 
@@ -815,17 +722,17 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                             
                                                             arrivalAirportCode = (airport as! NSDictionary)["fs"] as! String
                                                             arrivalCountry = (airport as! NSDictionary)["countryName"] as! String
-                                                            arrivalLongitude = (airport as! NSDictionary)["longitude"] as! Double
-                                                            arrivalLatitude = (airport as! NSDictionary)["latitude"] as! Double
+                                                            arrivalLongitude = ((airport as! NSDictionary)["longitude"] as! Double)
+                                                            arrivalLatitude = ((airport as! NSDictionary)["latitude"] as! Double)
                                                             arrivalCity = (airport as! NSDictionary)["city"] as! String
-                                                            arrivalUtcOffset = (airport as! NSDictionary)["utcOffsetHours"] as! Double
+                                                            arrivalUtcOffset = ((airport as! NSDictionary)["utcOffsetHours"] as! Double)
                                                             
                                                             departureAirportCode = (departureAirportDic as! NSDictionary)["fs"] as! String
                                                             departureCountry = (departureAirportDic as! NSDictionary)["countryName"] as! String
-                                                            departureLongitude = (departureAirportDic as! NSDictionary)["longitude"] as! Double
-                                                            departureLatitude = (departureAirportDic as! NSDictionary)["latitude"] as! Double
+                                                            departureLongitude = ((departureAirportDic as! NSDictionary)["longitude"] as! Double)
+                                                            departureLatitude = ((departureAirportDic as! NSDictionary)["latitude"] as! Double)
                                                             departureCity = (departureAirportDic as! NSDictionary)["city"] as! String
-                                                            departureUtcOffset = (departureAirportDic as! NSDictionary)["utcOffsetHours"] as! Double
+                                                            departureUtcOffset = ((departureAirportDic as! NSDictionary)["utcOffsetHours"] as! Double)
                                                             
                                                             
                                                                 
@@ -1117,35 +1024,35 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             
                                             //assigns correct airport variables to departure
                                             departureCountry = departureAirport["countryName"] as! String
-                                            departureLongitude = departureAirport["longitude"] as! Double
-                                            departureLatitude = departureAirport["latitude"] as! Double
+                                            departureLongitude = (departureAirport["longitude"] as! Double)
+                                            departureLatitude = (departureAirport["latitude"] as! Double)
                                             departureCity = departureAirport["city"] as! String
-                                            departureUtcOffset = departureAirport["utcOffsetHours"] as! Double
+                                            departureUtcOffset = (departureAirport["utcOffsetHours"] as! Double)
                                             
                                             //assigns correct airport variables to arrival
                                             arrivalCountry = arrivalAirport["countryName"] as! String
-                                            arrivalLongitude = arrivalAirport["longitude"] as! Double
-                                            arrivalLatitude = arrivalAirport["latitude"] as! Double
+                                            arrivalLongitude = (arrivalAirport["longitude"] as! Double)
+                                            arrivalLatitude = (arrivalAirport["latitude"] as! Double)
                                             arrivalCity = arrivalAirport["city"] as! String
-                                            arrivalUtcOffset = arrivalAirport["utcOffsetHours"] as! Double
+                                            arrivalUtcOffset = (arrivalAirport["utcOffsetHours"] as! Double)
                                             
                                             
                                             airlineCode = leg0Check["carrierFsCode"] as! String
                                             flightNumber = leg0Check["flightNumber"] as! String
                                             
                                             departureDate = leg0Check["departureTime"] as! String
-                                            convertedDepartureDate = self.convertDateTime(date: departureDate)
-                                            departureDateUtc = self.getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
-                                            departureDateNumber = self.formatDateTimetoWhole(dateTime: departureDate)
-                                            departureDateUtcNumber = self.formatDateTimetoWhole(dateTime: departureDateUtc)
+                                            convertedDepartureDate = convertDateTime(date: departureDate)
+                                            departureDateUtc = getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
+                                            departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
+                                            departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
                                             urlDepartureDate = self.convertToURLDate(date: departureDate)
                                             
                                             arrivalDate = leg0Check["arrivalTime"] as! String
-                                            convertedArrivalDate = self.convertDateTime(date: arrivalDate)
-                                            arrivalDateUtc = self.getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
-                                            arrivalDateNumber = self.formatDateTimetoWhole(dateTime: arrivalDate)
+                                            convertedArrivalDate = convertDateTime(date: arrivalDate)
+                                            arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
+                                            arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
                                             urlArrivalDate = self.convertToURLDate(date: arrivalDate)
-                                            arrivalDateUtcNumber = self.formatDateTimetoWhole(dateTime: arrivalDateUtc)
+                                            arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
                                             
                                             leg1 = [
                                                 
@@ -1503,16 +1410,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             
         };
         flights = sortedFlights
-        //self.flightNumbersTableView.reloadData()
-    }
-    
-    func formatDateTimetoWhole(dateTime: String) -> String {
-        
-        let dateTimeAsNumberStep1 = dateTime.replacingOccurrences(of: "-", with: "")
-        let dateTimeAsNumberStep2 = dateTimeAsNumberStep1.replacingOccurrences(of: "T", with: "")
-        let dateTimeAsNumberStep3 = dateTimeAsNumberStep2.replacingOccurrences(of: ":", with: "")
-        let dateTimeWhole = dateTimeAsNumberStep3.replacingOccurrences(of: ".", with: "")
-        return dateTimeWhole
     }
     
     
@@ -1525,50 +1422,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         return formattedDate
     }
     
-    func formatTime(time: String) -> String {
-        
-        var dateTimeArray = time.components(separatedBy: "T")
-        let timeOnly = dateTimeArray[1]
-        var splitTime = timeOnly.components(separatedBy: ":")
-        let formattedTime = "\(splitTime[0]):" + "\(splitTime[1])"
-        return formattedTime
-    }
     
-    func convertDateTime (date: String) -> (String) {
-        
-        
-        var dateArray = date.components(separatedBy: "T")
-        let dateSegment = dateArray[0]
-        let timeSegment = dateArray[1]
-        var timeArray = timeSegment.components(separatedBy: ":00.000")
-        let time1 = timeArray[0]
-        var hoursAndMinutes = time1.components(separatedBy: ":")
-        let hour = hoursAndMinutes[0]
-        let minutes = hoursAndMinutes[1]
-        
-        var dateSplitArray = dateSegment.components(separatedBy: "-")
-        let year = dateSplitArray[0]
-        let month = dateSplitArray[1]
-        let day1 = dateSplitArray[2]
-        
-        let dateComponents = NSDateComponents()
-        dateComponents.day = Int(day1)!
-        dateComponents.month = Int(month)!
-        dateComponents.year = Int(year)!
-        dateComponents.hour = Int(hour)!
-        dateComponents.minute = Int(minutes)!
-        
-        let dateToBeFormatted = NSCalendar.current.date(from: dateComponents as DateComponents)
-        
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMM dd, yyyy, HH:mm"
-        
-        let dateString = formatter.string(from: dateToBeFormatted!)
-        
-        return dateString
-        
-    }
     
     func convertToURLDate (date: String) -> (String) {
         
@@ -1583,20 +1437,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         let urlDepartureDate = "\(year)/" + "\(month)/" + "\(day)"
         
         return urlDepartureDate
-        
-    }
-    
-    func convertCurrentDateToWhole (date: NSDate) -> (String) {
-        
-        let currentDate = NSDate()
-        let dateString = String(describing: currentDate)
-        let date1 = dateString.replacingOccurrences(of: "-", with: "")
-        let date2 = date1.replacingOccurrences(of: ":", with: "")
-        let date3 = date2.replacingOccurrences(of: "+", with: "")
-        let date4 = date3.replacingOccurrences(of: "-", with: "")
-        let date5 = date4.replacingOccurrences(of: " ", with: "")
-        
-        return date5
         
     }
     
@@ -1684,34 +1524,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         
     }
     
-    func getUtcTime(time: String, utcOffset: String) -> (String) {
-        
-        //here we change departure date to UTC time
-        let departureDateFormatter = DateFormatter()
-        departureDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        
-        let departureDateTime = departureDateFormatter.date(from: time)
-        
-        var utcInterval = (Double(utcOffset)! * 60 * 60)
-        
-        if utcInterval < 0 {
-            
-            utcInterval = abs(utcInterval)
-            
-        } else if utcInterval > 0 {
-            
-            utcInterval = utcInterval * -1
-            
-        } else if utcInterval == 0 {
-            
-            utcInterval = 0
-        }
-        
-        let departureDateUtc = departureDateTime!.addingTimeInterval(utcInterval)
-        let utcTime = departureDateFormatter.string(from: departureDateUtc)
-        
-        return utcTime
-    }
+    
     
     func addActivityIndicatorCenter() {
         
@@ -1746,49 +1559,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
             self.activityIndicator.alpha = 1
             self.activityLabel.alpha = 1
             
-        }) { (true) in
-            
-            
-        }
-        
-    }
-    
-    func didFlightAlreadyTakeoff (departureDate: String, utcOffset: String) -> (Bool) {
-        
-        // here we set the current date to UTC
-        let date = NSDate()
-        var secondsFromGMT: Int { return NSTimeZone.local.secondsFromGMT() }
-        var utcInterval = secondsFromGMT
-        
-        if utcInterval < 0 {
-            
-            utcInterval = abs(utcInterval)
-            
-        } else if utcInterval > 0 {
-            
-            utcInterval = utcInterval * -1
-            
-        } else if utcInterval == 0 {
-            
-            utcInterval = 0
-        }
-        
-        //here we set arrival date to utc and convert from string to date and compare the dates
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
-        let departureDateUtc = self.getUtcTime(time: departureDate, utcOffset: utcOffset)
-        
-        let departureDateUtcDate = dateFormatter.date(from: departureDateUtc)
-        
-        if departureDateUtcDate! < currentDateUtc as Date {
-            
-            return true
-            
-        } else {
-            
-            return false
-        }
+        })
         
     }
     
@@ -1797,33 +1568,23 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         let autoCell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) 
         autoCell.textLabel?.text = autoComplete[indexPath.row]
         return autoCell
-        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return self.autoComplete.count
-        
-        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let selectedCell:UITableViewCell! = tableView.cellForRow(at: indexPath)!
-        
         let selectedCellString = String("\(selectedCell.textLabel!.text!)")
-        
         let cellArray = selectedCellString?.components(separatedBy: "- ")
         let airlineCodeString = cellArray?[1]
-        
         self.airlineCode.text = airlineCodeString
-        
         self.flightNumber.becomeFirstResponder()
         autoSuggestTable.isHidden = true
         
@@ -1906,7 +1667,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                 
                                 for airline in airlines {
                                     
-                                    let airlineDictionary:NSDictionary! = airline as! NSDictionary
+                                    let airlineDictionary = airline as! NSDictionary
                                     
                                     airlineName = airlineDictionary["name"] as! String
                                     

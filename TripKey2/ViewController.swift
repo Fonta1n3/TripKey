@@ -8,9 +8,6 @@
 
 import UIKit
 import Parse
-import SystemConfiguration
-
-//var userLoginArray = [String]()
 
 class ViewController: UIViewController, UITextFieldDelegate {
     
@@ -51,43 +48,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    func isInternetAvailable() -> Bool {
-        
-        var zeroAddress = sockaddr_in()
-        zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
-        zeroAddress.sin_family = sa_family_t(AF_INET)
-        
-        guard let defaultRouteReachability = withUnsafePointer(to: &zeroAddress, {
-            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
-                SCNetworkReachabilityCreateWithAddress(nil, $0)
-            }
-        }) else {
-            return false
-        }
-        
-        var flags: SCNetworkReachabilityFlags = []
-        if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
-            return false
-        }
-        
-        let isReachable = flags.contains(.reachable)
-        let needsConnection = flags.contains(.connectionRequired)
-        
-        self.connected = isReachable
-        return (isReachable && !needsConnection)
-    }
-    
     @IBAction func changeSignupMode(_ sender: AnyObject) {
         if signupMode {
             // Change to login mode
-            
             DispatchQueue.main.async {
                 self.signupOrLoginButton.setTitle(NSLocalizedString("Log In", comment: ""), for: [])
                 self.changeSignupModeButton.setTitle(NSLocalizedString("Sign Up", comment: ""), for: [])
                 self.messageLabel.text = NSLocalizedString("Don't have an account?", comment: "")
                 self.signupMode = false
             }
-            
             
         } else {
             // Change to signup mode
@@ -97,7 +66,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 self.messageLabel.text = NSLocalizedString("Already have an account?", comment: "")
                 self.signupMode = true
             }
-            
         }
     }
     
@@ -137,8 +105,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
         } else {
 
-            //checkPasswordAndEmailBeforeLogin()
-            
             activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
             activityIndicator.center = self.view.center
             activityIndicator.hidesWhenStopped = true
@@ -258,8 +224,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
                                     }
                                 })
                             }
-                            
-                            
                         }
                     })
                     
@@ -300,70 +264,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
                             
                        }
                     }
-                    
-                    
-                    
-                    
-                    
-                    
-                    //self.performSegue(withIdentifier: "postProfilePic", sender: self)
                 }
-                
             })
-                
-                
-            
-                self.deleteAllUserDefaultData()
-            
-            
     }
     
 
-    func deleteAllUserDefaultData() {
-        
-        if (UserDefaults.standard.object(forKey: "frequentFlyerList") != nil) {
-            UserDefaults.standard.removeObject(forKey: "frequentFlyerList")
-        }
-        
-        if (UserDefaults.standard.object(forKey: "vaccinesList") != nil) {
-            UserDefaults.standard.removeObject(forKey: "vaccinesList")
-        }
-        
-        if (UserDefaults.standard.object(forKey: "emergencyContacts") != nil) {
-            UserDefaults.standard.removeObject(forKey: "emergencyContacts")
-        }
-        
-        if (UserDefaults.standard.object(forKey: "userDetailsArray") != nil) {
-            UserDefaults.standard.removeObject(forKey: "userDetailsArray")
-        }
-        
-        /*if (UserDefaults.standard.object(forKey: "flights") != nil) {
-            UserDefaults.standard.removeObject(forKey: "flights")
-        }*/
-        
-        if (UserDefaults.standard.object(forKey: "tripDictionaries") != nil) {
-            UserDefaults.standard.removeObject(forKey: "tripDictionaries")
-            
-        }
-        
-        if (UserDefaults.standard.object(forKey: "placeDictionaries") != nil) {
-            UserDefaults.standard.removeObject(forKey: "placeDictionaries")
-            
-        }
-        
-        if (UserDefaults.standard.object(forKey: "cityDictionaries") != nil) {
-            UserDefaults.standard.removeObject(forKey: "cityDictionaries")
-            
-        }
-        
-        if (UserDefaults.standard.object(forKey: "countryDictionaries") != nil) {
-            UserDefaults.standard.removeObject(forKey: "countryDictionaries")
-            
-        }
     
-
-        print("All user defaults data deleted for new user sign up.")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -380,14 +286,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             UserDefaults.standard.set(false, forKey: "launchedBefore")
         }
         
-       signupMode = true
+        signupMode = true
         self.emailTextField.delegate = self
         self.passwordTextField.delegate = self
-        
-        //self.blurEffectView.frame = self.view.bounds
-        //self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        //self.blurEffectView.alpha = 0
-        
         self.changeSignupModeButton.alpha = 0
         self.messageLabel.alpha = 0
         self.logInView.alpha = 0
@@ -406,11 +307,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         
-     isInternetAvailable()
-        
-        
-        
-        if self.connected == true {
+        if isInternetAvailable() {
             
             if PFUser.current() != nil {
                 
@@ -419,11 +316,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
             } else {
                 
                 UIView.animate(withDuration: 0.5, animations: {
-                    
-                    /*self.blurEffectView.frame = self.view.bounds
-                    self.blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-                    self.blurEffectView.alpha = 1*/
-                    
                     
                     self.changeSignupModeButton.alpha = 1
                     self.messageLabel.alpha = 1
@@ -434,7 +326,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     
                 }) { _ in
                     
-                    //self.view.addSubview(self.blurEffectView)
                     self.view.addSubview(self.logInView)
                     
                 }
@@ -442,13 +333,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
 
         } else {
             
-            self.displayAlert(title: NSLocalizedString("No internet connection.", comment: ""), message: "Offline use for TripKey is coming soon, in the meantime please check your signal.")
+            displayAlert(viewController: self, title: NSLocalizedString("No internet connection.", comment: ""), message: "Offline use for TripKey is coming soon, in the meantime please check your signal.")
         }
-        
-        
-        
- 
-    }
+   }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -472,16 +359,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         view.addSubview(activityIndicator)
         activityIndicator.isUserInteractionEnabled = false
         activityIndicator.startAnimating()
-        
-    }
-    
-    func displayAlert(title: String, message: String) {
-        
-        let alertcontroller = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        alertcontroller.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-        
-        self.present(alertcontroller, animated: true, completion: nil)
         
     }
 }

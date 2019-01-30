@@ -48,6 +48,7 @@
 		D069FBB5220033F600864659 /* trackFlight.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB4220033F600864659 /* trackFlight.png */; };
 		D069FBB7220037DF00864659 /* 1111.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB6220037DF00864659 /* 1111.png */; };
 		D069FBB9220039AA00864659 /* 300.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB8220039AA00864659 /* 300.png */; };
+		D069FBBB22013D6C00864659 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D069FBBA22013D6C00864659 /* Helpers.swift */; };
 		D075D8431F68CD1C004831B0 /* delete-512.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8421F68CD1C004831B0 /* delete-512.png */; };
 		D075D8451F68D38B004831B0 /* whitePhone.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8441F68D38B004831B0 /* whitePhone.png */; };
 		D075D8471F68D3FB004831B0 /* whiteCommunity.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8461F68D3FB004831B0 /* whiteCommunity.png */; };
@@ -161,6 +162,7 @@
 		D069FBB4220033F600864659 /* trackFlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackFlight.png; sourceTree = "<group>"; };
 		D069FBB6220037DF00864659 /* 1111.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1111.png; sourceTree = "<group>"; };
 		D069FBB8220039AA00864659 /* 300.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 300.png; sourceTree = "<group>"; };
+		D069FBBA22013D6C00864659 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = /Users/peter/Documents/TripKey/TripKey2/Helpers.swift; sourceTree = "<absolute>"; };
 		D075D8421F68CD1C004831B0 /* delete-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete-512.png"; sourceTree = "<group>"; };
 		D075D8441F68D38B004831B0 /* whitePhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whitePhone.png; sourceTree = "<group>"; };
 		D075D8461F68D3FB004831B0 /* whiteCommunity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCommunity.png; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 				D05F116F1ECD474A00BFA3F2 /* Main.storyboard */,
 				D0D1C28521882AEB00BF8089 /* Bech32.swift */,
 				D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */,
+				D069FBBA22013D6C00864659 /* Helpers.swift */,
 				D001872E2199402500EEE21E /* Flight Table New */,
 				D01E74081F66587D002C3E06 /* Community */,
 				D0E4E5051D7A975700BF321A /* Log In / Profile */,
@@ -666,6 +669,7 @@
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
+				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
 				D00187222197A67A00EEE21E /* TripKey2.xcdatamodeld in Sources */,
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,
 				D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */,
@@ -832,21 +836,9 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PODS_CONFIGURATION_BUILD_DIR/Bolts\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FBSDKCoreKit\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FBSDKLoginKit\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FBSDKShareKit\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FacebookCore\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FacebookLogin\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FacebookShare\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/GoogleToolboxForMac\"",
 					"\"$PODS_CONFIGURATION_BUILD_DIR/Parse\"",
 					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
-					"\"${PODS_ROOT}/FirebaseCore/Frameworks\"",
 					"\"${PODS_ROOT}/FirebaseInstanceID/Frameworks\"",
-					"\"${PODS_ROOT}/Google-Mobile-Ads-SDK/Frameworks/frameworks\"",
-					"\"${PODS_ROOT}/GooglePlacePicker/Frameworks\"",
-					"\"${PODS_ROOT}/GooglePlaces/Frameworks\"",
-					"$(PROJECT_DIR)/build/Debug-iphoneos/AWSCognito",
 				);
 				INFOPLIST_FILE = TripKey2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -874,21 +866,9 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$PODS_CONFIGURATION_BUILD_DIR/Bolts\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FBSDKCoreKit\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FBSDKLoginKit\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FBSDKShareKit\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FacebookCore\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FacebookLogin\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/FacebookShare\"",
-					"\"$PODS_CONFIGURATION_BUILD_DIR/GoogleToolboxForMac\"",
 					"\"$PODS_CONFIGURATION_BUILD_DIR/Parse\"",
 					"\"${PODS_ROOT}/FirebaseAnalytics/Frameworks\"",
-					"\"${PODS_ROOT}/FirebaseCore/Frameworks\"",
 					"\"${PODS_ROOT}/FirebaseInstanceID/Frameworks\"",
-					"\"${PODS_ROOT}/Google-Mobile-Ads-SDK/Frameworks/frameworks\"",
-					"\"${PODS_ROOT}/GooglePlacePicker/Frameworks\"",
-					"\"${PODS_ROOT}/GooglePlaces/Frameworks\"",
-					"$(PROJECT_DIR)/build/Debug-iphoneos/AWSCognito",
 				);
 				INFOPLIST_FILE = TripKey2/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
