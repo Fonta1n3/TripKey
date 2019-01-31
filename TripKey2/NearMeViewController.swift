@@ -146,16 +146,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var updateFlightFirstTime:Bool!
     var tableButton = UIButton()
     
-    
-    
     func isUserLoggedIn() -> Bool {
-        
         if (PFUser.current() != nil) {
-         
             return true
-            
         } else {
-            
             return false
         }
     }
@@ -163,35 +157,27 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     func promptUserToLogIn() {
         
         DispatchQueue.main.async {
-            
             let alert = UIAlertController(title: NSLocalizedString("You are not logged in.", comment: ""), message: NSLocalizedString("Please log in to share flights.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-            
             alert.addAction(UIAlertAction(title: NSLocalizedString("No Thanks", comment: ""), style: .default, handler: { (action) in }))
-            
             alert.addAction(UIAlertAction(title: NSLocalizedString("Log In", comment: ""), style: .default, handler: { (action) in
                 self.performSegue(withIdentifier: "logIn", sender: self)
             }))
-            
             self.present(alert, animated: true, completion: nil)
         }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         if self.overlay != nil {
-            
             DispatchQueue.main.async {
-                
                 self.overlay.map = nil
                 self.icon = nil
             }
-            
         }
     }
     
     func mapView(_ mapView: GMSMapView, didTap overlay: GMSOverlay) {
         
         switch overlay.accessibilityLabel?.components(separatedBy: ", ")[0] {
-            
         case "Airplane Location":
             self.updateFlightFirstTime = true
             let index = Int((overlay.accessibilityLabel?.components(separatedBy: ", ")[1])!)
@@ -200,17 +186,14 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 (_) in
                 self.parseFlightIDForTracking(index: index!)
             }
-            
         case "routePolyline":
             self.userTappedRoute = true
             let index = Int((overlay.accessibilityLabel?.components(separatedBy: ", ")[1])!)
-            self.flightIndex = index
             var bounds = GMSCoordinateBounds()
             bounds = bounds.includingCoordinate(departureMarkerArray[index!].position)
             bounds = bounds.includingCoordinate(arrivalMarkerArray[index!].position)
             self.googleMapsView.animate(with: GMSCameraUpdate.fit(bounds))
             self.parseLeg2Only(dictionary: flights[index!], index: index!)
-            
         default:
             break
         }
@@ -220,18 +203,16 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
+        
         nonConsumablePurchaseMade = true
         UserDefaults.standard.set(nonConsumablePurchaseMade, forKey: "nonConsumablePurchaseMade")
         
         DispatchQueue.main.async {
-            
             self.activityIndicator.stopAnimating()
             self.activityLabel.removeFromSuperview()
             self.blurEffectViewActivity.removeFromSuperview()
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            
         }
-        
         displayAlert(viewController: self, title: NSLocalizedString("TripKey", comment: ""), message: NSLocalizedString("You've successfully restored your purchase!", comment: ""))
     }
     
@@ -409,12 +390,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 var longitude:Double!
                 var newLocation:GMSCameraPosition!
                 
-                
-                    
-                    if (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! == "Departure Airport" {
-                        print("from departure to arrival for same flight")
-                        self.tappedMarker = self.arrivalMarkerArray[self.flightIndex]
-                        self.showFlightInfoWindows(flightIndex: self.flightIndex)
+                if (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! == "Departure Airport" {
+                    print("from departure to arrival for same flight")
+                    self.tappedMarker = self.arrivalMarkerArray[0]
+                    self.showFlightInfoWindows(flightIndex: self.flightIndex)
                         latitude = Double(self.flights[self.flightIndex]["Airport Arrival Latitude"]!)!
                         longitude = Double(self.flights[self.flightIndex]["Airport Arrival Longitude"]!)!
                         newLocation = GMSCameraPosition.camera(withLatitude: latitude, longitude: longitude, zoom: self.googleMapsView.camera.zoom)
@@ -428,7 +407,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                     } else if (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! == "Arrival Airport" {
                         //from arrival to departure for same flight
-                        self.tappedMarker = self.departureMarkerArray[self.flightIndex]
+                        self.tappedMarker = self.departureMarkerArray[0]
                         self.showDepartureWindow(index: self.flightIndex)
                         latitude = Double(self.flights[self.flightIndex]["Airport Departure Latitude"]!)!
                         longitude = Double(self.flights[self.flightIndex]["Airport Departure Longitude"]!)!
@@ -465,7 +444,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     
                     if (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! == "Arrival Airport" {
                         //from arrival to departure for same flight
-                        self.tappedMarker = self.departureMarkerArray[self.flightIndex]
+                        self.tappedMarker = self.departureMarkerArray[0]
                         self.showDepartureWindow(index: self.flightIndex)
                         latitude = Double(self.flights[self.flightIndex]["Airport Departure Latitude"]!)!
                         longitude = Double(self.flights[self.flightIndex]["Airport Departure Longitude"]!)!
@@ -481,7 +460,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                         if (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! == "Departure Airport" {
                             print("from departure to arrival for same flight")
-                            self.tappedMarker = self.arrivalMarkerArray[self.flightIndex]
+                            self.tappedMarker = self.arrivalMarkerArray[0]
                             self.showFlightInfoWindows(flightIndex: self.flightIndex)
                             latitude = Double(self.flights[self.flightIndex]["Airport Arrival Latitude"]!)!
                             longitude = Double(self.flights[self.flightIndex]["Airport Arrival Longitude"]!)!
@@ -592,9 +571,25 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         view.endEditing(true)
     }
     
+    func isUserInChina() -> Bool {
+        let locale = Locale.current.identifier
+        switch locale {
+        case "zh_Hans": return true
+        case "zh_Hans_CN": return true
+        case "zh_Hans_MO": return true
+        case "zh_Hant": return true
+        case "zh_Hant_MO": return true
+        case "zh": return true
+        default:
+            return true
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("viewdidload nearMe")
+        
+        print("is user in china = \(isUserInChina())")
         didTapMarker = false
         mapView.frame = CGRect(x: 0, y: 18, width: view.frame.width, height: view.frame.height - 18)
         googleMapsView = GMSMapView(frame: mapView.frame)
@@ -705,6 +700,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 print("user is nil")
             }
         
+        print("how many times used = \(howManyTimesUsed.count)")
         if howManyTimesUsed.count % 10 == 0 {
             self.askForReview()
         }
@@ -795,22 +791,12 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     }
     
    func askForReview() {
-        
-        let alert = UIAlertController(title: "Are you happy with TripKey?" , message: "We'd greatly appreciate your feedback! It helps a lot!.", preferredStyle: UIAlertControllerStyle.alert)
-        
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
-            
-            //for tripkeyLite
-            self.rateApp(appId: "1197157982", completion: { (success) in
-              print("RateApp \(success)")
-            })
-            
-        }))
-        
-        alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action) in}))
-        
-        self.present(alert, animated: true, completion: nil)
-        
+    
+        DispatchQueue.main.async {
+            if #available( iOS 10.3,*){
+                SKStoreReviewController.requestReview()
+            }
+        }
     }
     
     func rateApp(appId: String, completion: @escaping ((_ success: Bool)->())) {
@@ -921,9 +907,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             updateLabelText()
             
         }
-        
-        
-        
     }
     
     func addButtons() {
@@ -3716,7 +3699,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                                 self.overlay = GMSGroundOverlay(position: self.position, icon: self.icon, zoomLevel: CGFloat(self.googleMapsView.camera.zoom))
                                                 self.overlay.bearing = self.bearing
                                                 self.overlay.accessibilityLabel = "Airplane Location, \(index)"
-                                                self.flightIndex = index
+                                                //self.flightIndex = index
                                                 self.overlay.isTappable = true
                                                 self.overlay.map = self.googleMapsView
                                                 self.updateFlightFirstTime = false

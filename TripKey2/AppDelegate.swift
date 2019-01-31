@@ -14,7 +14,6 @@ import Parse
 import Firebase
 
 
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
