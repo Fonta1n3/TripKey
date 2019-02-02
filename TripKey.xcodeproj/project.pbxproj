@@ -32,29 +32,21 @@
 		D025F59522040324007D6D3B /* airplaneSliderImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D025F59422040324007D6D3B /* airplaneSliderImage.png */; };
 		D0286D6721E27AF300954991 /* ReadMe.md in Resources */ = {isa = PBXBuildFile; fileRef = D0286D6621E27AF300954991 /* ReadMe.md */; };
 		D03D5FAE2185BA8C004D8DE7 /* AddUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */; };
-		D03DA81F1F4A982600920A90 /* airPlane.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA81E1F4A982600920A90 /* airPlane.png */; };
-		D03DA8211F4A9A1700920A90 /* plane100by100.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA8201F4A9A1700920A90 /* plane100by100.png */; };
-		D03DA8231F4AA1B200920A90 /* airPlane75by75.png in Resources */ = {isa = PBXBuildFile; fileRef = D03DA8221F4AA1B200920A90 /* airPlane75by75.png */; };
-		D0440E711E7E5394006D0AE1 /* search grey icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0440E701E7E5394006D0AE1 /* search grey icon.png */; };
-		D05454411F13267A00CBF129 /* back-butto6769.png in Resources */ = {isa = PBXBuildFile; fileRef = D05454401F13267A00CBF129 /* back-butto6769.png */; };
 		D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D05F116F1ECD474A00BFA3F2 /* Main.storyboard */; };
+		D06184672205660800336A20 /* user_male@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D06184662205660800336A20 /* user_male@3x.png */; };
+		D0618469220566EB00336A20 /* icons8-customer-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D0618468220566EB00336A20 /* icons8-customer-filled-50.png */; };
+		D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */; };
 		D069FBA721FFFF2000864659 /* white-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA621FFFF2000864659 /* white-plus.png */; };
-		D069FBA922001CC000864659 /* sliderIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA822001CC000864659 /* sliderIcon.png */; };
-		D069FBAF22002DED00864659 /* Flights copy.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBAE22002DED00864659 /* Flights copy.png */; };
-		D069FBB122002E9100864659 /* Flights.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB022002E9100864659 /* Flights.png */; };
 		D069FBB5220033F600864659 /* trackFlight.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB4220033F600864659 /* trackFlight.png */; };
 		D069FBBB22013D6C00864659 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D069FBBA22013D6C00864659 /* Helpers.swift */; };
 		D075D8431F68CD1C004831B0 /* delete-512.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8421F68CD1C004831B0 /* delete-512.png */; };
 		D075D8451F68D38B004831B0 /* whitePhone.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8441F68D38B004831B0 /* whitePhone.png */; };
 		D075D8471F68D3FB004831B0 /* whiteCommunity.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8461F68D3FB004831B0 /* whiteCommunity.png */; };
-		D085D9031F5BEB3000A868B3 /* Search - tripkey.png in Resources */ = {isa = PBXBuildFile; fileRef = D085D8FB1F5BEB3000A868B3 /* Search - tripkey.png */; };
-		D085D9051F5BEB3000A868B3 /* Taking Off- Tripkey.png in Resources */ = {isa = PBXBuildFile; fileRef = D085D8FD1F5BEB3000A868B3 /* Taking Off- Tripkey.png */; };
 		D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */; };
 		D0964D331EED311000B2C015 /* 39711543-blank-wallpapers.png in Resources */ = {isa = PBXBuildFile; fileRef = D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */; };
 		D097603B1E141C0A0096D6F8 /* SeatGuruViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */; };
 		D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */ = {isa = PBXBuildFile; fileRef = D099B8A41F6CA9F40047EEE5 /* directions.png */; };
 		D09FE4561D8A787D00D36EBF /* FlightDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */; };
-		D0A465291F6AF97800E27FEB /* wireless-512.png in Resources */ = {isa = PBXBuildFile; fileRef = D0A465281F6AF97800E27FEB /* wireless-512.png */; };
 		D0B8D0621E2E1BBA0096613F /* Tripkey-logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */; };
 		D0B8D0641E2E22950096613F /* icon-tripkey test.png in Resources */ = {isa = PBXBuildFile; fileRef = D0B8D0631E2E22950096613F /* icon-tripkey test.png */; };
 		D0BB62AB2187081900D3B5B9 /* back2.png in Resources */ = {isa = PBXBuildFile; fileRef = D0BB62AA2187081900D3B5B9 /* back2.png */; };
@@ -72,16 +64,13 @@
 		D0CACD4E1E16BA6C00FA4DA2 /* thunderstorm_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CACD461E16BA6C00FA4DA2 /* thunderstorm_25.png */; };
 		D0CACD501E16F34C00FA4DA2 /* fog_mist_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CACD4F1E16F34C00FA4DA2 /* fog_mist_25.png */; };
 		D0CACD521E16FA1C00FA4DA2 /* haze_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CACD511E16FA1C00FA4DA2 /* haze_25.png */; };
-		D0CB60C01F16F05600CFE872 /* left.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CB60BF1F16F05600CFE872 /* left.png */; };
 		D0CC85FA1F7FE44200B8E105 /* info.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CC85F91F7FE33B00B8E105 /* info.png */; };
-		D0CCD1DF1E17D3350095D45A /* plane_gray_45.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CCD1DE1E17D3350095D45A /* plane_gray_45.png */; };
 		D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D114481F23018D0020D8C5 /* back arrow-big.png */; };
 		D0D1C28721882AEB00BF8089 /* Bech32.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28521882AEB00BF8089 /* Bech32.swift */; };
 		D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */; };
 		D0D1C28A21882B0800BF8089 /* backButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D1C28921882B0800BF8089 /* backButton.png */; };
 		D0D526181E24917C004738DA /* Arrival Info Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0D526171E24917C004738DA /* Arrival Info Window.xib */; };
 		D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D526191E249210004738DA /* ArrivalInfoWindow.swift */; };
-		D0D52B6F1D6E4DCA00F00AB7 /* default.icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D52B6E1D6E4DCA00F00AB7 /* default.icon.png */; };
 		D0DEB8171F09E8E9001B5B7D /* output1.png in Resources */ = {isa = PBXBuildFile; fileRef = D0DEB8161F09E8E9001B5B7D /* output1.png */; };
 		D0E24B981F584C11004FBF96 /* searchIconNew.png in Resources */ = {isa = PBXBuildFile; fileRef = D0E24B971F584C11004FBF96 /* searchIconNew.png */; };
 		D0E760F5217F01EE00B6D31D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0E760F4217F01EE00B6D31D /* StoreKit.framework */; };
@@ -134,32 +123,24 @@
 		D03420211F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03420221F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersTableViewController.swift; sourceTree = "<group>"; };
-		D03DA81E1F4A982600920A90 /* airPlane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airPlane.png; sourceTree = "<group>"; };
-		D03DA8201F4A9A1700920A90 /* plane100by100.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plane100by100.png; sourceTree = "<group>"; };
-		D03DA8221F4AA1B200920A90 /* airPlane75by75.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = airPlane75by75.png; sourceTree = "<group>"; };
 		D03E74ED1F271928002E1357 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03E74EE1F271928002E1357 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D0439E911D6A34D000FD60FC /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
-		D0440E701E7E5394006D0AE1 /* search grey icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "search grey icon.png"; sourceTree = "<group>"; };
-		D05454401F13267A00CBF129 /* back-butto6769.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "back-butto6769.png"; path = "../../../Downloads/back-butto6769.png"; sourceTree = "<group>"; };
 		D05F116F1ECD474A00BFA3F2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		D06184662205660800336A20 /* user_male@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_male@3x.png"; sourceTree = "<group>"; };
+		D0618468220566EB00336A20 /* icons8-customer-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-customer-filled-50.png"; sourceTree = "<group>"; };
+		D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-add-user-male-filled-50.png"; sourceTree = "<group>"; };
 		D069FBA621FFFF2000864659 /* white-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-plus.png"; sourceTree = "<group>"; };
-		D069FBA822001CC000864659 /* sliderIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sliderIcon.png; sourceTree = "<group>"; };
-		D069FBAE22002DED00864659 /* Flights copy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Flights copy.png"; sourceTree = "<group>"; };
-		D069FBB022002E9100864659 /* Flights.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Flights.png; sourceTree = "<group>"; };
 		D069FBB4220033F600864659 /* trackFlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackFlight.png; sourceTree = "<group>"; };
 		D069FBBA22013D6C00864659 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = /Users/peter/Documents/TripKey/TripKey2/Helpers.swift; sourceTree = "<absolute>"; };
 		D075D8421F68CD1C004831B0 /* delete-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete-512.png"; sourceTree = "<group>"; };
 		D075D8441F68D38B004831B0 /* whitePhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whitePhone.png; sourceTree = "<group>"; };
 		D075D8461F68D3FB004831B0 /* whiteCommunity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCommunity.png; sourceTree = "<group>"; };
-		D085D8FB1F5BEB3000A868B3 /* Search - tripkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Search - tripkey.png"; sourceTree = "<group>"; };
-		D085D8FD1F5BEB3000A868B3 /* Taking Off- Tripkey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Taking Off- Tripkey.png"; sourceTree = "<group>"; };
 		D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "39711543-blank-wallpapers.png"; sourceTree = "<group>"; };
 		D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeatGuruViewController.swift; sourceTree = "<group>"; };
 		D099B8A41F6CA9F40047EEE5 /* directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = directions.png; sourceTree = "<group>"; };
 		D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlightDetailsViewController.swift; path = TripKey2/FlightDetailsViewController.swift; sourceTree = "<group>"; };
-		D0A465281F6AF97800E27FEB /* wireless-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "wireless-512.png"; sourceTree = "<group>"; };
 		D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tripkey-logo-white.png"; sourceTree = "<group>"; };
 		D0B8D0631E2E22950096613F /* icon-tripkey test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-tripkey test.png"; sourceTree = "<group>"; };
 		D0BB62AA2187081900D3B5B9 /* back2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back2.png; sourceTree = "<group>"; };
@@ -179,16 +160,13 @@
 		D0CACD461E16BA6C00FA4DA2 /* thunderstorm_25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = thunderstorm_25.png; sourceTree = "<group>"; };
 		D0CACD4F1E16F34C00FA4DA2 /* fog_mist_25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fog_mist_25.png; sourceTree = "<group>"; };
 		D0CACD511E16FA1C00FA4DA2 /* haze_25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = haze_25.png; sourceTree = "<group>"; };
-		D0CB60BF1F16F05600CFE872 /* left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left.png; sourceTree = "<group>"; };
 		D0CC85F91F7FE33B00B8E105 /* info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info.png; sourceTree = "<group>"; };
-		D0CCD1DE1E17D3350095D45A /* plane_gray_45.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plane_gray_45.png; sourceTree = "<group>"; };
 		D0D114481F23018D0020D8C5 /* back arrow-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back arrow-big.png"; sourceTree = "<group>"; };
 		D0D1C28521882AEB00BF8089 /* Bech32.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bech32.swift; sourceTree = "<group>"; };
 		D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegwitAddrCoder.swift; sourceTree = "<group>"; };
 		D0D1C28921882B0800BF8089 /* backButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backButton.png; sourceTree = "<group>"; };
 		D0D526171E24917C004738DA /* Arrival Info Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Arrival Info Window.xib"; sourceTree = "<group>"; };
 		D0D526191E249210004738DA /* ArrivalInfoWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrivalInfoWindow.swift; sourceTree = "<group>"; };
-		D0D52B6E1D6E4DCA00F00AB7 /* default.icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = default.icon.png; path = ../../../Downloads/default.icon.png; sourceTree = "<group>"; };
 		D0DEB8161F09E8E9001B5B7D /* output1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = output1.png; path = ../../../Downloads/output1.png; sourceTree = "<group>"; };
 		D0E24B971F584C11004FBF96 /* searchIconNew.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = searchIconNew.png; sourceTree = "<group>"; };
 		D0E760F3217F016F00B6D31D /* TripKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TripKey.entitlements; sourceTree = "<group>"; };
@@ -310,7 +288,10 @@
 		D08337461D6E857000E4713F /* Picture Files */ = {
 			isa = PBXGroup;
 			children = (
+				D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */,
+				D0618468220566EB00336A20 /* icons8-customer-filled-50.png */,
 				D025F592220402D5007D6D3B /* airplaneTrackerImage.png */,
+				D06184662205660800336A20 /* user_male@3x.png */,
 				D025F59422040324007D6D3B /* airplaneSliderImage.png */,
 				D069FBA621FFFF2000864659 /* white-plus.png */,
 				D0CC85F91F7FE33B00B8E105 /* info.png */,
@@ -329,17 +310,11 @@
 				D0E24B971F584C11004FBF96 /* searchIconNew.png */,
 				D075D8421F68CD1C004831B0 /* delete-512.png */,
 				D025F5882203F45D007D6D3B /* newTakeOffToWest.png */,
-				D085D8FB1F5BEB3000A868B3 /* Search - tripkey.png */,
-				D085D8FD1F5BEB3000A868B3 /* Taking Off- Tripkey.png */,
-				D05454401F13267A00CBF129 /* back-butto6769.png */,
-				D069FBAE22002DED00864659 /* Flights copy.png */,
-				D069FBB022002E9100864659 /* Flights.png */,
 				D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */,
 				D024982B219C565400BC6823 /* Add Pin - Trip key.png */,
 				D0DEB8161F09E8E9001B5B7D /* output1.png */,
 				D0CACD3F1E16BA6C00FA4DA2 /* heavy_rain_25.png */,
 				D0CACD401E16BA6C00FA4DA2 /* light_rain_25.png */,
-				D069FBA822001CC000864659 /* sliderIcon.png */,
 				D0CACD411E16BA6C00FA4DA2 /* medium_rain_25.png */,
 				D0CACD421E16BA6C00FA4DA2 /* mostly_cloudy_25.png */,
 				D0CACD431E16BA6C00FA4DA2 /* prtly_cloudy_sun_25.png */,
@@ -347,20 +322,12 @@
 				D00187232199226100EEE21E /* whiteList.png */,
 				D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */,
 				D0CACD511E16FA1C00FA4DA2 /* haze_25.png */,
-				D0A465281F6AF97800E27FEB /* wireless-512.png */,
 				D0CACD441E16BA6C00FA4DA2 /* snow_25.png */,
-				D0440E701E7E5394006D0AE1 /* search grey icon.png */,
-				D0CB60BF1F16F05600CFE872 /* left.png */,
-				D03DA8221F4AA1B200920A90 /* airPlane75by75.png */,
 				D0CACD451E16BA6C00FA4DA2 /* sunny_25.png */,
 				D0CACD461E16BA6C00FA4DA2 /* thunderstorm_25.png */,
 				D0CACD3D1E16B66C00FA4DA2 /* clear_night_25.png */,
-				D03DA8201F4A9A1700920A90 /* plane100by100.png */,
 				D0D1C28921882B0800BF8089 /* backButton.png */,
-				D0CCD1DE1E17D3350095D45A /* plane_gray_45.png */,
-				D03DA81E1F4A982600920A90 /* airPlane.png */,
 				D0CACD4F1E16F34C00FA4DA2 /* fog_mist_25.png */,
-				D0D52B6E1D6E4DCA00F00AB7 /* default.icon.png */,
 			);
 			name = "Picture Files";
 			sourceTree = "<group>";
@@ -492,40 +459,34 @@
 				D0286D6721E27AF300954991 /* ReadMe.md in Resources */,
 				D0BE53741F721ECB0068F9AD /* User-Profile-2.png in Resources */,
 				D0BE53721F7219AE0068F9AD /* User-Profile.png in Resources */,
+				D0618469220566EB00336A20 /* icons8-customer-filled-50.png in Resources */,
 				D025F5892203F45E007D6D3B /* newTakeOffToWest.png in Resources */,
 				D069FBB5220033F600864659 /* trackFlight.png in Resources */,
 				D0030CFC1EE77F9B005B7271 /* CommunitySettings.xib in Resources */,
 				D00BBF7F1D73C05500057B58 /* Podfile in Resources */,
 				D025F59522040324007D6D3B /* airplaneSliderImage.png in Resources */,
-				D085D9051F5BEB3000A868B3 /* Taking Off- Tripkey.png in Resources */,
 				D0E24B981F584C11004FBF96 /* searchIconNew.png in Resources */,
-				D03DA8231F4AA1B200920A90 /* airPlane75by75.png in Resources */,
 				D025F5912203FEFC007D6D3B /* landingEastToWest.png in Resources */,
 				D0CACD481E16BA6C00FA4DA2 /* light_rain_25.png in Resources */,
-				D05454411F13267A00CBF129 /* back-butto6769.png in Resources */,
-				D0440E711E7E5394006D0AE1 /* search grey icon.png in Resources */,
 				D016EB801F078AEB00DEE5CD /* Date Picker.xib in Resources */,
 				D075D8431F68CD1C004831B0 /* delete-512.png in Resources */,
+				D06184672205660800336A20 /* user_male@3x.png in Resources */,
 				D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */,
+				D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */,
 				D0CACD4A1E16BA6C00FA4DA2 /* mostly_cloudy_25.png in Resources */,
 				D0964D331EED311000B2C015 /* 39711543-blank-wallpapers.png in Resources */,
-				D085D9031F5BEB3000A868B3 /* Search - tripkey.png in Resources */,
 				D025F58D2203FC6E007D6D3B /* takeOffEastToWestImage.png in Resources */,
 				D0D1C28A21882B0800BF8089 /* backButton.png in Resources */,
 				D0CACD4C1E16BA6C00FA4DA2 /* snow_25.png in Resources */,
 				D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */,
 				D075D8471F68D3FB004831B0 /* whiteCommunity.png in Resources */,
 				D0D526181E24917C004738DA /* Arrival Info Window.xib in Resources */,
-				D069FBAF22002DED00864659 /* Flights copy.png in Resources */,
 				D0CACD521E16FA1C00FA4DA2 /* haze_25.png in Resources */,
 				D0CACD471E16BA6C00FA4DA2 /* heavy_rain_25.png in Resources */,
 				D0B8D0621E2E1BBA0096613F /* Tripkey-logo-white.png in Resources */,
 				D01EE9C01D692B780048D6CE /* Assets.xcassets in Resources */,
 				D0CC85FA1F7FE44200B8E105 /* info.png in Resources */,
 				D025F5902203FEFC007D6D3B /* landingWestToEast.png in Resources */,
-				D069FBA922001CC000864659 /* sliderIcon.png in Resources */,
-				D03DA81F1F4A982600920A90 /* airPlane.png in Resources */,
-				D0CB60C01F16F05600CFE872 /* left.png in Resources */,
 				D0C49B3F1F19EEB700D47983 /* Localizable.strings in Resources */,
 				D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */,
 				D069FBA721FFFF2000864659 /* white-plus.png in Resources */,
@@ -538,16 +499,11 @@
 				D0CACD4D1E16BA6C00FA4DA2 /* sunny_25.png in Resources */,
 				D0B8D0641E2E22950096613F /* icon-tripkey test.png in Resources */,
 				D020C8061E31DDBF0089D572 /* GoogleService-Info.plist in Resources */,
-				D0D52B6F1D6E4DCA00F00AB7 /* default.icon.png in Resources */,
 				D0CACD3E1E16B66C00FA4DA2 /* clear_night_25.png in Resources */,
 				D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */,
 				D0CACD491E16BA6C00FA4DA2 /* medium_rain_25.png in Resources */,
 				D00187242199226100EEE21E /* whiteList.png in Resources */,
-				D0CCD1DF1E17D3350095D45A /* plane_gray_45.png in Resources */,
-				D069FBB122002E9100864659 /* Flights.png in Resources */,
-				D0A465291F6AF97800E27FEB /* wireless-512.png in Resources */,
 				D075D8451F68D38B004831B0 /* whitePhone.png in Resources */,
-				D03DA8211F4A9A1700920A90 /* plane100by100.png in Resources */,
 				D0CACD4E1E16BA6C00FA4DA2 /* thunderstorm_25.png in Resources */,
 				D0BB62AB2187081900D3B5B9 /* back2.png in Resources */,
 			);

@@ -35,6 +35,8 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     let backButton = UIButton()
     let addButton = UIButton()
     
+    
+    
     func addButtons() {
         
         DispatchQueue.main.async {
@@ -48,9 +50,9 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             self.view.addSubview(self.backButton)
             
             self.addButton.removeFromSuperview()
-            self.addButton.frame = CGRect(x: self.view.frame.maxX - 35, y: 30, width: 25, height: 25)
+            self.addButton.frame = CGRect(x: self.view.frame.maxX - 40, y: 30, width: 30, height: 30)
             self.addButton.showsTouchWhenHighlighted = true
-            let addImage = UIImage(imageLiteralResourceName: "Add Pin - Trip key.png")
+            let addImage = UIImage(imageLiteralResourceName: "icons8-add-user-male-filled-50.png")
             self.addButton.setImage(addImage, for: .normal)
             self.addButton.addTarget(self, action: #selector(self.add), for: .touchUpInside)
             self.view.addSubview(self.addButton)
@@ -233,6 +235,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         UserDefaults.standard.set(true, forKey: "userSwipedBack")
+        
         
         addButtons()
         addUserButton.title = NSLocalizedString("Add Users", comment: "")

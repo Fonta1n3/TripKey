@@ -822,7 +822,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="53" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7Iv-LY-b34">
-                                <rect key="frame" x="0.0" y="74" width="375" height="549"/>
+                                <rect key="frame" x="0.0" y="74" width="375" height="543"/>
                                 <color key="backgroundColor" red="0.18431372549019609" green="0.5725490196078431" blue="0.79607843137254897" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="separatorColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="sectionIndexBackgroundColor" red="0.75937577180000004" green="0.88541519199999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -884,9 +884,9 @@
                                 </connections>
                             </tableView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translucent="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jyk-ZX-Ao6">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="617" width="375" height="50"/>
                                 <items>
-                                    <barButtonItem image="User-Profile.png" id="lwJ-BD-7O8">
+                                    <barButtonItem title="Item" image="icons8-customer-filled-50.png" id="lwJ-BD-7O8">
                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <action selector="goToUsers:" destination="oMy-fl-e9U" id="t1O-XQ-fwK"/>
@@ -1006,9 +1006,9 @@
     <resources>
         <image name="Taking Off- Tripkey.png" width="101" height="35"/>
         <image name="Tripkey-logo-white.png" width="962" height="339"/>
-        <image name="User-Profile.png" width="25" height="25"/>
         <image name="back2.png" width="600" height="600"/>
         <image name="icon-tripkey test.png" width="1024" height="1024"/>
+        <image name="icons8-customer-filled-50.png" width="50" height="50"/>
         <image name="landingEastToWest.png" width="945" height="945"/>
         <image name="takeOffEastToWestImage.png" width="945" height="945"/>
     </resources>
