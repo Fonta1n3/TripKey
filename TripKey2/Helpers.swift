@@ -38,8 +38,8 @@ public func isInternetAvailable() -> Bool {
     }
     
     let isReachable = flags.contains(.reachable)
-    
-    return isReachable
+    let needsConnection = flags.contains(.connectionRequired)
+    return (isReachable && !needsConnection)
     
 }
 

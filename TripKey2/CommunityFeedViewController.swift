@@ -33,18 +33,27 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     var followedUserDictionary = Dictionary<String,Any>()
     var followedUserDictionaryArray = [Dictionary<String,Any>]()
     let backButton = UIButton()
+    let addButton = UIButton()
     
     func addButtons() {
         
         DispatchQueue.main.async {
             
             self.backButton.removeFromSuperview()
-            self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
+            self.backButton.frame = CGRect(x: 10, y: 30, width: 25, height: 25)
             self.backButton.showsTouchWhenHighlighted = true
             let image = UIImage(imageLiteralResourceName: "backButton.png")
             self.backButton.setImage(image, for: .normal)
             self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
             self.view.addSubview(self.backButton)
+            
+            self.addButton.removeFromSuperview()
+            self.addButton.frame = CGRect(x: self.view.frame.maxX - 35, y: 30, width: 25, height: 25)
+            self.addButton.showsTouchWhenHighlighted = true
+            let addImage = UIImage(imageLiteralResourceName: "Add Pin - Trip key.png")
+            self.addButton.setImage(addImage, for: .normal)
+            self.addButton.addTarget(self, action: #selector(self.add), for: .touchUpInside)
+            self.view.addSubview(self.addButton)
             
         }
         
@@ -54,6 +63,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
         self.dismiss(animated: true, completion: nil)
         
+    }
+    
+    @objc func add() {
+        self.performSegue(withIdentifier: "addUsers", sender: self)
     }
     
     func shareFlight(indexPath: Int) {
@@ -151,7 +164,9 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     
     @IBAction func goToUsers(_ sender: Any) {
         print("searchUsers")
-        self.performSegue(withIdentifier: "addUsers", sender: self)
+        DispatchQueue.main.async {
+            displayAlert(viewController: self, title: "Your Username:", message: "\(String(describing: PFUser.current()!.username!))")
+        }
     }
     
     @IBAction func back(_ sender: Any) {
@@ -227,10 +242,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
         }
         
-        if UserDefaults.standard.object(forKey: "userAddedPlaceDictionaryArray") != nil {
-            userAddedPlaceDictionaryArray = UserDefaults.standard.object(forKey: "userAddedPlaceDictionaryArray") as! [Dictionary<String,String>]
-        }
-        
         if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
             self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
         }
@@ -259,11 +270,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
         let cell = feedTable.dequeueReusableCell(withIdentifier: "Community Feed", for: indexPath) as! FeedTableViewCell
         cell.userName.text = followedUserDictionaryArray[indexPath.row]["Username"] as? String
-        cell.alpha = 0
-        
-        UIView.animate(withDuration: 0.3) {
-            cell.alpha = 1
-        }
         
         cell.tapShareFlightAction = {
             (cell) in self.shareFlight(indexPath: (tableView.indexPath(for: cell)!.row))

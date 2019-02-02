@@ -108,7 +108,8 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         cell.arrivalBaggageLabel.text = NSLocalizedString("Baggage", comment: "")
         cell.arrivalTerminalLabel.text = NSLocalizedString("Terminal", comment: "")
         
-        cell.slider.setThumbImage(UIImage(named: "newPlaneRotated.png"), for: UIControlState.normal)
+        let thumbImage = UIImage(named: "airplaneSliderImage.png")?.resizeImage(targetSize: CGSize(width: 60, height: 60))
+        cell.slider.setThumbImage(thumbImage, for: .normal)
         cell.slider.maximumValue = 1.0
         cell.slider.minimumValue = 0.0
         cell.slider.value = cell.slider.minimumValue
@@ -2142,4 +2143,33 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     
 
+}
+
+extension UIImage {
+    
+    func resizeImage(targetSize: CGSize) -> UIImage {
+        let size = self.size
+        
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+        }
+        
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        self.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+    }
 }

@@ -30,10 +30,11 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
     }
     
+    var isConnected = Bool()
+    let liveFlightMarker = GMSMarker()
     let nextFlightButton = UIButton()
     var didTapMarker = Bool()
     var usersLocationMode:Bool!
-    var buttonsVisible = true
     var showArrivalWindow = false
     var session: WCSession?
     var userMarkerArray:[GMSMarker] = []
@@ -44,7 +45,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var usersHeading:Double!
     var showUsersButton = UIButton(type: .custom)
     var fitFlightsButton = UIButton(type: .custom)
-    var nearMeButtonNew = UIButton(type: .custom)
     var flightIndex:Int! = 0
     var bearing:Double!
     var iconZoom:Float!
@@ -146,6 +146,25 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var updateFlightFirstTime:Bool!
     var tableButton = UIButton()
     
+    func addCircleBlurBackground(frame: CGRect, button: UIButton) {
+        
+        let circleBlurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
+        circleBlurView.removeFromSuperview()
+        circleBlurView.frame = frame
+        circleBlurView.clipsToBounds = true
+        circleBlurView.layer.cornerRadius = 25
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.8
+        button.layer.shadowOffset = CGSize.zero
+        button.layer.shadowRadius = 5
+        circleBlurView.contentView.addSubview(button)
+        googleMapsView.addSubview(circleBlurView)
+        circleBlurView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
+            circleBlurView.transform = .identity
+        })
+    }
+    
     func isUserLoggedIn() -> Bool {
         if (PFUser.current() != nil) {
             return true
@@ -167,12 +186,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     }
     
     override func viewDidDisappear(_ animated: Bool) {
-        if self.overlay != nil {
-            DispatchQueue.main.async {
-                self.overlay.map = nil
-                self.icon = nil
-            }
-        }
+        
     }
     
     func mapView(_ mapView: GMSMapView, didTap overlay: GMSOverlay) {
@@ -200,7 +214,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     }
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { return UIInterfaceOrientationMask.portrait }
-    
     
     func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         
@@ -368,7 +381,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     self.arrivalInfoWindow.removeFromSuperview()
                     self.blurEffectViewFlightInfoWindowTop.removeFromSuperview()
                     self.blurEffectViewFlightInfoWindowBottom.removeFromSuperview()
-                    self.addButtons()
+                    //self.addButtons()
                     print("swiped down")
                 }
                 
@@ -588,23 +601,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     override func viewDidLoad() {
         super.viewDidLoad()
         print("viewdidload nearMe")
-        
-        print("is user in china = \(isUserInChina())")
         didTapMarker = false
-        mapView.frame = CGRect(x: 0, y: 18, width: view.frame.width, height: view.frame.height - 18)
+        mapView.frame = CGRect(x: 0, y: 20, width: view.frame.width, height: view.frame.height - 20)
         googleMapsView = GMSMapView(frame: mapView.frame)
-        nextFlightButton.frame = CGRect(x: (googleMapsView.bounds.maxX / 2) - 70, y: googleMapsView.bounds.maxY - 65, width: 140, height: 35)
-        nextFlightButton.setTitle("Show Next Flight", for: .normal)
-        nextFlightButton.setTitleColor(UIColor.white, for: .normal)
-        nextFlightButton.titleLabel?.font = UIFont.init(name: "HelveticaNeue", size: 15)
-        nextFlightButton.backgroundColor = UIColor.lightGray
-        nextFlightButton.showsTouchWhenHighlighted = true
-        nextFlightButton.layer.cornerRadius = 18
-        nextFlightButton.layer.shadowColor = UIColor.black.cgColor
-        nextFlightButton.layer.shadowOpacity = 0.8
-        nextFlightButton.layer.shadowOffset = CGSize.zero
-        nextFlightButton.layer.shadowRadius = 5
-        nextFlightButton.addTarget(self, action: #selector(nextFlight), for: .touchUpInside)
         arrivalInfoWindow.terminalLabel.text = NSLocalizedString("Terminal", comment: "")
         arrivalInfoWindow.gateLabel.text = NSLocalizedString("Gate", comment: "")
         arrivalInfoWindow.baggageLabel.text = NSLocalizedString("Baggage", comment: "")
@@ -708,6 +707,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.liveFlightMarker.map = nil
         self.userNames.removeAll()
         locationManager.startUpdatingHeading()
         locationManager.startUpdatingLocation()
@@ -733,18 +733,14 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             self.googleMapsView.addSubview(self.nextFlightButton)
         }
         
-        if isInternetAvailable() {
-            self.getSharedFlights()
-        }
+        getSharedFlights()
         
         if UserDefaults.standard.object(forKey: "flights") != nil {
             flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
             if flights.count > 0 {
                 
-                if isInternetAvailable() {
-                    for (index, flight) in flights.enumerated() {
-                        self.parseLeg2Only(dictionary: flight, index: index)
-                    }
+                for (index, flight) in flights.enumerated() {
+                    self.parseLeg2Only(dictionary: flight, index: index)
                 }
                 if let swipedBack = UserDefaults.standard.object(forKey: "userSwipedBack") as? Bool {
                     if swipedBack {
@@ -753,6 +749,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 }
             }
         }
+        
         if UserDefaults.standard.object(forKey: "userSwipedBack") == nil {
             UserDefaults.standard.set(false, forKey: "userSwipedBack")
         }
@@ -812,31 +809,22 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     }
     
     func removeButtons() {
-        buttonsVisible = false
+        
        UIView.animate(withDuration: 0.5, animations: {
-            self.nearMeButtonNew.alpha = 0
             self.fitFlightsButton.alpha = 0
             self.showUsersButton.alpha = 0
-        self.tableButton.alpha = 0
+            self.tableButton.alpha = 0
         }) { _ in
-            self.nearMeButtonNew.removeFromSuperview()
             self.fitFlightsButton.removeFromSuperview()
             self.showUsersButton.removeFromSuperview()
             self.tableButton.removeFromSuperview()
         }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if self.overlay != nil {
-            
-            DispatchQueue.main.async {
-                
-                self.overlay.map = nil
-                self.icon = nil
-            }
-            
-        }
+        self.liveFlightMarker.map = nil
         
         if segue.identifier == "goToTable" {
             
@@ -863,18 +851,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     @objc func nextFlight() {
         
-        DispatchQueue.main.async {
-            if self.overlay != nil {
-                
-                DispatchQueue.main.async {
-                    
-                    self.overlay.map = nil
-                    self.icon = nil
-                }
-                
-            }
-        }
-        
+        self.liveFlightMarker.map = nil
         
         func updateLabelText() {
             if self.flightIndex + 1 == self.flights.count {
@@ -890,9 +867,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         if self.flights.count > self.flightIndex + 1 {
             
-            if isInternetAvailable() {
-                parseLeg2Only(dictionary: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
-            }
+            parseLeg2Only(dictionary: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
             self.getAirportCoordinates(flight: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
             self.flightIndex = self.flightIndex + 1
             updateLabelText()
@@ -900,9 +875,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         } else if self.flights.count == self.flightIndex + 1 {
             
             self.flightIndex = 0
-            if isInternetAvailable() {
-                parseLeg2Only(dictionary: self.flights[self.flightIndex], index: self.flightIndex)
-            }
+            parseLeg2Only(dictionary: self.flights[self.flightIndex], index: self.flightIndex)
             self.getAirportCoordinates(flight: self.flights[self.flightIndex], index: self.flightIndex)
             updateLabelText()
             
@@ -911,61 +884,51 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     func addButtons() {
         
-        buttonsVisible = true
-        
-        tableButton = UIButton(frame: CGRect(x: googleMapsView.bounds.maxX - 65, y: googleMapsView.bounds.maxY - 65, width: 55 , height: 55))
+        tableButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
         let tableButtonImage = UIImage(named: "whiteList.png")
         tableButton.setImage(tableButtonImage, for: .normal)
         tableButton.backgroundColor = UIColor.clear
         tableButton.layer.cornerRadius = 28
-        tableButton.alpha = 1
-        tableButton.layer.shadowColor = UIColor.black.cgColor
-        tableButton.layer.shadowOpacity = 0.8
-        tableButton.layer.shadowOffset = CGSize.zero
-        tableButton.layer.shadowRadius = 5
         tableButton.addTarget(self, action: #selector(showTable), for: .touchUpInside)
-        googleMapsView.addSubview(tableButton)
-        tableButton.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        let tableButtonFrame = CGRect(x: 10, y: 10, width: 50, height: 50)
+        addCircleBlurBackground(frame: tableButtonFrame, button: tableButton)
         
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
-            self.tableButton.transform = .identity
-        })
-            showUsersButton = UIButton(frame: CGRect(x: googleMapsView.bounds.maxX - 65, y: googleMapsView.bounds.maxY - 130, width: 55 , height: 55))
-            let showUsersButtonImage = UIImage(named: "whiteCommunity.png")
-            showUsersButton.setImage(showUsersButtonImage, for: .normal)
-            showUsersButton.backgroundColor = UIColor.clear
-            showUsersButton.layer.cornerRadius = 28
-            showUsersButton.alpha = 1
-            showUsersButton.layer.shadowColor = UIColor.black.cgColor
-            showUsersButton.layer.shadowOpacity = 0.8
-            showUsersButton.layer.shadowOffset = CGSize.zero
-            showUsersButton.layer.shadowRadius = 5
-            showUsersButton.addTarget(self, action: #selector(showUsers), for: .touchUpInside)
-            googleMapsView.addSubview(showUsersButton)
-            showUsersButton.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
-                self.showUsersButton.transform = .identity
-            })
-            
-        fitFlightsButton = UIButton(frame: CGRect(x: googleMapsView.bounds.maxX - 65, y: googleMapsView.bounds.maxY - 195, width: 50 , height: 50))
+        showUsersButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
+        let showUsersButtonImage = UIImage(named: "whiteCommunity.png")
+        showUsersButton.setImage(showUsersButtonImage, for: .normal)
+        showUsersButton.backgroundColor = UIColor.clear
+        showUsersButton.layer.cornerRadius = 28
+        showUsersButton.addTarget(self, action: #selector(showUsers), for: .touchUpInside)
+        let usersButtonFrame = CGRect(x: googleMapsView.bounds.maxX - 60, y: 10, width: 50, height: 50)
+        addCircleBlurBackground(frame: usersButtonFrame, button: showUsersButton)
+        
+        fitFlightsButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
         let image = UIImage(named: "white-plus.png")
         fitFlightsButton.setImage(image, for: .normal)
         fitFlightsButton.backgroundColor = UIColor.clear
         fitFlightsButton.layer.cornerRadius = 28
-        fitFlightsButton.alpha = 1
-        fitFlightsButton.layer.shadowColor = UIColor.black.cgColor
-        fitFlightsButton.layer.shadowOpacity = 0.8
-        fitFlightsButton.layer.shadowOffset = CGSize.zero
-        fitFlightsButton.layer.shadowRadius = 5
         fitFlightsButton.addTarget(self, action: #selector(fitAirports), for: .touchUpInside)
-        googleMapsView.addSubview(fitFlightsButton)
-        fitFlightsButton.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-            
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
-            self.fitFlightsButton.transform = .identity
-        })
+        let fitFlightsFrame = CGRect(x: googleMapsView.frame.maxX - 60, y: googleMapsView.frame.maxY - 80, width: 50, height: 50)
+        addCircleBlurBackground(frame: fitFlightsFrame, button: fitFlightsButton)
         
+            let circleBlurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
+            circleBlurView.removeFromSuperview()
+            circleBlurView.frame = CGRect(x: (googleMapsView.bounds.maxX / 2) - 70, y: googleMapsView.bounds.maxY - 45, width: 140, height: 35)
+            circleBlurView.clipsToBounds = true
+            circleBlurView.layer.cornerRadius = 18
+            nextFlightButton.frame = CGRect(x: (googleMapsView.bounds.maxX / 2) - 70, y: googleMapsView.bounds.maxY - 45, width: 140, height: 35)
+            nextFlightButton.setTitle("Show Next Flight", for: .normal)
+            nextFlightButton.setTitleColor(UIColor.white, for: .normal)
+            nextFlightButton.titleLabel?.font = UIFont.init(name: "HelveticaNeue-Thin", size: 15)
+            nextFlightButton.backgroundColor = UIColor.clear
+            nextFlightButton.showsTouchWhenHighlighted = true
+            nextFlightButton.addTarget(self, action: #selector(nextFlight), for: .touchUpInside)
+            circleBlurView.contentView.addSubview(nextFlightButton)
+            googleMapsView.addSubview(circleBlurView)
+            circleBlurView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
+                circleBlurView.transform = .identity
+            })
      }
     
     @objc func showTable() {
@@ -1168,7 +1131,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         let zoom = Float(mapView.camera.zoom)
         self.iconZoom = zoom
-        self.updateIcon()
         if zoom <= 8 {
            DispatchQueue.main.async {
                 self.updateLines()
@@ -1183,8 +1145,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
      }
     
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
-        
-        print("didTap marker = \(marker)")
         
         let tappedMarkerLatitude = marker.position.latitude
         let tappedMarkerLongitude = marker.position.longitude
@@ -1202,7 +1162,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             let tappedMarkerLongitude = marker.position.longitude
             self.tappedCoordinates = CLLocationCoordinate2D(latitude: tappedMarkerLatitude, longitude: tappedMarkerLongitude)
             let newPosition = GMSCameraPosition(target: self.tappedCoordinates, zoom: 6, bearing: self.googleMapsView.camera.bearing, viewingAngle: self.googleMapsView.camera.viewingAngle)
-            self.removeButtons()
+            //self.removeButtons()
             CATransaction.begin()
             CATransaction.setValue(Int(1), forKey: kCATransactionAnimationDuration)
             self.googleMapsView.animate(to: newPosition)
@@ -1210,6 +1170,12 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             self.showFlightInfoWindows(flightIndex: self.flightIndex)
             self.addFlightViewFromRightToLeft()
            return false
+           
+        } else if (marker.accessibilityLabel?.components(separatedBy: ", ")[0])! == "Airplane Location" {
+            
+            let index = Int((marker.accessibilityLabel?.components(separatedBy: ", ")[1])!)!
+            self.parseFlightIDForTracking(index: index)
+            return false
             
         }
         
@@ -1812,9 +1778,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                         
                                         UserDefaults.standard.set(self.flights, forKey: "flights")
                                         
-                                        //self.getAirportCoordinates()
-                                        
-                                        if self.tappedCoordinates.latitude != 0 && self.tappedCoordinates.longitude != 0 {
+                                       if self.tappedCoordinates.latitude != 0 && self.tappedCoordinates.longitude != 0 {
                                             
                                             for departureMarker in self.departureMarkerArray {
                                                 
@@ -1987,9 +1951,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     if error != nil {
                         
                         print(error as Any)
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                        
                         DispatchQueue.main.async {
+                            UIApplication.shared.isNetworkActivityIndicatorVisible = false
                             let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: NSLocalizedString("Internet connection appears to be offline.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
                             alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
                             self.present(alert, animated: true, completion: nil)
@@ -2842,7 +2805,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                             self.blurEffectViewFlightInfoWindowTop.removeFromSuperview()
                             self.blurEffectViewFlightInfoWindowBottom.removeFromSuperview()
                             self.infoWindowIsVisible = false
-                            self.addButtons()
+                            //self.addButtons()
                         }
                     }
                     
@@ -3358,6 +3321,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         }
                     }
                     self.googleMapsView.addSubview(self.nextFlightButton)
+                } else {
+                    DispatchQueue.main.async {
+                        self.nextFlightButton.setTitle("Show First Flight", for: .normal)
+                    }
                 }
                 
                 for marker in self.departureMarkerArray {
@@ -3394,11 +3361,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                         departureAirportCoordinates = CLLocationCoordinate2D(latitude: departureLatitude!, longitude: departureLongitude!)
                         arrivalAirportCoordinates = CLLocationCoordinate2D(latitude: arrivalLatitude!, longitude: arrivalLongitude!)
-                        /*let flightDistanceMeters = GMSGeometryDistance(departureAirportCoordinates, arrivalAirportCoordinates)
-                        let flightDistanceKilometers = Int(flightDistanceMeters / 1000)
-                        let flightDistanceMiles = Int(flightDistanceMeters * 0.000621371)
-                        self.flights[index]["Distance"] = "\(flightDistanceMiles)\(NSLocalizedString("miles", comment: "")) (\(flightDistanceKilometers)\(NSLocalizedString("km", comment: "")))"
-                        UserDefaults.standard.set(self.flights, forKey: "flights")*/
                         
                         let departurePosition = departureAirportCoordinates
                         let arrivalPosition = arrivalAirportCoordinates
@@ -3415,13 +3377,25 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         self.departureMarker = GMSMarker(position: departurePosition)
                         self.departureMarker.tracksInfoWindowChanges = true
                         self.departureMarker.appearAnimation = GMSMarkerAnimation.pop
+                        
                         if eastToWest {
+                            
                             self.departureMarker.groundAnchor = CGPoint(x: 1, y: 1)
-                            self.departureMarker.icon = UIImage(named: "whiteTakingOff50x50.png")
+                            let takeOffEastToWestImageView = UIImageView()
+                            takeOffEastToWestImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+                            takeOffEastToWestImageView.image = UIImage(named: "takeOffEastToWestImage.png")
+                            self.departureMarker.iconView = takeOffEastToWestImageView
+                            
                         } else {
+                            
                             self.departureMarker.groundAnchor = CGPoint(x: -0.1, y: 1)
-                            self.departureMarker.icon = UIImage(named: "whiteTakingOff50x50mirror.png")
+                            let takeOffWestToEastImageView = UIImageView()
+                            takeOffWestToEastImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+                            takeOffWestToEastImageView.image = UIImage(named: "takeOffWestToEastImage.png")
+                            self.departureMarker.iconView = takeOffWestToEastImageView
+                            
                         }
+                        
                         self.departureMarker.isTappable = true
                         self.departureMarker.map = self.googleMapsView
                         self.departureMarker.accessibilityLabel = "Departure Airport - \(index)"
@@ -3429,13 +3403,25 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         self.arrivalMarker = GMSMarker(position: arrivalPosition)
                         self.arrivalMarker.tracksInfoWindowChanges = true
                         self.arrivalMarker.appearAnimation = GMSMarkerAnimation.pop
+                        
                         if eastToWest {
+                            
                             self.arrivalMarker.groundAnchor = CGPoint(x: -0.1, y: 1)
-                            self.arrivalMarker.icon = UIImage(named: "whiteLanding50x50.png")
+                            let landingEastToWestImageView = UIImageView()
+                            landingEastToWestImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+                            landingEastToWestImageView.image = UIImage(named: "landingWestToEast.png")
+                            self.arrivalMarker.iconView = landingEastToWestImageView
+                            
                         } else {
+                            
                             self.arrivalMarker.groundAnchor = CGPoint(x: 1, y: 1)
-                            self.arrivalMarker.icon = UIImage(named: "whiteLanding50x50mirror.png")
+                            let landingWestToEastImageView = UIImageView()
+                            landingWestToEastImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+                            landingWestToEastImageView.image = UIImage(named: "landingEastToWest.png")
+                            self.arrivalMarker.iconView = landingWestToEastImageView
+                            
                         }
+                        
                         self.arrivalMarker.isTappable = true
                         self.arrivalMarker.map = self.googleMapsView
                         self.arrivalMarker.accessibilityLabel = "Arrival Airport - \(index)"
@@ -3477,20 +3463,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         DispatchQueue.main.async {
             UIImpactFeedbackGenerator().impactOccurred()
-        }
-    }
-    
-    func updateIcon() {
-        
-        if self.overlay != nil {
-            DispatchQueue.main.async {
-                self.overlay.map = nil
-                self.overlay = GMSGroundOverlay(position: self.position, icon: self.icon, zoomLevel: CGFloat(self.iconZoom))
-                self.overlay.bearing = self.bearing
-                self.overlay.accessibilityLabel = "Airplane Location, \(self.flightIndex!)"
-                self.overlay.isTappable = true
-                self.overlay.map = self.googleMapsView
-            }
         }
     }
     
@@ -3611,28 +3583,17 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         for (index, flight) in self.flights.enumerated() {
             getWeather(dictionary: flight, index: index)
         }
-        
-        if self.overlay != nil {
-            DispatchQueue.main.async {
-                self.overlay = GMSGroundOverlay(position: self.position, icon: UIImage(named: "noImage.png"), zoomLevel: CGFloat(self.googleMapsView.camera.zoom))
-                self.overlay.map = nil
-                self.icon = nil
-            }
+        DispatchQueue.main.async {
+            self.liveFlightMarker.map = nil
+            self.getAirportCoordinates(flight: self.flights[0], index: 0)
         }
-        getAirportCoordinates(flight: self.flights[0], index: 0)
+        
     }
     
     
     func parseFlightIDForTracking(index: Int) {
         
         print("parseFlightIDForTracking")
-        
-        if self.overlay != nil {
-            DispatchQueue.main.async {
-                self.overlay.map = nil
-                self.icon = nil
-            }
-        }
         
         let url = URL(string: "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flight/track/\(self.flightIDString!)?appId=16d11b16&appKey=821a18ad545a57408964a537526b1e87&includeFlightPlan=false&maxPositions=1&sourceType=derived")
         
@@ -3694,18 +3655,23 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                         if altitude != nil && latitude != nil && longitude != nil && speed != nil {
                                                 
                                             DispatchQueue.main.async {
+                                                
+                                                self.liveFlightMarker.map = nil
                                                 self.position = CLLocationCoordinate2DMake(latitude!, longitude!)
-                                                self.icon = UIImage(named: "300.png")
-                                                self.overlay = GMSGroundOverlay(position: self.position, icon: self.icon, zoomLevel: CGFloat(self.googleMapsView.camera.zoom))
-                                                self.overlay.bearing = self.bearing
-                                                self.overlay.accessibilityLabel = "Airplane Location, \(index)"
-                                                //self.flightIndex = index
-                                                self.overlay.isTappable = true
-                                                self.overlay.map = self.googleMapsView
-                                                self.updateFlightFirstTime = false
+                                                self.liveFlightMarker.position = self.position
+                                                self.liveFlightMarker.appearAnimation = GMSMarkerAnimation.pop
+                                                let liveFlightMarkerImageView = UIImageView()
+                                                liveFlightMarkerImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+                                                liveFlightMarkerImageView.image = UIImage(named: "airplaneTrackerImage.png")
+                                                self.liveFlightMarker.iconView = liveFlightMarkerImageView
+                                                self.liveFlightMarker.rotation = self.bearing
+                                                self.liveFlightMarker.isTappable = true
+                                                self.liveFlightMarker.accessibilityLabel = "Airplane Location, \(index)"
+                                                self.liveFlightMarker.map = self.googleMapsView
                                             }
                                         }
                                     }
+                                    
                                     DispatchQueue.main.async {
                                         self.activityIndicator.stopAnimating()
                                         self.blurEffectViewActivity.removeFromSuperview()
@@ -4024,16 +3990,70 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     func getSharedFlights() {
         
         if PFUser.current() != nil {
-            
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = true
+            }
             let sharedFlightquery = PFQuery(className: "SharedFlight")
-            
             sharedFlightquery.whereKey("shareToUsername", equalTo: (PFUser.current()?.username)!)
-            
-            do {
+            sharedFlightquery.findObjectsInBackground { (sharedFlights, error) in
                 
-                let sharedFlights = try sharedFlightquery.findObjects()
+                if error != nil {
+                    
+                    DispatchQueue.main.async {
+                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                    }
+                    displayAlert(viewController: self, title: "Error", message: "We had an error trying to fetch shared flights in the background, please try again later.")
+                    
+                } else {
+                    
+                    if sharedFlights != nil {
+                        
+                        let currentflightcount = self.flights.count
+                        
+                        if sharedFlights!.count > 0 {
+                            
+                            var sharedFromArray = [String]()
+                            
+                            for flight in sharedFlights! {
+                                
+                                //parse flight
+                                let flightDictionary = flight["flightDictionary"]
+                                let dictionary = flightDictionary as! NSDictionary
+                                print("shared flight = \(flight)")
+                                sharedFromArray.append(flight["shareFromUsername"] as! String)
+                                self.flights.append(dictionary as! [String:String])
+                                self.parseLeg2Only(dictionary: dictionary as! [String:String], index: self.flights.count - 1)
+                                UserDefaults.standard.set(self.flights, forKey: "flights")
+                                self.getWeather(dictionary: dictionary as! [String:String], index: self.flights.count - 1)
+                                
+                                flight.deleteInBackground(block: { (success, error) in
+                                    
+                                    if error != nil {
+                                        print("error = \(error as Any)")
+                                    } else {
+                                        print("flight deleted from parse database")
+                                    }
+                                })
+                            }
+                            
+                            DispatchQueue.main.async {
+                                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                                if currentflightcount == 0 {
+                                    self.getAirportCoordinates(flight: self.flights[0], index: 0)
+                                }
+                                let unique = Array(Set(sharedFromArray))
+                                var string = (unique.description).replacingOccurrences(of: "[", with: "")
+                                string = string.replacingOccurrences(of: "]", with: "")
+                                
+                                displayAlert(viewController: self, title: "Receieved flights", message: "\(string) has shared flights with you, tap the next flight button to toggle between the flights or tap the table icon to see them all.")
+                            }
+                            
+                        }
+                    }
+               }
+            }
                 
-                if let pfObjects = sharedFlights as? [PFObject] {
+                /*if let pfObjects = sharedFlights as? [PFObject] {
                     
                     if pfObjects.count > 0 {
                         
@@ -4090,10 +4110,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                             }
                         }
                     }
-                }
-            } catch {
-                print("could not get shared flights")
-            }
+                }*/
+            
         }
     }
     
