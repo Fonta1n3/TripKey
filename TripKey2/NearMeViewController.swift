@@ -15,6 +15,7 @@ import StoreKit
 import Foundation
 import WatchConnectivity
 import UserNotifications
+import CoreData
 
 class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate, UITextFieldDelegate, UITextViewDelegate, UISearchBarDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, WCSessionDelegate {
     func sessionDidBecomeInactive(_ session: WCSession) {
@@ -30,7 +31,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
     }
     
-    var isConnected = Bool()
     let liveFlightMarker = GMSMarker()
     let nextFlightButton = UIButton()
     var didTapMarker = Bool()
@@ -381,7 +381,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     self.arrivalInfoWindow.removeFromSuperview()
                     self.blurEffectViewFlightInfoWindowTop.removeFromSuperview()
                     self.blurEffectViewFlightInfoWindowBottom.removeFromSuperview()
-                    //self.addButtons()
                     print("swiped down")
                 }
                 
@@ -635,15 +634,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             DispatchQueue.main.async {
                     
                     let alert = UIAlertController(title: "Add flights?" , message: "", preferredStyle: UIAlertControllerStyle.alert)
-                    
                     alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
-                        
                         self.performSegue(withIdentifier: "goToAddFlights", sender: self)
-                        
                     }))
-                    
                     alert.addAction(UIAlertAction(title: "No", style: .default, handler: { (action) in }))
-                    
                     self.present(alert, animated: true, completion: nil)
                 }
                 
@@ -663,46 +657,41 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         view.addSubview(activityIndicator)
         activityIndicator.isUserInteractionEnabled = true
         
-            DispatchQueue.main.async {
-                
-                self.googleMapsView.delegate = self
-                self.locationManager.startUpdatingLocation()
-                self.locationManager.startUpdatingHeading()
-                self.googleMapsView.settings.rotateGestures = false
-                self.googleMapsView.settings.tiltGestures = false
-                self.googleMapsView.isMyLocationEnabled = true
-                self.googleMapsView.isBuildingsEnabled = true
-                self.googleMapsView.settings.compassButton = false
-                self.googleMapsView.accessibilityElementsHidden = false
-                self.googleMapsView.mapType = GMSMapViewType.hybrid
-                self.view.addSubview(self.googleMapsView)
-                self.addButtons()
-                if self.flights.count > 0 {
-                    self.flightIndex = 0
-                    self.resetFlightZeroViewdidappear()
-                } else {
-                    if let longitude = UserDefaults.standard.object(forKey: "usersLongitude") {
-                        let latitude = UserDefaults.standard.object(forKey: "usersLatitude")
-                        let userLocation = CLLocationCoordinate2DMake(latitude as! CLLocationDegrees, longitude as! CLLocationDegrees)
-                        CATransaction.begin()
-                        CATransaction.setValue(Int(1), forKey: kCATransactionAnimationDuration)
-                        self.googleMapsView.animate(toLocation: userLocation)
-                        CATransaction.commit()
-                    }
-                }
-            }
-           
-            if (PFUser.current() != nil) {
-                self.userNames.removeAll()
-                print("User already logged in with Parse")
-            } else {
-                print("user is nil")
-            }
+        googleMapsView.delegate = self
+        locationManager.startUpdatingLocation()
+        locationManager.startUpdatingHeading()
+        googleMapsView.settings.rotateGestures = false
+        googleMapsView.settings.tiltGestures = false
+        googleMapsView.isMyLocationEnabled = true
+        googleMapsView.isBuildingsEnabled = true
+        googleMapsView.settings.compassButton = false
+        googleMapsView.accessibilityElementsHidden = false
+        googleMapsView.mapType = GMSMapViewType.hybrid
+        view.addSubview(self.googleMapsView)
+        addButtons()
         
-        print("how many times used = \(howManyTimesUsed.count)")
+        if flights.count > 0 {
+            self.flightIndex = 0
+            self.resetFlightZeroViewdidappear()
+        } else {
+            if let longitude = UserDefaults.standard.object(forKey: "usersLongitude") {
+                let latitude = UserDefaults.standard.object(forKey: "usersLatitude")
+                let userLocation = CLLocationCoordinate2DMake(latitude as! CLLocationDegrees, longitude as! CLLocationDegrees)
+                CATransaction.begin()
+                CATransaction.setValue(Int(1), forKey: kCATransactionAnimationDuration)
+                self.googleMapsView.animate(toLocation: userLocation)
+                CATransaction.commit()
+            }
+        }
+           
+        if (PFUser.current() != nil) {
+            self.userNames.removeAll()
+        }
+        
         if howManyTimesUsed.count % 10 == 0 {
             self.askForReview()
         }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -717,21 +706,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     override func viewDidAppear(_ animated: Bool) {
         
         print("viewdidappear")
-        
-        if flights.count > 1 {
-            self.nextFlightButton.removeFromSuperview()
-            
-            if self.flightIndex + 1 == self.flights.count {
-                DispatchQueue.main.async {
-                    self.nextFlightButton.setTitle("Show First Flight", for: .normal)
-                }
-            } else {
-                DispatchQueue.main.async {
-                    self.nextFlightButton.setTitle("Show Next Flight", for: .normal)
-                }
-            }
-            self.googleMapsView.addSubview(self.nextFlightButton)
-        }
         
         getSharedFlights()
         
@@ -796,18 +770,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         }
     }
     
-    func rateApp(appId: String, completion: @escaping ((_ success: Bool)->())) {
-        guard let url = URL(string : "http://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=\(appId)&pageNumber=0&sortOrdering=2&type=Purple+Software&mt=8") else {
-            completion(false)
-            return
-        }
-        guard #available(iOS 10, *) else {
-            completion(UIApplication.shared.openURL(url))
-            return
-        }
-        UIApplication.shared.open(url, options: [:], completionHandler: completion)
-    }
-    
     func removeButtons() {
         
        UIView.animate(withDuration: 0.5, animations: {
@@ -854,6 +816,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         self.liveFlightMarker.map = nil
         
         func updateLabelText() {
+            
             if self.flightIndex + 1 == self.flights.count {
                 DispatchQueue.main.async {
                     self.nextFlightButton.setTitle("Show First Flight", for: .normal)
@@ -863,9 +826,24 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     self.nextFlightButton.setTitle("Show Next Flight", for: .normal)
                 }
             }
+            if self.flights.count == 1 {
+                DispatchQueue.main.async {
+                    self.nextFlightButton.setTitle("Update Flight", for: .normal)
+                }
+            } else if flights.count == 0 {
+                DispatchQueue.main.async {
+                    self.nextFlightButton.setTitle("Add a Flight", for: .normal)
+                }
+            }
         }
         
-        if self.flights.count > self.flightIndex + 1 {
+        if self.flights.count == 0 {
+            
+            DispatchQueue.main.async {
+                self.performSegue(withIdentifier: "goToAddFlights", sender: self)
+            }
+            
+        } else if self.flights.count > self.flightIndex + 1 {
             
             parseLeg2Only(dictionary: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
             self.getAirportCoordinates(flight: self.flights[self.flightIndex + 1], index: self.flightIndex + 1)
@@ -911,24 +889,29 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         let fitFlightsFrame = CGRect(x: googleMapsView.frame.maxX - 60, y: googleMapsView.frame.maxY - 80, width: 50, height: 50)
         addCircleBlurBackground(frame: fitFlightsFrame, button: fitFlightsButton)
         
-            let circleBlurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
-            circleBlurView.removeFromSuperview()
-            circleBlurView.frame = CGRect(x: (googleMapsView.bounds.maxX / 2) - 70, y: googleMapsView.bounds.maxY - 45, width: 140, height: 35)
-            circleBlurView.clipsToBounds = true
-            circleBlurView.layer.cornerRadius = 18
-            nextFlightButton.frame = CGRect(x: (googleMapsView.bounds.maxX / 2) - 70, y: googleMapsView.bounds.maxY - 45, width: 140, height: 35)
-            nextFlightButton.setTitle("Show Next Flight", for: .normal)
-            nextFlightButton.setTitleColor(UIColor.white, for: .normal)
-            nextFlightButton.titleLabel?.font = UIFont.init(name: "HelveticaNeue-Thin", size: 15)
-            nextFlightButton.backgroundColor = UIColor.clear
-            nextFlightButton.showsTouchWhenHighlighted = true
-            nextFlightButton.addTarget(self, action: #selector(nextFlight), for: .touchUpInside)
-            circleBlurView.contentView.addSubview(nextFlightButton)
-            googleMapsView.addSubview(circleBlurView)
-            circleBlurView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
-                circleBlurView.transform = .identity
-            })
+        let circleView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
+        circleView.frame = CGRect(x: (googleMapsView.bounds.maxX / 2) - 70, y: googleMapsView.bounds.maxY - 55, width: 140, height: 35)
+        circleView.clipsToBounds = true
+        circleView.layer.cornerRadius = 18
+        nextFlightButton.frame = CGRect(x: 0, y: 0, width: 140, height: 35)
+        if flights.count == 0 {
+            nextFlightButton.setTitle("Add Flight", for: .normal)
+        } else if flights.count == 1 {
+            nextFlightButton.setTitle("Update Flight", for: .normal)
+        } else {
+            nextFlightButton.setTitle("Next Flight", for: .normal)
+        }
+        nextFlightButton.addTarget(self, action: #selector(nextFlight), for: .touchUpInside)
+        nextFlightButton.setTitleColor(UIColor.white, for: .normal)
+        nextFlightButton.titleLabel?.font = UIFont.init(name: "HelveticaNeue-Thin", size: 15)
+        nextFlightButton.backgroundColor = UIColor.clear
+        nextFlightButton.showsTouchWhenHighlighted = true
+        googleMapsView.addSubview(circleView)
+        circleView.contentView.addSubview(nextFlightButton)
+        circleView.transform = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 2.0, options: .allowUserInteraction, animations: {
+            circleView.transform = .identity
+        })
      }
     
     @objc func showTable() {
@@ -2734,11 +2717,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         print("deleteFlight")
         
         let airlineCode = self.flights[self.flightIndex]["Airline Code"]!
-        let flightNumber = self.flights[self.flightIndex]["Flight Number"]!
+        let number = self.flights[self.flightIndex]["Flight Number"]!
         let publishedDeparture = self.flights[self.flightIndex]["Published Departure"]!
-        let estimatedDeparture = self.flights[self.flightIndex]["Estimated Gate Departure"]!
         let publishedArrival = self.flights[self.flightIndex]["Published Arrival"]!
-        let estimatedArrival = self.flights[self.flightIndex]["Estimated Gate Arrival"]!
+        let flightnumber = airlineCode + number
         
         DispatchQueue.main.async {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -2746,45 +2728,30 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             alert.addAction(UIAlertAction(title: NSLocalizedString("Delete flight \(self.flights[self.flightIndex]["Airline Code"]!)\(self.flights[self.flightIndex]["Flight Number"]!)", comment: ""), style: .destructive, handler: { (action) in
                 
                 let center = UNUserNotificationCenter.current()
-                
                 center.delegate = self as? UNUserNotificationCenterDelegate
-                
                 center.getPendingNotificationRequests(completionHandler: { (notifications) in
-                    
                     
                     for notification in notifications {
                         
+                        let id = notification.identifier
+                        
                         if self.flights.count > 0 {
                             
-                            if notification.identifier == "\(airlineCode)\(flightNumber)\(publishedDeparture)1HrNotification" || notification.identifier == "\(airlineCode)\(flightNumber)\(estimatedDeparture)1HrNotification" {
-                                
-                                center.removePendingNotificationRequests(withIdentifiers: [notification.identifier])
-                                print("deleted notification \n\(notification.identifier)")
-                                
-                            } else if notification.identifier == "\(airlineCode)\(flightNumber)\(publishedDeparture)2HrNotification" || notification.identifier == "\(airlineCode)\(flightNumber)\(estimatedDeparture)2HrNotification" {
-                                
-                                center.removePendingNotificationRequests(withIdentifiers: [notification.identifier])
-                                print("deleted notification \n\(notification.identifier)")
-                                
-                            } else if notification.identifier == "\(airlineCode)\(flightNumber)\(publishedDeparture)4HrNotification" || notification.identifier == "\(airlineCode)\(flightNumber)\(estimatedDeparture)4HrNotification" {
-                                
-                                center.removePendingNotificationRequests(withIdentifiers: [notification.identifier])
-                                print("deleted notification \n\(notification.identifier)")
-                                
-                            } else if notification.identifier == "\(airlineCode)\(flightNumber)\(publishedDeparture)48HrNotification" || notification.identifier == "\(self.flights[self.flightIndex]["Airline Code"]!)\(airlineCode)\(flightNumber)\(estimatedDeparture)48HrNotification" {
-                                
-                                center.removePendingNotificationRequests(withIdentifiers: [notification.identifier])
-                                print("deleted notification \n\(notification.identifier)")
-                                
-                            } else if notification.identifier == "\(airlineCode)\(flightNumber)\(publishedDeparture)TakeOffNotification" || notification.identifier == "\(airlineCode)\(flightNumber)\(estimatedDeparture)TakeOffNotification" {
-                                
-                                center.removePendingNotificationRequests(withIdentifiers: [notification.identifier])
-                                print("deleted notification \n\(notification.identifier)")
-                                
-                            } else if notification.identifier == "\(airlineCode)\(flightNumber)\(publishedArrival)LandingNotification" || notification.identifier == "\(self.flights[self.flightIndex]["Airline Code"]!)\(airlineCode)\(flightNumber)\(estimatedArrival)LandingNotification" {
-                                
-                                center.removePendingNotificationRequests(withIdentifiers: [notification.identifier])
-                                print("deleted notification \n\(notification.identifier)")
+                            switch id {
+                            case "\(flightnumber)\(publishedDeparture)1HrNotification":
+                                center.removePendingNotificationRequests(withIdentifiers: [id])
+                            case "\(flightnumber)\(publishedDeparture)2HrNotification":
+                                center.removePendingNotificationRequests(withIdentifiers: [id])
+                            case "\(flightnumber)\(publishedDeparture)4HrNotification":
+                                center.removePendingNotificationRequests(withIdentifiers: [id])
+                            case "\(flightnumber)\(publishedDeparture)48HrNotification":
+                                center.removePendingNotificationRequests(withIdentifiers: [id])
+                            case "\(flightnumber)\(publishedDeparture)TakeOffNotification":
+                                center.removePendingNotificationRequests(withIdentifiers: [id])
+                            case "\(flightnumber)\(publishedArrival)LandingNotification":
+                                center.removePendingNotificationRequests(withIdentifiers: [id])
+                            default:
+                                break
                             }
                         }
                     }
@@ -2805,7 +2772,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                             self.blurEffectViewFlightInfoWindowTop.removeFromSuperview()
                             self.blurEffectViewFlightInfoWindowBottom.removeFromSuperview()
                             self.infoWindowIsVisible = false
-                            //self.addButtons()
                         }
                     }
                     
@@ -2816,6 +2782,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     } else {
                         
                         DispatchQueue.main.async {
+                            
+                            self.nextFlightButton.setTitle("Add a Flight", for: .normal)
+                            
                             for marker in self.departureMarkerArray {
                                 marker.map = nil
                             }
@@ -2829,7 +2798,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                             }
                             self.routePolylineArray.removeAll()
                             
-                            self.nextFlightButton.removeFromSuperview()
                         }
                         
                     }
@@ -3309,22 +3277,27 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             DispatchQueue.main.async {
                 
                 if self.flights.count > 1 {
-                    self.nextFlightButton.removeFromSuperview()
                     
                     if self.flightIndex + 1 == self.flights.count {
+                        
                         DispatchQueue.main.async {
                             self.nextFlightButton.setTitle("Show First Flight", for: .normal)
                         }
+                        
                     } else {
+                        
                         DispatchQueue.main.async {
                             self.nextFlightButton.setTitle("Show Next Flight", for: .normal)
                         }
+                        
                     }
-                    self.googleMapsView.addSubview(self.nextFlightButton)
-                } else {
+                    
+                } else if self.flights.count == 1 {
+                    
                     DispatchQueue.main.async {
-                        self.nextFlightButton.setTitle("Show First Flight", for: .normal)
+                        self.nextFlightButton.setTitle("Update Flight", for: .normal)
                     }
+                    
                 }
                 
                 for marker in self.departureMarkerArray {
@@ -4052,66 +4025,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     }
                }
             }
-                
-                /*if let pfObjects = sharedFlights as? [PFObject] {
-                    
-                    if pfObjects.count > 0 {
-                        
-                        DispatchQueue.main.async {
-                            
-                            var senderUsername = "unknown"
-                            
-                            if let username = pfObjects[0]["shareFromUsername"] as? String {
-                                
-                                senderUsername = username
-                                
-                            }
-                            
-                            let alertController = UIAlertController(title: "\(senderUsername) " + NSLocalizedString("shared a flight with you", comment: ""), message: "", preferredStyle: .alert)
-                            
-                            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                            
-                            self.present(alertController, animated: true, completion: nil)
-                            
-                        }
-                        
-                        for flight in pfObjects {
-                            
-                            let getSharedFlightQuery = PFQuery(className: "SharedFlight")
-                            
-                            getSharedFlightQuery.whereKey("shareToUsername", equalTo: (PFUser.current()?.username)!)
-                            
-                            getSharedFlightQuery.findObjectsInBackground { (sharedFlights, error) in
-                                
-                                if error != nil {
-                                    
-                                    print("error = \(error as Any)")
-                                    
-                                } else {
-                                    
-                                    //parse flight
-                                    UIApplication.shared.isNetworkActivityIndicatorVisible = true
-                                    let flightDictionary = flight["flightDictionary"]
-                                    let dictionary = flightDictionary as! NSDictionary
-                                    self.flights.append(dictionary as! [String:String])
-                                    self.parseLeg2Only(dictionary: dictionary as! [String:String], index: self.flights.count - 1)
-                                    UserDefaults.standard.set(self.flights, forKey: "flights")
-                                    self.getWeather(dictionary: dictionary as! [String:String], index: self.flights.count - 1)
-                                    
-                                    flight.deleteInBackground(block: { (success, error) in
-                                        
-                                        if error != nil {
-                                            print("error = \(error as Any)")
-                                        } else {
-                                            print("flight deleted")
-                                        }
-                                    })
-                                }
-                            }
-                        }
-                    }
-                }*/
-            
         }
     }
     
@@ -4141,6 +4054,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         }
         return stringToReturn
     }
+    
 }
 
 

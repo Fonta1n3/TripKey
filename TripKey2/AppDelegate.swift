@@ -54,39 +54,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         })
         
         Parse.initialize(with: parseConfiguration)
-        
-        //GMSPlacesClient.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
         GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
-        
-        
-        /*Messaging.messaging().connect { (error) in
-            if error != nil {
-                print("Unable to connect with FCM. \(String(describing: error))")
-            } else {
-                print("Connected to FCM.")
-            }
-            
-        }*/
-        
         Messaging.messaging().shouldEstablishDirectChannel = true
-        
         
         // For iOS 10 display notification (sent via APNS)
         UNUserNotificationCenter.current().delegate = self
-        
         let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
         UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
-        
         application.registerForRemoteNotifications()
         
         let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
         let category = UNNotificationCategory(identifier: "statusUpdates", actions: [action], intentIdentifiers: [], options: [])
         UNUserNotificationCenter.current().setNotificationCategories([category])
-        
-        
-        
-        //GADMobileAds.configure(withApplicationID: "ca-app-pub-1006371177832056~3031560522")
-        
         
         
         
@@ -132,105 +111,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         return true
     }
-    
-    
-    /*func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        
-        
-        
-        FirebaseApp.configure()
-        
-        // Enable storing and querying data from Local Datastore.
-        // Remove this line if you don't want to use Local Datastore features or want to use cachePolicy.
-        Parse.enableLocalDatastore()
-        
-        let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in
-            
-            ParseMutableClientConfiguration.applicationId = "da4b113f84f8d2467b2c237a63778aa49f29dcee"
-            ParseMutableClientConfiguration.clientKey = "e1d6ba3797e8364252e3cfaa546520ae2c268ed0"
-            ParseMutableClientConfiguration.server = "http://ec2-54-202-119-191.us-west-2.compute.amazonaws.com:80/parse"
-            
-            
-        })
-        
-        Parse.initialize(with: parseConfiguration)
-        
-        //GMSPlacesClient.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
-        GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
-        
-        
-        Messaging.messaging().connect { (error) in
-            if error != nil {
-                print("Unable to connect with FCM. \(String(describing: error))")
-            } else {
-                print("Connected to FCM.")
-            }
-            
-        }
-        
-        
-        // For iOS 10 display notification (sent via APNS)
-        UNUserNotificationCenter.current().delegate = self
-        
-        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-        UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
-        
-        application.registerForRemoteNotifications()
-        
-        let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
-        let category = UNNotificationCategory(identifier: "statusUpdates", actions: [action], intentIdentifiers: [], options: [])
-        UNUserNotificationCenter.current().setNotificationCategories([category])
-        
-        
-        
-        //GADMobileAds.configure(withApplicationID: "ca-app-pub-1006371177832056~3031560522")
-        
-        
-        
-        
-        // ****************************************************************************
-        // Uncomment and fill in with your Parse credentials:
-        // Parse.setApplicationId("your_application_id", clientKey: "your_client_key")
-        //
-        // If you are using Facebook, uncomment and add your FacebookAppID to your bundle's plist as
-        // described here: https://developers.facebook.com/docs/getting-started/facebook-sdk-for-ios/
-        // Uncomment the line inside ParseStartProject-Bridging-Header and the following line here:
-        // PFFacebookUtils.initializeFacebook()
-        // ****************************************************************************
-        
-        //PFUser.enableAutomaticUser()
-        
-        let defaultACL = PFACL();
-        
-        // If you would like all objects to be private by default, remove this line.
-        defaultACL.hasPublicReadAccess = true
-        //defaultACL.setPublicWriteAccess = true
-        defaultACL.hasPublicWriteAccess = true
-        
-        PFACL.setDefault(defaultACL, withAccessForCurrentUser: true)
-        
-        if application.applicationState != UIApplicationState.background {
-            // Track an app open here if we launch with a push, unless
-            // "content_available" was used to trigger a background push (introduced in iOS 7).
-            // In that case, we skip tracking here to avoid double counting the app-open.
-            /*
-             let preBackgroundPush = !application.responds(to: #selector(getter: UIApplication.backgroundRefreshStatus))
-             let oldPushHandlerOnly = !self.responds(to: #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:)))
-             var noPushPayload = false;
-             if let options = launchOptions {
-             noPushPayload = options[UIApplicationLaunchOptionsRemoteNotificationKey] != nil;
-             }
-             if (preBackgroundPush || oldPushHandlerOnly || noPushPayload) {
-             PFAnalytics.trackAppOpened(launchOptions: launchOptions)
-             }
-             */
-        }
-        
-        
-        
-        return true
-        
-    }*/
     
     @objc(messaging:didReceiveRegistrationToken:) func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         
