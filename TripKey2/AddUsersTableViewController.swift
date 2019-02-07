@@ -15,7 +15,7 @@ class AddUsersTableViewController: UITableViewController, UISearchBarDelegate {
     @IBOutlet var autoCompleteTable: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     var autoComplete = [String]()
-    var followedUserDictionaryArray = [Dictionary<String,Any>]()
+    //var followedUserDictionaryArray = [Dictionary<String,Any>]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,9 +23,9 @@ class AddUsersTableViewController: UITableViewController, UISearchBarDelegate {
         searchBar.delegate = self
         searchBar.becomeFirstResponder()
         
-        if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
+        /*if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
             self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
-        }
+        }*/
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -63,21 +63,21 @@ class AddUsersTableViewController: UITableViewController, UISearchBarDelegate {
                         
                         if success == true {
                             
-                            let dictionary = [
+                            /*let dictionary = [
                                 
                                 "Username":"\(selectedUser)",
                                 "Profile Image":""
                                 
-                            ]
+                            ]*/
                             
-                            self.followedUserDictionaryArray.append(dictionary)
+                            //self.followedUserDictionaryArray.append(dictionary)
                             
-                            for (index, _) in self.followedUserDictionaryArray.enumerated() {
+                            /*for (index, _) in self.followedUserDictionaryArray.enumerated() {
                                 self.followedUserDictionaryArray[index]["Profile Image"] = ""
-                            }
+                            }*/
                             
-                            UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
-                            
+                            //UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
+                            saveFollowedUserToCoreData(viewController: self, username: selectedUser)
                             self.autoComplete.removeAll()
                             self.autoCompleteTable.reloadData()
                             self.searchBar.text = ""

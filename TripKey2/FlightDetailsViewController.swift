@@ -24,7 +24,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
     var importantChanges:Bool!
     var notifyTripContacts:Bool!
     var passportVisaExpirations:Bool!
-    var travelVaccinationExpirations:Bool!
     var dictionaryIataArray:[Dictionary<String,String>]! = []
     var dictionaryIcaoArray:[Dictionary<String,String>]! = []
     var fsCode = ""
@@ -465,17 +464,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         autoSuggestTable.tableFooterView = UIView()
         autoSuggestTable.reloadData()
         
-        if UserDefaults.standard.bool(forKey: "twoHours") != true && UserDefaults.standard.bool(forKey: "landing") != true && UserDefaults.standard.bool(forKey: "takeOff") != true && UserDefaults.standard.bool(forKey: "fourHours") != true && UserDefaults.standard.bool(forKey: "oneHour") != true && UserDefaults.standard.bool(forKey: "twoDays") != true {
-            
-            UserDefaults.standard.set(true, forKey: "landing")
-            UserDefaults.standard.set(true, forKey: "takeOff")
-            UserDefaults.standard.set(true, forKey: "fourHours")
-            UserDefaults.standard.set(true, forKey: "twoHours")
-            UserDefaults.standard.set(true, forKey: "oneHour")
-            UserDefaults.standard.set(true, forKey: "twoDays")
-            
-        }
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -627,7 +615,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     break
                                                 }
                                                 
-                                                
                                             }
                                             
                                         }
@@ -672,17 +659,17 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             flightNumber = (flight as! NSDictionary)["flightNumber"] as! String
                                             departureDate = (flight as! NSDictionary)["departureTime"] as! String
                                             convertedDepartureDate = convertDateTime(date: departureDate)
-                                            departureDateUtc = getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
-                                            departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
-                                            departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
-                                            urlDepartureDate = self.convertToURLDate(date: departureDate)
+                                            departureDateUtc = getUtcTime(time: departureDate, utcOffset: departureUtcOffset)
+                                            //departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
+                                            //departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
+                                            urlDepartureDate = convertToURLDate(date: departureDate)
                                             
                                             arrivalDate = (flight as! NSDictionary)["arrivalTime"] as! String
                                             convertedArrivalDate = convertDateTime(date: arrivalDate)
-                                            arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
-                                            arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
-                                            urlArrivalDate = self.convertToURLDate(date: arrivalDate)
-                                            arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
+                                            arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: arrivalUtcOffset)
+                                            //arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
+                                            urlArrivalDate = convertToURLDate(date: arrivalDate)
+                                            //arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
                                             
                                             if let departureTerminalCheck = (flight as! NSDictionary)["departureTerminal"] as? String {
                                                 
@@ -733,6 +720,8 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                             departureLatitude = ((departureAirportDic as! NSDictionary)["latitude"] as! Double)
                                                             departureCity = (departureAirportDic as! NSDictionary)["city"] as! String
                                                             departureUtcOffset = ((departureAirportDic as! NSDictionary)["utcOffsetHours"] as! Double)
+                                                            
+                                                            
                                                             
                                                             
                                                                 
@@ -821,16 +810,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                                     "Scheduled Runway Arrival Whole Number":"",
                                                                     "Estimated Gate Arrival Whole Number":"",//new after here
                                                                     "Scheduled Gate Departure UTC":"",
-                                                                    "Estimated Gate Departure UTC":"",
-                                                                    
-                                                                    //add notifications
-                                                                    "48 Hour Notification":"\(UserDefaults.standard.bool(forKey: "twoDays"))",
-                                                                    "4 Hour Notification":"\(UserDefaults.standard.bool(forKey: "fourHours"))",
-                                                                    "2 Hour Notification":"\(UserDefaults.standard.bool(forKey: "twoHours"))",
-                                                                    "1 Hour Notification":"\(UserDefaults.standard.bool(forKey: "oneHour"))",
-                                                                    "Taking Off Notification":"\(UserDefaults.standard.bool(forKey: "takeOff"))",
-                                                                    "Landing Notification":"\(UserDefaults.standard.bool(forKey: "landing"))"
-
+                                                                    "Estimated Gate Departure UTC":""
                                                                     
                                                                 ]
                                                             
@@ -870,7 +850,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     self.sortFlightsbyDepartureDate()
                                                     
                                                     let departureDate = scheduledFlights[index]["Published Departure"]!
-                                                    let utcOffset = scheduledFlights[index]["Departure Airport UTC Offset"]!
+                                                    let utcOffset = Double(scheduledFlights[index]["Departure Airport UTC Offset"]!)!
                                                     let departureCity = scheduledFlights[index]["Departure City"]!
                                                     let arrivalCity = scheduledFlights[index]["Arrival City"]!
                                                     
@@ -880,60 +860,49 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     let arrivalAirport = "\(scheduledFlights[index]["Arrival Airport Code"]!)"
                                                     
                                                     let arrivalDate = "\(scheduledFlights[index]["Published Arrival"]!)"
-                                                    let arrivalOffset = "\(scheduledFlights[index]["Arrival Airport UTC Offset"]!)"
+                                                    let arrivalOffset = Double(scheduledFlights[index]["Arrival Airport UTC Offset"]!)!
                                                     
                                                     let delegate = UIApplication.shared.delegate as? AppDelegate
                                                     
-                                                    if scheduledFlights[index]["4 Hour Notification"] == "true" {
+                                                    delegate?.schedule4HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                        delegate?.schedule4HrNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                                    delegate?.schedule1HourNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                    }
                                                     
-                                                    if scheduledFlights[index]["1 Hour Notification"] == "true" {
+                                                    delegate?.schedule2HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                        delegate?.schedule1HourNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                    }
                                                     
-                                                    if scheduledFlights[index]["2 Hour Notification"] == "true" {
+                                                    delegate?.schedule48HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                        delegate?.schedule2HrNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                    }
                                                     
-                                                    if scheduledFlights[index]["48 Hour Notification"] == "true" {
-                                                        
-                                                        delegate?.schedule48HrNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                    }
+                                                    delegate?.scheduleTakeOffNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                     
-                                                    if scheduledFlights[index]["Taking Off Notification"] == "true" {
                                                     
-                                                    delegate?.scheduleTakeOffNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                                    delegate?.scheduleLandingNotification(arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
                                                         
-                                                    }
-                                                    
-                                                    if scheduledFlights[index]["Landing Notification"] == "true" {
-                                                    
-                                                    delegate?.scheduleLandingNotification(estimatedArrival: "", arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                        
-                                                    }
                                                     
                                                     self.airlineCode.text = ""
                                                     self.flightNumber.text = ""
                                                     self.sortFlightsbyDepartureDate()
-                                                    UserDefaults.standard.set(self.flights, forKey: "flights")
+                                                    
+                                                    let id = departureDate + flightNumber
+                                                    
+                                                    DispatchQueue.main.async {
+                                                        
+                                                        let success = saveFlight(viewController: self, departureAirport: departureAirportCode, departureLat: departureLatitude, departureLon: departureLongitude, arrivalLat: arrivalLatitude, arrivalLon: arrivalLongitude, airlineCode: airlineCode, arrivalAirportCode: arrivalAirportCode, arrivalCity: arrivalCity, arrivalDate: arrivalDate, arrivalGate: arrivalGate, arrivalTerminal: arrivalTerminal, arrivalUtcOffset: arrivalUtcOffset, baggageClaim: "", departureCity: departureCity, departureGate: departureGate, departureTerminal: departureTerminal, departureTime: departureDate, departureUtcOffset: departureUtcOffset, flightDuration: "", flightNumber: flightNumber, flightStatus: "", primaryCarrier: airlineName, flightEquipment: aircraft, identifier: id, phoneNumber: phoneNumber, publishedDepartureUtc: departureDateUtc, urlArrivalDate: urlArrivalDate, publishedDeparture: departureDate, publishedArrival: arrivalDate)
+                                                        
+                                                        if success {
+                                                            print("saved new flight to coredata")
+                                                        }
+                                                        
+                                                    }
                                                     
                                                     let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
                                                     
                                                     alert.addAction(UIAlertAction(title: NSLocalizedString("Finished Adding Flights", comment: ""), style: .default, handler: { (action) in
                                                         
                                                         self.performSegue(withIdentifier: "goToNearMe", sender: self)
-                                                        
-                                                        
                                                         
                                                     }))
                                                     
@@ -977,8 +946,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             departureAirportCode = leg0Check["departureAirportFsCode"] as! String
                                             arrivalAirportCode = leg0Check["arrivalAirportFsCode"]! as! String
                                             
-                                        
-                                        
                                             //checks for optional terminal and gate info
                                             if let departureTerminalCheck = leg0Check["departureTerminal"] as? String {
                                                 
@@ -999,7 +966,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                 
                                                 arrivalGate = arrivalGateCheck
                                             }
-                                            
                                             
                                             //assigns correct airports to flight
                                             if departureAirportCode == airport1FsCode {
@@ -1036,23 +1002,22 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             arrivalCity = arrivalAirport["city"] as! String
                                             arrivalUtcOffset = (arrivalAirport["utcOffsetHours"] as! Double)
                                             
-                                            
                                             airlineCode = leg0Check["carrierFsCode"] as! String
                                             flightNumber = leg0Check["flightNumber"] as! String
                                             
                                             departureDate = leg0Check["departureTime"] as! String
                                             convertedDepartureDate = convertDateTime(date: departureDate)
-                                            departureDateUtc = getUtcTime(time: departureDate, utcOffset: String(departureUtcOffset))
-                                            departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
-                                            departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
-                                            urlDepartureDate = self.convertToURLDate(date: departureDate)
+                                            departureDateUtc = getUtcTime(time: departureDate, utcOffset: departureUtcOffset)
+                                            //departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
+                                            //departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
+                                            urlDepartureDate = convertToURLDate(date: departureDate)
                                             
                                             arrivalDate = leg0Check["arrivalTime"] as! String
                                             convertedArrivalDate = convertDateTime(date: arrivalDate)
-                                            arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: String(arrivalUtcOffset))
-                                            arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
-                                            urlArrivalDate = self.convertToURLDate(date: arrivalDate)
-                                            arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
+                                            arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: arrivalUtcOffset)
+                                            //arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
+                                            urlArrivalDate = convertToURLDate(date: arrivalDate)
+                                            //arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
                                             
                                             leg1 = [
                                                 
@@ -1139,15 +1104,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                 "Scheduled Runway Arrival Whole Number":"",
                                                 "Estimated Gate Arrival Whole Number":"",
                                                 "Scheduled Gate Departure UTC":"",
-                                                "Estimated Gate Departure UTC":"",
-                                                
-                                                //add notifications
-                                                "48 Hour Notification":"\(UserDefaults.standard.bool(forKey: "twoDays"))",
-                                                "4 Hour Notification":"\(UserDefaults.standard.bool(forKey: "fourHours"))",
-                                                "2 Hour Notification":"\(UserDefaults.standard.bool(forKey: "twoHours"))",
-                                                "1 Hour Notification":"\(UserDefaults.standard.bool(forKey: "oneHour"))",
-                                                "Taking Off Notification":"\(UserDefaults.standard.bool(forKey: "takeOff"))",
-                                                "Landing Notification":"\(UserDefaults.standard.bool(forKey: "landing"))"
+                                                "Estimated Gate Departure UTC":""
                                                 
                                             ]
                                             
@@ -1178,7 +1135,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     self.sortFlightsbyDepartureDate()
                                                     
                                                     let departureDate = leg1["Published Departure"]!
-                                                    let utcOffset = leg1["Departure Airport UTC Offset"]!
+                                                    let utcOffset = Double(leg1["Departure Airport UTC Offset"]!)!
                                                     let departureCity = leg1["Departure City"]!
                                                     let arrivalCity = leg1["Arrival City"]!
                                                     let departingTerminal = "\(leg1["Airport Departure Terminal"]!)"
@@ -1187,68 +1144,37 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     let arrivalAirport = "\(leg1["Arrival Airport Code"]!)"
                                                     
                                                     let arrivalDate = leg1["Published Arrival"]!
-                                                    let arrivalOffset = leg1["Arrival Airport UTC Offset"]!
+                                                    let arrivalOffset = Double(leg1["Arrival Airport UTC Offset"]!)!
                                                     
                                                     let delegate = UIApplication.shared.delegate as? AppDelegate
                                                     
-                                                    print("4 Hour Notification = \(String(describing: leg1["4 Hour Notification"]))")
-                                                    
-                                                    
-                                                    if leg1["4 Hour Notification"] == "true" {
+                                                    delegate?.schedule4HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                        delegate?.schedule4HrNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                                    delegate?.schedule1HourNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                    }
-                                                    
-                                                    print("1 Hour Notification = \(String(describing: leg1["1 Hour Notification"]))")
-                                                    
-                                                    if leg1["1 Hour Notification"] == "true" {
+                                                    delegate?.schedule2HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                        delegate?.schedule1HourNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                    }
                                                     
-                                                    print("2 Hour Notification = \(String(describing: leg1["2 Hour Notification"]))")
-                                                    
-                                                    if leg1["2 Hour Notification"] == "true" {
+                                                    delegate?.schedule48HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
-                                                        delegate?.schedule2HrNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                    }
-                                                    
-                                                    print("48 Hour Notification = \(String(describing: leg1["48 Hour Notification"]))")
-                                                    
-                                                    if leg1["48 Hour Notification"] == "true" {
-                                                        
-                                                        delegate?.schedule48HrNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                        
-                                                    }
-                                                    
-                                                    print("Taking Off Notification = \(String(describing: leg1["Taking Off Notification"]))")
-                                                    
-                                                    if leg1["Taking Off Notification"] == "true" {
-                                                        
-                                                        delegate?.scheduleTakeOffNotification(estimatedDeparture: "", departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                                    delegate?.scheduleTakeOffNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
                                                         
-                                                    }
-                                                    
-                                                    print("Landing Notification = \(String(describing: leg1["Landing Notification"]))")
-                                                    
-                                                    if leg1["Landing Notification"] == "true" {
-                                                        
-                                                        delegate?.scheduleLandingNotification(estimatedArrival: "", arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                                    delegate?.scheduleLandingNotification(arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
                                                         
                                                         
-                                                    }
-
-                                                    
-                                                    
                                                     self.airlineCode.text = ""
                                                     self.flightNumber.text = ""
-                                                    //self.referenceNumber.text = ""
                                                     self.sortFlightsbyDepartureDate()
-                                                    UserDefaults.standard.set(self.flights, forKey: "flights")
+                                                    //UserDefaults.standard.set(self.flights, forKey: "flights")
+                                                    
+                                                    let id = departureDate + flightNumber
+                                                    
+                                                    let success = saveFlight(viewController: self, departureAirport: departureAirportCode, departureLat: departureLatitude, departureLon: departureLongitude, arrivalLat: arrivalLatitude, arrivalLon: arrivalLongitude, airlineCode: airlineCode, arrivalAirportCode: arrivalAirportCode, arrivalCity: arrivalCity, arrivalDate: arrivalDate, arrivalGate: arrivalGate, arrivalTerminal: arrivalTerminal, arrivalUtcOffset: arrivalUtcOffset, baggageClaim: "", departureCity: departureCity, departureGate: departureGate, departureTerminal: departureTerminal, departureTime: departureDate, departureUtcOffset: departureUtcOffset, flightDuration: "", flightNumber: flightNumber, flightStatus: "", primaryCarrier: airlineName, flightEquipment: aircraft, identifier: id, phoneNumber: phoneNumber, publishedDepartureUtc: departureDateUtc, urlArrivalDate: urlArrivalDate, publishedDeparture: departureDate, publishedArrival: arrivalDate)
+                                                    
+                                                    if success {
+                                                        print("saved new flight to coredata")
+                                                    }
                                                     
                                                     let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
                                                     
@@ -1256,20 +1182,15 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                         
                                                         self.performSegue(withIdentifier: "goToNearMe", sender: self)
                                                         
-                                                        
-                                                        
                                                     }))
                                                     
                                                     alert.addAction(UIAlertAction(title: NSLocalizedString("Add Another Flight", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                        //self.setNotifications()
                                                         
                                                     }))
                                                     
                                                     self.present(alert, animated: true, completion: nil)
                                                     
                                                 }))
-                                                
                                                 
                                                 alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { (action) in
                                                     
@@ -1310,7 +1231,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     
                                                     self.airlineCode.text = ""
                                                     self.flightNumber.text = ""
-                                                    //self.referenceNumber.text = ""
                                                 
                                                 }))
                                             
@@ -1420,24 +1340,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
         var dateArray = dateOnly.components(separatedBy: "-")
         let formattedDate = "\(dateArray[2])/" + "\(dateArray[1])/" + "\(dateArray[0])"
         return formattedDate
-    }
-    
-    
-    
-    func convertToURLDate (date: String) -> (String) {
-        
-        var dateArray = date.components(separatedBy: "T")
-        let dateSegment = dateArray[0]
-        
-        var dateSplitArray = dateSegment.components(separatedBy: "-")
-        let year = dateSplitArray[0]
-        let month = dateSplitArray[1]
-        let day = dateSplitArray[2]
-        
-        let urlDepartureDate = "\(year)/" + "\(month)/" + "\(day)"
-        
-        return urlDepartureDate
-        
     }
     
     func checkLeg2Date(downlinesArrivalDate: String, downlinesDepartureDate: String, destinationArrivalDate: String) ->(String, String) {

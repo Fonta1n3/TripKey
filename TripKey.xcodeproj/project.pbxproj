@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		58F6948C99FE4E1D3428B403 /* Pods_TripKey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBB40AB50F08BA7D4C8A8897 /* Pods_TripKey.framework */; };
-		D00187222197A67A00EEE21E /* TripKey2.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D00187202197A67A00EEE21E /* TripKey2.xcdatamodeld */; };
 		D00187242199226100EEE21E /* whiteList.png in Resources */ = {isa = PBXBuildFile; fileRef = D00187232199226100EEE21E /* whiteList.png */; };
 		D0018732219948A000EEE21E /* FlightTableNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0018731219948A000EEE21E /* FlightTableNewViewController.swift */; };
 		D00187342199556B00EEE21E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00187332199556B00EEE21E /* TableViewCell.swift */; };
@@ -21,7 +20,6 @@
 		D01EE9B81D692B780048D6CE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01EE9B71D692B780048D6CE /* ViewController.swift */; };
 		D01EE9C01D692B780048D6CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D01EE9BF1D692B780048D6CE /* Assets.xcassets */; };
 		D01EE9C31D692B780048D6CE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D01EE9C11D692B780048D6CE /* LaunchScreen.storyboard */; };
-		D020C8061E31DDBF0089D572 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D020C8051E31DDBF0089D572 /* GoogleService-Info.plist */; };
 		D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */ = {isa = PBXBuildFile; fileRef = D024982B219C565400BC6823 /* Add Pin - Trip key.png */; };
 		D025F5892203F45E007D6D3B /* newTakeOffToWest.png in Resources */ = {isa = PBXBuildFile; fileRef = D025F5882203F45D007D6D3B /* newTakeOffToWest.png */; };
 		D025F58B2203FB39007D6D3B /* takeOffWestToEastImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D025F58A2203FB38007D6D3B /* takeOffWestToEastImage.png */; };
@@ -34,7 +32,6 @@
 		D03D5FAE2185BA8C004D8DE7 /* AddUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */; };
 		D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D05F116F1ECD474A00BFA3F2 /* Main.storyboard */; };
 		D06184672205660800336A20 /* user_male@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D06184662205660800336A20 /* user_male@3x.png */; };
-		D0618469220566EB00336A20 /* icons8-customer-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D0618468220566EB00336A20 /* icons8-customer-filled-50.png */; };
 		D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */; };
 		D069FBA721FFFF2000864659 /* white-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBA621FFFF2000864659 /* white-plus.png */; };
 		D069FBB5220033F600864659 /* trackFlight.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB4220033F600864659 /* trackFlight.png */; };
@@ -45,6 +42,8 @@
 		D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */; };
 		D0964D331EED311000B2C015 /* 39711543-blank-wallpapers.png in Resources */ = {isa = PBXBuildFile; fileRef = D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */; };
 		D097603B1E141C0A0096D6F8 /* SeatGuruViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */; };
+		D098EFB6220725E3008A8E27 /* icons8-user-30.png in Resources */ = {isa = PBXBuildFile; fileRef = D098EFB5220725E3008A8E27 /* icons8-user-30.png */; };
+		D098EFB8220728A6008A8E27 /* icons8-male-user-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */; };
 		D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */ = {isa = PBXBuildFile; fileRef = D099B8A41F6CA9F40047EEE5 /* directions.png */; };
 		D09FE4561D8A787D00D36EBF /* FlightDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */; };
 		D0B8D0621E2E1BBA0096613F /* Tripkey-logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */; };
@@ -65,6 +64,8 @@
 		D0CACD501E16F34C00FA4DA2 /* fog_mist_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CACD4F1E16F34C00FA4DA2 /* fog_mist_25.png */; };
 		D0CACD521E16FA1C00FA4DA2 /* haze_25.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CACD511E16FA1C00FA4DA2 /* haze_25.png */; };
 		D0CC85FA1F7FE44200B8E105 /* info.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CC85F91F7FE33B00B8E105 /* info.png */; };
+		D0CE61932207DF1F006F5D75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0CE61922207DF1F006F5D75 /* GoogleService-Info.plist */; };
+		D0CE61962207FAA0006F5D75 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */; };
 		D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D114481F23018D0020D8C5 /* back arrow-big.png */; };
 		D0D1C28721882AEB00BF8089 /* Bech32.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28521882AEB00BF8089 /* Bech32.swift */; };
 		D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */; };
@@ -95,7 +96,6 @@
 
 /* Begin PBXFileReference section */
 		990605E94A8A24683F7DC97E /* Pods-TripKey.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TripKey.release.xcconfig"; path = "Pods/Target Support Files/Pods-TripKey/Pods-TripKey.release.xcconfig"; sourceTree = "<group>"; };
-		D00187212197A67A00EEE21E /* TripKey2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TripKey2.xcdatamodel; sourceTree = "<group>"; };
 		D00187232199226100EEE21E /* whiteList.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteList.png; sourceTree = "<group>"; };
 		D0018731219948A000EEE21E /* FlightTableNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightTableNewViewController.swift; sourceTree = "<group>"; };
 		D00187332199556B00EEE21E /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
@@ -110,7 +110,6 @@
 		D01EE9BF1D692B780048D6CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D01EE9C21D692B780048D6CE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D01EE9C41D692B780048D6CE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D020C8051E31DDBF0089D572 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D024982B219C565400BC6823 /* Add Pin - Trip key.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Add Pin - Trip key.png"; sourceTree = "<group>"; };
 		D025F5882203F45D007D6D3B /* newTakeOffToWest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = newTakeOffToWest.png; sourceTree = "<group>"; };
 		D025F58A2203FB38007D6D3B /* takeOffWestToEastImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = takeOffWestToEastImage.png; sourceTree = "<group>"; };
@@ -128,7 +127,6 @@
 		D0439E911D6A34D000FD60FC /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		D05F116F1ECD474A00BFA3F2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		D06184662205660800336A20 /* user_male@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_male@3x.png"; sourceTree = "<group>"; };
-		D0618468220566EB00336A20 /* icons8-customer-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-customer-filled-50.png"; sourceTree = "<group>"; };
 		D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-add-user-male-filled-50.png"; sourceTree = "<group>"; };
 		D069FBA621FFFF2000864659 /* white-plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "white-plus.png"; sourceTree = "<group>"; };
 		D069FBB4220033F600864659 /* trackFlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackFlight.png; sourceTree = "<group>"; };
@@ -139,6 +137,8 @@
 		D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D0964D321EED311000B2C015 /* 39711543-blank-wallpapers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "39711543-blank-wallpapers.png"; sourceTree = "<group>"; };
 		D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeatGuruViewController.swift; sourceTree = "<group>"; };
+		D098EFB5220725E3008A8E27 /* icons8-user-30.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-user-30.png"; sourceTree = "<group>"; };
+		D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-male-user-filled-50.png"; sourceTree = "<group>"; };
 		D099B8A41F6CA9F40047EEE5 /* directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = directions.png; sourceTree = "<group>"; };
 		D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlightDetailsViewController.swift; path = TripKey2/FlightDetailsViewController.swift; sourceTree = "<group>"; };
 		D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tripkey-logo-white.png"; sourceTree = "<group>"; };
@@ -161,6 +161,8 @@
 		D0CACD4F1E16F34C00FA4DA2 /* fog_mist_25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fog_mist_25.png; sourceTree = "<group>"; };
 		D0CACD511E16FA1C00FA4DA2 /* haze_25.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = haze_25.png; sourceTree = "<group>"; };
 		D0CC85F91F7FE33B00B8E105 /* info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info.png; sourceTree = "<group>"; };
+		D0CE61922207DF1F006F5D75 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D0CE61952207FAA0006F5D75 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		D0D114481F23018D0020D8C5 /* back arrow-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back arrow-big.png"; sourceTree = "<group>"; };
 		D0D1C28521882AEB00BF8089 /* Bech32.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bech32.swift; sourceTree = "<group>"; };
 		D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegwitAddrCoder.swift; sourceTree = "<group>"; };
@@ -228,7 +230,6 @@
 			isa = PBXGroup;
 			children = (
 				D0286D6621E27AF300954991 /* ReadMe.md */,
-				D00187202197A67A00EEE21E /* TripKey2.xcdatamodeld */,
 				D0E760F3217F016F00B6D31D /* TripKey.entitlements */,
 				D0C49B411F19EEB700D47983 /* Localizable.strings */,
 				D01EE9B41D692B780048D6CE /* TripKey2 */,
@@ -249,6 +250,7 @@
 		D01EE9B41D692B780048D6CE /* TripKey2 */ = {
 			isa = PBXGroup;
 			children = (
+				D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */,
 				D0F42B621E41D1E800737461 /* NearMeViewController.swift */,
 				D05F116F1ECD474A00BFA3F2 /* Main.storyboard */,
 				D0D1C28521882AEB00BF8089 /* Bech32.swift */,
@@ -279,7 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				D0439E911D6A34D000FD60FC /* Bridging-Header.h */,
-				D020C8051E31DDBF0089D572 /* GoogleService-Info.plist */,
+				D0CE61922207DF1F006F5D75 /* GoogleService-Info.plist */,
 				D01EE9C41D692B780048D6CE /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -288,8 +290,9 @@
 		D08337461D6E857000E4713F /* Picture Files */ = {
 			isa = PBXGroup;
 			children = (
+				D098EFB5220725E3008A8E27 /* icons8-user-30.png */,
+				D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */,
 				D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */,
-				D0618468220566EB00336A20 /* icons8-customer-filled-50.png */,
 				D025F592220402D5007D6D3B /* airplaneTrackerImage.png */,
 				D06184662205660800336A20 /* user_male@3x.png */,
 				D025F59422040324007D6D3B /* airplaneSliderImage.png */,
@@ -459,7 +462,6 @@
 				D0286D6721E27AF300954991 /* ReadMe.md in Resources */,
 				D0BE53741F721ECB0068F9AD /* User-Profile-2.png in Resources */,
 				D0BE53721F7219AE0068F9AD /* User-Profile.png in Resources */,
-				D0618469220566EB00336A20 /* icons8-customer-filled-50.png in Resources */,
 				D025F5892203F45E007D6D3B /* newTakeOffToWest.png in Resources */,
 				D069FBB5220033F600864659 /* trackFlight.png in Resources */,
 				D0030CFC1EE77F9B005B7271 /* CommunitySettings.xib in Resources */,
@@ -492,13 +494,15 @@
 				D069FBA721FFFF2000864659 /* white-plus.png in Resources */,
 				D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */,
 				D025F58B2203FB39007D6D3B /* takeOffWestToEastImage.png in Resources */,
+				D098EFB6220725E3008A8E27 /* icons8-user-30.png in Resources */,
 				D0CACD4B1E16BA6C00FA4DA2 /* prtly_cloudy_sun_25.png in Resources */,
 				D025F593220402D5007D6D3B /* airplaneTrackerImage.png in Resources */,
 				D0DEB8171F09E8E9001B5B7D /* output1.png in Resources */,
 				D0CACD501E16F34C00FA4DA2 /* fog_mist_25.png in Resources */,
+				D098EFB8220728A6008A8E27 /* icons8-male-user-filled-50.png in Resources */,
 				D0CACD4D1E16BA6C00FA4DA2 /* sunny_25.png in Resources */,
 				D0B8D0641E2E22950096613F /* icon-tripkey test.png in Resources */,
-				D020C8061E31DDBF0089D572 /* GoogleService-Info.plist in Resources */,
+				D0CE61932207DF1F006F5D75 /* GoogleService-Info.plist in Resources */,
 				D0CACD3E1E16B66C00FA4DA2 /* clear_night_25.png in Resources */,
 				D024982C219C565400BC6823 /* Add Pin - Trip key.png in Resources */,
 				D0CACD491E16BA6C00FA4DA2 /* medium_rain_25.png in Resources */,
@@ -586,13 +590,13 @@
 				D0018732219948A000EEE21E /* FlightTableNewViewController.swift in Sources */,
 				D097603B1E141C0A0096D6F8 /* SeatGuruViewController.swift in Sources */,
 				D09FE4561D8A787D00D36EBF /* FlightDetailsViewController.swift in Sources */,
+				D0CE61962207FAA0006F5D75 /* Model.xcdatamodeld in Sources */,
 				D01EE9B81D692B780048D6CE /* ViewController.swift in Sources */,
 				D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */,
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
 				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
-				D00187222197A67A00EEE21E /* TripKey2.xcdatamodeld in Sources */,
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,
 				D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */,
 				D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */,
@@ -828,14 +832,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		D00187202197A67A00EEE21E /* TripKey2.xcdatamodeld */ = {
+		D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				D00187212197A67A00EEE21E /* TripKey2.xcdatamodel */,
+				D0CE61952207FAA0006F5D75 /* Model.xcdatamodel */,
 			);
-			currentVersion = D00187212197A67A00EEE21E /* TripKey2.xcdatamodel */;
-			name = TripKey2.xcdatamodeld;
-			path = TripKey2/TripKey2.xcdatamodeld;
+			currentVersion = D0CE61952207FAA0006F5D75 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

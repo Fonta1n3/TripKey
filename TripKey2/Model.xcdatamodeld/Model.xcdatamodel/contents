@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14460.32" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Flight" representedClassName="Flight" syncable="YES" codeGenerationType="class">
+        <attribute name="airlineCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrivalAirportCode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrivalCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrivalDate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrivalGate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrivalLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="arrivalLon" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="arrivalTerminal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="arrivalUtcOffset" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="baggageClaim" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="departureAirport" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="departureCity" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="departureGate" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="departureLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="departureLon" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="departureTerminal" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="departureTime" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="departureUtcOffset" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="flightDuration" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="flightEquipment" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="flightId" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="flightNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="flightStatus" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="primaryCarrier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="publishedArrival" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="publishedDeparture" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="publishedDepartureUtc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="urlArrivalDate" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="FollowedUsers" representedClassName="FollowedUsers" syncable="YES" codeGenerationType="class">
+        <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="60"/>
+        <element name="Flight" positionX="-54" positionY="0" width="128" height="495"/>
+    </elements>
+</model>

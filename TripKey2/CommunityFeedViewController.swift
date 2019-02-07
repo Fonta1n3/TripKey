@@ -26,14 +26,12 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     var refresher: UIRefreshControl!
     var users = [String: String]()
     var userNames = [String]()
-    var imageFiles = [PFFile]()
-    var flights = [Dictionary<String,String>]()
-    var userAddedPlaceDictionaryArray = [Dictionary<String,String>]()
     var followedUsername:String!
-    var followedUserDictionary = Dictionary<String,Any>()
-    var followedUserDictionaryArray = [Dictionary<String,Any>]()
+    //var followedUserDictionary = Dictionary<String,Any>()
+    //var followedUserDictionaryArray = [Dictionary<String,Any>]()
     let backButton = UIButton()
     let addButton = UIButton()
+    var flightArray = [[String:Any]]()
     
     
     
@@ -73,18 +71,22 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     
     func shareFlight(indexPath: Int) {
         
-        let alert = UIAlertController(title: NSLocalizedString("Share Flight", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        let user = self.userNames[indexPath]
         
-        for flight in self.flights {
+        let alert = UIAlertController(title: "\(NSLocalizedString("Share Flight", comment: ""))" + " " + "to \(user)", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        
+        for flight in self.flightArray {
             
-            alert.addAction(UIAlertAction(title: "\(flight["Departure City"]!) \(NSLocalizedString("to", comment: "")) \(flight["Arrival City"]!)", style: .default, handler: { (action) in
+            let flightNumber = flight["flightNumber"] as! String
+            let depCity = flight["departureAirport"] as! String
+            let arrCity = flight["arrivalAirportCode"] as! String
+            let date = convertDateTime(date: flight["departureTime"] as! String)
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("\(flightNumber) \(depCity) to \(arrCity), on \(date)", comment: ""), style: .default, handler: { (action) in
                 
                 let flight = flight
-                let user = self.followedUserDictionaryArray[indexPath]["Username"]!
-                
                 self.addActivityIndicatorCenter()
                 let sharedFlight = PFObject(className: "SharedFlight")
-                
                 sharedFlight["shareToUsername"] = user
                 sharedFlight["shareFromUsername"] = PFUser.current()?.username
                 sharedFlight["flightDictionary"] = flight
@@ -156,9 +158,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             
             DispatchQueue.main.async {
                 PFUser.logOut()
-                if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
-                    UserDefaults.standard.removeObject(forKey: "followedUsernames")
+                for user in self.userNames {
+                    deleteUserFromCoreData(viewController: self, username: user)
                 }
+                self.userNames.removeAll()
                 self.dismiss(animated: true, completion: nil)
             }
         }
@@ -179,12 +182,9 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     func refresh() {
         print("refresh")
         
-        UserDefaults.standard.removeObject(forKey: "followedUsernames")
-        self.followedUserDictionaryArray.removeAll()
+        
         let query = PFQuery(className: "Followers")
-        
         query.whereKey("followerUsername", equalTo: (PFUser.current()?.username)!)
-        
         query.findObjectsInBackground(block: { (objects, error) in
             
             if error != nil {
@@ -197,29 +197,28 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                     
                     if objects.count > 0 {
                         
-                        self.followedUserDictionaryArray.removeAll()
+                        for user in self.userNames {
+                            deleteUserFromCoreData(viewController: self, username: user)
+                        }
+                        self.userNames.removeAll()
                         
                         for object in objects {
                             
-                            let dictionary = [
-                                
-                                "Username":"\(object["followedUsername"] as! String)",
-                                "Profile Image":""
-                                
-                                ] as [String : Any]
+                            let success = saveFollowedUserToCoreData(viewController: self, username: object["followedUsername"] as! String)
                             
-                            self.followedUserDictionaryArray.append(dictionary)
-                            UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
-                            self.createDictionaryArray()
-                            
+                            if success {
+                                print("success refreshing followed users")
+                            } else {
+                                print("error refreshing followed users")
+                            }
                         }
+                        
+                        self.userNames = getFollowedUsers()
                         
                         self.refresher.endRefreshing()
                         
                     } else {
                         //not following anyone
-                        self.followedUserDictionaryArray.removeAll()
-                        UserDefaults.standard.removeObject(forKey: "followedUsernames")
                         self.refresher.endRefreshing()
                         
                     }
@@ -234,21 +233,11 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         UserDefaults.standard.set(true, forKey: "userSwipedBack")
-        
-        
         addButtons()
         addUserButton.title = NSLocalizedString("Add Users", comment: "")
         goToProfile.title = NSLocalizedString("Log Out", comment: "")
-        
-        if (UserDefaults.standard.object(forKey: "flights") != nil) {
-            flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
-        }
-        
-        if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
-            self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
-        }
-        
         feedTable.delegate = self
         feedTable.dataSource = self
         refresher = UIRefreshControl()
@@ -262,17 +251,18 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     
     override func viewDidAppear(_ animated: Bool) {
         refreshNow()
+        feedTable.reloadData()
     }
     
     func refreshNow() {
-        self.createDictionaryArray()
+        userNames = getFollowedUsers()
         refresher.endRefreshing()
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = feedTable.dequeueReusableCell(withIdentifier: "Community Feed", for: indexPath) as! FeedTableViewCell
-        cell.userName.text = followedUserDictionaryArray[indexPath.row]["Username"] as? String
+        cell.userName.text = userNames[indexPath.row]
         
         cell.tapShareFlightAction = {
             (cell) in self.shareFlight(indexPath: (tableView.indexPath(for: cell)!.row))
@@ -287,7 +277,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.followedUserDictionaryArray.count
+        return self.userNames.count
     }
     
     func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
@@ -300,7 +290,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             
             let query = PFQuery(className: "Followers")
             query.whereKey("followerUsername", equalTo: (PFUser.current()?.username!)!)
-            query.whereKey("followedUsername", equalTo: self.followedUserDictionaryArray[indexPath.row]["Username"] as! String)
+            query.whereKey("followedUsername", equalTo: self.userNames[indexPath.row])
             query.findObjectsInBackground(block: { (objects, error) in
                     
                 if error != nil {
@@ -315,19 +305,15 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                             
                         for object in objects {
                                     
-                                DispatchQueue.main.async {
-                                        
-                                    let userUnfollowed = self.followedUserDictionaryArray[indexPath.row]["Username"] as! String
-                                    self.followedUserDictionaryArray.remove(at: indexPath.row)
-                                    for (index, _) in self.followedUserDictionaryArray.enumerated() {
-                                        self.followedUserDictionaryArray[index]["Profile Image"] = ""
-                                    }
-                                    UserDefaults.standard.set(self.followedUserDictionaryArray, forKey: "followedUsernames")
-                                    displayAlert(viewController: self, title: "\(NSLocalizedString("You unfollowed", comment: "")) \(userUnfollowed)", message: "")
-                                    object.deleteInBackground()
-                                    self.feedTable.deleteRows(at: [indexPath], with: .fade)
+                            DispatchQueue.main.async {
                                     
-                                }
+                                let userUnfollowed = self.userNames[indexPath.row]
+                                deleteUserFromCoreData(viewController: self, username: userUnfollowed)
+                                self.userNames.remove(at: indexPath.row)
+                                displayAlert(viewController: self, title: "\(NSLocalizedString("You unfollowed", comment: "")) \(userUnfollowed)", message: "")
+                                object.deleteInBackground()
+                                self.feedTable.deleteRows(at: [indexPath], with: .fade)
+                            }
                         }
                     }
                 }
@@ -344,194 +330,5 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         view.addSubview(activityIndicator)
         activityIndicator.startAnimating()
         
-    }
-    
-    
-    /*func updateProfileImages() {
-        print("updateProfileImages")
-        
-        if self.followedUserDictionaryArray.count > 0 {
-            
-            for (index, user) in self.followedUserDictionaryArray.enumerated() {
-                
-                let username = user["Username"] as! String
-                let query = PFQuery(className: "Posts")
-                query.whereKey("username", equalTo: username)
-                query.findObjectsInBackground(block: { (objects, error) in
-                    
-                    if error != nil {
-                        
-                        print("error")
-                        
-                        DispatchQueue.main.async {
-                            
-                            self.activityIndicator.stopAnimating()
-                            self.addUserButton.isEnabled = true
-                            self.displayAlert(title: NSLocalizedString("Error", comment: ""), message: NSLocalizedString("Internet connection appears to be offline", comment: ""))
-                        }
-                        
-                        
-                    } else {
-                        
-                        for object in objects! {
-                            
-                            if let post = object as? PFObject {
-                                
-                                (post["imageFile"] as! PFFile).getDataInBackground { (data, error) in
-                                    
-                                    if let imageData = data {
-                                        
-                                        if let downloadedImage = UIImage(data: imageData) {
-                                            
-                                            if self.followedUserDictionaryArray.count > 0 {
-                                                
-                                                self.followedUserDictionaryArray[index]["Profile Image"] = downloadedImage
-                                                let indexPath = IndexPath(item: index, section: 0)
-                                                print("index = \(index)")
-                                                //DispatchQueue.main.async {
-                                                  //  self.feedTable.reloadRows(at: [indexPath], with: .none)
-                                                //}
-                                                /*if index == 0 {
-                                                    DispatchQueue.main.async {
-                                                        self.feedTable.reloadData()
-                                                    }
-                                                } else {
-                                                    DispatchQueue.main.async {
-                                                        self.feedTable.reloadRows(at: [indexPath], with: .none)
-                                                    }
-                                                }*/
-                                                
-                                                
-                                                //let image = UIImage(named: "User-Profile.png")
-                                                //let imageData = UIImagePNGRepresentation(image!)!
-                                                /*let success = self.saveProfileImageToCoreData(imageData: imageData, username: username)
-                                                if success {
-                                                    print("saved users profile image")
-                                                }*/
-                                            }
-                                        }
-                                        
-                                    }
-                                    
-                                }
-                                
-                            }
-                            
-                        }
-                        
-                    }
-                    
-                })
-                
-            }
-           
-        }
-        
-    }*/
-    
-    func createDictionaryArray() {
-        print("createDictionaryArray")
-        
-        if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
-            
-            self.followedUserDictionaryArray = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
-            let sortedArray = (self.followedUserDictionaryArray as NSArray).sortedArray(using: [NSSortDescriptor(key: "Username", ascending: true)]) as! [[String:AnyObject]]
-            self.followedUserDictionaryArray = sortedArray
-            DispatchQueue.main.async {
-                self.feedTable.reloadData()
-            }
-            
-        } else {
-            
-            self.followedUserDictionaryArray.removeAll()
-            self.feedTable.reloadData()
-            self.refresh()
-        }
-    }
- 
-    func saveProfileImageToCoreData(imageData: Data, username: String) -> Bool {
-        print("saveProfileImageToCoreData")
-        
-        var appDelegate = AppDelegate()
-        var success = Bool()
-        
-        
-        if let appDelegateCheck = UIApplication.shared.delegate as? AppDelegate {
-            
-            appDelegate = appDelegateCheck
-            
-        } else {
-            
-            displayAlert(viewController: self, title: "Error", message: "Something strange has happened and we do not have access to app delegate, please try again.")
-            success = false
-            
-        }
-        
-        let context = appDelegate.persistentContainer.viewContext
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "FollowedUsers")
-        fetchRequest.returnsObjectsAsFaults = false
-        
-        do {
-            
-            let results = try context.fetch(fetchRequest) as [NSManagedObject]
-            
-            if results.count > 0 {
-                print("results exist")
-                
-                for data in results {
-                    
-                    if data.value(forKey: "username") as! String == username {
-                        
-                        let entity = NSEntityDescription.entity(forEntityName: "FollowedUsers", in: context)
-                        let followedUser = NSManagedObject(entity: entity!, insertInto: context)
-                        followedUser.setValue(imageData, forKey: "profilePic")
-                        
-                        do {
-                            
-                            try context.save()
-                            success = true
-                            print("success saving to coredata")
-                            
-                        } catch {
-                            
-                            print("Failed saving")
-                            success = false
-                            
-                        }
-                    }
-                }
-                
-            } else {
-                
-                print("no results so create one")
-                
-                let entity = NSEntityDescription.entity(forEntityName: "FollowedUsers", in: context)
-                let followedUser = NSManagedObject(entity: entity!, insertInto: context)
-                
-                followedUser.setValue(imageData, forKey: "profileImage")
-                followedUser.setValue(username, forKey: "username")
-                
-                do {
-                    
-                    try context.save()
-                    success = true
-                    print("success saving to coredata")
-                    
-                } catch {
-                    
-                    print("Failed saving")
-                    success = false
-                    
-                }
-                
-            }
-            
-        } catch {
-            
-            print("Failed")
-            
-        }
-        
-        return success
     }
 }

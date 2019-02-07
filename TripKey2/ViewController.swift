@@ -230,12 +230,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
                     let post = PFObject(className: "Posts")
                     
                     post["userid"] = PFUser.current()?.objectId!
-                    
-                    let imageData = UIImagePNGRepresentation(UIImage(named: "default.icon.png")!)
-                    
-                    let imageFile = PFFile(name: "image.png", data: imageData!)
-                    
-                    post["imageFile"] = imageFile
                     post["username"] = PFUser.current()?.username
                     
                     post.saveInBackground { (success, error) in
