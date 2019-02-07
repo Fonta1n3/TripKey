@@ -49,7 +49,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     var flightActualDepartureString = ""
     @IBOutlet weak var flightTable: UITableView!
     let button = UIButton()
-    let addButton = UIButton()
     var flightArray = [[String:Any]]()
     
     override func viewDidLoad() {
@@ -58,7 +57,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         flightTable.delegate = self
         flightTable.dataSource = self
         addBackButton()
-        addAddButton()
         refresher = UIRefreshControl()
         refresher.attributedTitle = NSAttributedString(string: "Checking for shared flights")
         refresher.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
@@ -72,14 +70,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         button.setImage(backButtonImage, for: .normal)
         button.addTarget(self, action: #selector(goBack), for: .touchUpInside)
         view.addSubview(button)
-    }
-    
-    func addAddButton() {
-        addButton.frame = CGRect(x: view.frame.maxX - 35, y: 40, width: 25, height: 25)
-        let backButtonImage = UIImage(named: "Add Pin - Trip key.png")
-        addButton.setImage(backButtonImage, for: .normal)
-        addButton.addTarget(self, action: #selector(addFlight), for: .touchUpInside)
-        view.addSubview(addButton)
     }
     
     @objc func addFlight() {

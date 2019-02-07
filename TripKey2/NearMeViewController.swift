@@ -32,6 +32,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     }
     
     var flightArray = [[String:Any]]()
+    var sortedFlights = [[String:Any]]()
     let liveFlightMarker = GMSMarker()
     let nextFlightButton = UIButton()
     var didTapMarker = Bool()
@@ -39,10 +40,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var showArrivalWindow = false
     var session: WCSession?
     var userMarkerArray:[GMSMarker] = []
-    var followedUsers = [Dictionary<String,Any>]()
     var howManyTimesUsed:[Int]! = []
     var infoWindowIsVisible = false
-    @IBOutlet var bottomToolbar: UIToolbar!
     var usersHeading:Double!
     var showUsersButton = UIButton(type: .custom)
     var fitFlightsButton = UIButton(type: .custom)
@@ -69,15 +68,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var productsRequest = SKProductsRequest()
     var iapProducts = [SKProduct]()
     var nonConsumablePurchaseMade = UserDefaults.standard.bool(forKey: "nonConsumablePurchaseMade")
-    var address:String!
-    var category:String!
-    var types:[String]!
-    var imageFiles = [PFFile]()
-    @IBOutlet var communityButton: UIView!
-    @IBOutlet var flightsButton: UIView!
-    var imageArray:[UIImage]! = []
     let recognizer = UITapGestureRecognizer()
-    let recognizerTopView = UITapGestureRecognizer()
     let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     var name:String!
@@ -106,7 +97,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var bounds = GMSCoordinateBounds()
     var airportBounds = GMSCoordinateBounds()
     var activityIndicator:UIActivityIndicatorView!
-    var flights = [Dictionary<String,String>]()
     var airlineCodeURL:String!
     var flightNumberURL:String!
     var departureDateURL:String!
@@ -126,20 +116,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var flightActualDepartureString:String!
     var flightLanded:Bool!
     var flightTookOff:Bool!
-    var userAddedPlaceDictionaryArray = [Dictionary<String,String>]()
-    var userTappedCoordinates:CLLocationCoordinate2D! = CLLocationCoordinate2D()
-    var selectedPlaceLongitude:Double!
-    var selectedPlaceLatitude:Double!
-    var selectedPlaceCoordinates:CLLocationCoordinate2D!
     var userSwipedBack:Bool!
     var latitude:Double!
     var longitude:Double!
     var locationManager = CLLocationManager()
-    var buttonPanoView = UIButton()
-    var button = UIButton()
-    var tappedCoordinates:CLLocationCoordinate2D!
-    var placeMarkerArray:[GMSMarker] = []
-    var biasmarker:GMSMarker!
     @IBOutlet var mapView: UIView!
     var int:Int!
     var userTappedRoute:Bool!
@@ -706,7 +686,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         if UserDefaults.standard.object(forKey: "flights") != nil {
             
-            flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
+            let flights = UserDefaults.standard.object(forKey: "flights") as! [Dictionary<String,String>]
             
             var convertedSuccessfully = true
             
@@ -730,6 +710,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 DispatchQueue.main.async {
                     UserDefaults.standard.removeObject(forKey: "flights")
                     self.flightArray = getFlightArray()
+                    self.sortFlightsbyDepartureDate()
                     self.resetFlightZeroViewdidappear()
                 }
             }
@@ -739,6 +720,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         } else {
             
             self.flightArray = getFlightArray()
+            self.sortFlightsbyDepartureDate()
             print("flightArray = \(self.flightArray)")
             /*for flight in self.flightArray {
                 let id  = "2019-02-05T08:00:00.000AAAA1"
@@ -768,7 +750,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.liveFlightMarker.map = nil
-        self.userNames.removeAll()
         locationManager.startUpdatingHeading()
         locationManager.startUpdatingLocation()
     }
@@ -779,8 +760,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         print("viewdidappear")
         
         flightArray = getFlightArray()
+        self.sortFlightsbyDepartureDate()
         getSharedFlights()
-        
+        userNames = getFollowedUsers()
         
          
             if flightArray.count > 0 {
@@ -802,34 +784,26 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         if UserDefaults.standard.object(forKey: "userSwipedBack") as! Bool == true {
             UserDefaults.standard.set(false, forKey: "userSwipedBack")
         }
-        self.userNames.removeAll()
         
         if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
             
             if let followedUsers = UserDefaults.standard.object(forKey: "followedUsernames") as? [Dictionary<String,Any>] {
-                self.followedUsers = UserDefaults.standard.object(forKey: "followedUsernames") as! [Dictionary<String,Any>]
+                
                 for user in followedUsers {
-                    self.userNames.append(user["Username"] as! String)
-                    saveFollowedUserToCoreData(viewController: self, username: user["Username"] as! String)
+                    
+                    let success = saveFollowedUserToCoreData(viewController: self, username: user["Username"] as! String)
+                    
+                    if success {
+                        UserDefaults.standard.removeObject(forKey: "followedUsernames")
+                        self.userNames = getFollowedUsers()
+                    }
+                    
                 }
                 
             } else {
                 
-                self.userNames = UserDefaults.standard.object(forKey: "followedUsernames") as! [String]
+                self.userNames = getFollowedUsers()
                 
-                for user in self.userNames {
-                    
-                    let dictionary = [
-                        "Username":"\(user)",
-                        "Profile Image":"",
-                        "Latitude":"",
-                        "Longitude":""
-                    ]
-                    
-                    var followedUsers = [Dictionary<String,Any>]()
-                    followedUsers.append(dictionary)
-                    UserDefaults.standard.set(followedUsers, forKey: "followedUsernames")
-                }
             }
         }
     }
@@ -876,7 +850,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             
             if let vc = segue.destination as? SeatGuruViewController {
                 
-                vc.selectedFlight = self.flights[self.flightIndex]
+                vc.selectedFlight = self.flightArray[self.flightIndex]
                 
             }
             
@@ -893,6 +867,32 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             
         }
         
+        if segue.identifier == "goToAddFlights" {
+            
+            if let vc = segue.destination as? FlightDetailsViewController {
+                vc.flightArray = self.flightArray
+            }
+        }
+        
+    }
+    
+    func sortFlightsbyDepartureDate() {
+        
+        sortedFlights = flightArray.sorted {
+            
+            (dictOne, dictTwo) -> Bool in
+            
+            let depDatUtcDict1 = dictOne["publishedDepartureUtc"] as! String
+            let d1 = formatDateTimetoWhole(dateTime: depDatUtcDict1)
+            
+            let depDatUtcDict2 = dictTwo["publishedDepartureUtc"] as! String
+            let d2 = formatDateTimetoWhole(dateTime: depDatUtcDict2)
+            
+            
+            return d1 < d2
+            
+        };
+        flightArray = sortedFlights
     }
     
     @objc func nextFlight() {
@@ -901,7 +901,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         func updateLabelText() {
             
-            if self.flightIndex + 1 == self.flights.count {
+            if self.flightIndex + 1 == self.flightArray.count {
                 DispatchQueue.main.async {
                     self.nextFlightButton.setTitle("Show First Flight", for: .normal)
                 }
@@ -978,9 +978,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         circleView.clipsToBounds = true
         circleView.layer.cornerRadius = 18
         nextFlightButton.frame = CGRect(x: 0, y: 0, width: 140, height: 35)
-        if flights.count == 0 {
+        if flightArray.count == 0 {
             nextFlightButton.setTitle("Add Flight", for: .normal)
-        } else if flights.count == 1 {
+        } else if flightArray.count == 1 {
             nextFlightButton.setTitle("Update Flight", for: .normal)
         } else {
             nextFlightButton.setTitle("Next Flight", for: .normal)
@@ -1006,22 +1006,14 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             }
         } else {
             
-            displayAlert(viewController: self, title: "No Flights", message: "You havent added a flight yet, tap the plane button to get started.")
+            displayAlert(viewController: self, title: "No Flights", message: "You havent added a flight yet, tap the plus button to get started.")
         }
         
     }
     
     func showUsers() {
         
-        if self.isUserLoggedIn() == true {
-            if let followedUsersCheck = UserDefaults.standard.object(forKey: "followedUsernames") as? [Dictionary<String,Any>] {
-                    self.followedUsers = followedUsersCheck
-                    if self.followedUsers.count > 0 {
-                        for user in self.followedUsers {
-                            self.userNames.append(user["Username"] as! String)
-                        }
-                    }
-                }
+        if self.isUserLoggedIn() {
             self.goToUserFeed()
         } else {
             self.promptUserToLogIn()
@@ -1227,8 +1219,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             self.tappedMarker = marker
             let tappedMarkerLatitude = marker.position.latitude
             let tappedMarkerLongitude = marker.position.longitude
-            self.tappedCoordinates = CLLocationCoordinate2D(latitude: tappedMarkerLatitude, longitude: tappedMarkerLongitude)
-            let newPosition = GMSCameraPosition(target: self.tappedCoordinates, zoom: 6, bearing: self.googleMapsView.camera.bearing, viewingAngle: self.googleMapsView.camera.viewingAngle)
+            let tappedCoordinates = CLLocationCoordinate2D(latitude: tappedMarkerLatitude, longitude: tappedMarkerLongitude)
+            let newPosition = GMSCameraPosition(target: tappedCoordinates, zoom: 6, bearing: self.googleMapsView.camera.bearing, viewingAngle: self.googleMapsView.camera.viewingAngle)
             CATransaction.begin()
             CATransaction.setValue(Int(1), forKey: kCATransactionAnimationDuration)
             self.googleMapsView.animate(to: newPosition)
@@ -1393,438 +1385,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         task.resume()
     }
     
-    /*func parseLeg2Only(dictionary: [String:Any], index: Int) {
-        
-        print("parseLeg2Only")
-        
-        DispatchQueue.main.async {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-        }
-        
-        let departureDateTime = dictionary["publishedDepartureUtc"] as! String
-        
-        if isDepartureDate72HoursAwayOrLess(date: departureDateTime) == true {
-            
-            var url:URL!
-            let id = dictionary["identifier"] as! String
-            let arrivalDateURL = dictionary["urlArrivalDate"] as! String
-            let arrivalAirport = dictionary["arrivalAirportCode"] as! String
-            self.airlineCodeURL = (dictionary["airlineCode"] as! String)
-            self.flightNumberURL = (dictionary["flightNumber"] as! String).replacingOccurrences(of: self.airlineCodeURL, with: "")
-            
-            url = URL(string: "https://api.flightstats.com/flex/flightstatus/rest/v2/json/flight/status/" + self.airlineCodeURL + "/" + self.flightNumberURL + "/arr/" + arrivalDateURL + "?appId=16d11b16&appKey=821a18ad545a57408964a537526b1e87&utc=false&airport=" + arrivalAirport + "&extendedOptions=useinlinedreferences")
-            
-            let task = URLSession.shared.dataTask(with: url!) { (data, response, error) -> Void in
-                
-                do {
-                    
-                    if error != nil {
-                        
-                        print(error as Any)
-                        DispatchQueue.main.async {
-                            
-                            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                            let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: NSLocalizedString("Internet connection appears to be offline.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                            self.present(alert, animated: true, completion: nil)
-                            
-                        }
-                        
-                    } else {
-                        
-                        if let urlContent = data {
-                            
-                            do {
-                                
-                                let jsonFlightStatusData = try JSONSerialization.jsonObject(with: urlContent, options: JSONSerialization.ReadingOptions.mutableLeaves) as! NSDictionary
-                                
-                                //check status
-                                if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
-                                    
-                                    if flightStatusesArray.count == 0 {
-                                        DispatchQueue.main.async {
-                                            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                                        }
-                                        
-                                    } else if flightStatusesArray.count > 0 {
-                                        
-                                        self.flightStatusUnformatted = (((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["status"] as? String
-                                        self.flightStatusFormatted = formatFlightStatus(flightStatusUnformatted: self.flightStatusUnformatted)
-                                        updateFlight(viewController: self, id: id, newValue: self.flightStatusFormatted, keyToEdit: "flightStatus")
-                                        
-                                        //unambiguos data
-                                        var irregularOperationsMessage1 = ""
-                                        var irregularOperationsMessage2 = ""
-                                        var irregularOperationsType1 = ""
-                                        var irregularOperationsType2 = ""
-                                        var confirmedIncidentMessage = ""
-                                        var replacementFlightId:Double! = 0
-                                        var flightId:Int!
-                                        
-                                        if let baggageCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["airportResources"] as? NSDictionary)?["baggage"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: baggageCheck, keyToEdit: "baggageClaim")
-                                        }
-                                        
-                                        if let primaryCarrierCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["primaryCarrier"] as? NSDictionary)?["name"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: primaryCarrierCheck, keyToEdit: "primaryCarrier")
-                                        }
-                                        
-                                        if let scheduledFlightEquipment = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["flightEquipment"] as? NSDictionary)?["scheduledEquipment"] as? NSDictionary)?["name"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: formatFlightEquipment(flightEquipment: scheduledFlightEquipment), keyToEdit: "flightEquipment")
-                                        }
-                                        
-                                        if let actualFlightEquipment = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["flightEquipment"] as? NSDictionary)?["actualEquipment"] as? NSDictionary)?["name"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: formatFlightEquipment(flightEquipment: actualFlightEquipment), keyToEdit: "flightEquipment")
-                                        }
-                                        
-                                        //must add in code to check if the count is greater then one or not and to handle one or two different items
-                                        if let irregularOperations = (((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["irregularOperations"] as? NSArray {
-                                            
-                                            if irregularOperations.count > 1 {
-                                                
-                                                if let irregularOperationsMessage1Check = (irregularOperations[0] as? NSDictionary)?["message"] as? String {
-                                                    irregularOperationsMessage1 = irregularOperationsMessage1Check
-                                                }
-                                                
-                                                if let irregularOperationsMessage2Check = (irregularOperations[1] as? NSDictionary)?["message"] as? String {
-                                                    irregularOperationsMessage2 = irregularOperationsMessage2Check
-                                                }
-                                                
-                                                irregularOperationsType1 = ((irregularOperations[0] as? NSDictionary)?["type"] as? String)!
-                                                irregularOperationsType2 = ((irregularOperations[1] as? NSDictionary)?["type"] as? String)!
-                                                
-                                                if irregularOperationsType2 == "REPLACED_BY" {
-                                                    replacementFlightId = ((irregularOperations[1] as? NSDictionary)?["relatedFlightId"] as? Double)!
-                                                    self.flightId = replacementFlightId
-                                                }
-                                                
-                                            } else if irregularOperations.count == 1 {
-                                                
-                                                if let irregularOperationsMessage1Check = (irregularOperations[0] as? NSDictionary)?["message"] as? String {
-                                                    irregularOperationsMessage1 = irregularOperationsMessage1Check
-                                                }
-                                                irregularOperationsType1 = ((irregularOperations[0] as? NSDictionary)?["type"] as? String)!
-                                            }
-                                        }
-                                        
-                                        if let confirmedIncidentMessageCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["confirmedIncident"] as? NSDictionary)?["message"] as? String {
-                                            
-                                            confirmedIncidentMessage = confirmedIncidentMessageCheck
-                                            displayAlert(viewController: self, title: "Incident Alert!", message: confirmedIncidentMessage)
-                                        }
-                                        
-                                        if let flightDurationScheduledCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["flightDurations"] as? NSDictionary)?["scheduledBlockMinutes"] as? Int {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: String(flightDurationScheduledCheck), keyToEdit: "flightDuration")
-                                        }
-                                        
-                                        //departure data
-                                        if let departureTerminalCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["airportResources"] as? NSDictionary)?["departureTerminal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: departureTerminalCheck, keyToEdit: "departureTerminal")
-                                            
-                                        } else {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: "-", keyToEdit: "departureTerminal")
-                                        }
-                                        
-                                        if let departureGateCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["airportResources"] as? NSDictionary)?["departureGate"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: departureGateCheck, keyToEdit: "departureGate")
-                                            
-                                        } else {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: "-", keyToEdit: "departureGate")
-                                        }
-                                        
-                                        //departure timings
-                                        if let scheduledGateDepartureCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["scheduledGateDeparture"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: scheduledGateDepartureCheck, keyToEdit: "departureTime")
-                                            
-                                        }
-                                        
-                                        if let estimatedGateDepartureCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["estimatedGateDeparture"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: estimatedGateDepartureCheck, keyToEdit: "departureTime")
-                                        }
-                                        
-                                        if let actualGateDepartureCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["actualGateDeparture"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: actualGateDepartureCheck, keyToEdit: "departureTime")
-                                            
-                                        }
-                                        
-                                        if let scheduledRunwayDepartureCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["scheduledRunwayDeparture"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: scheduledRunwayDepartureCheck, keyToEdit: "departureTime")
-                                        }
-                                        
-                                        if let estimatedRunwayDepartureCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["estimatedRunwayDeparture"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: estimatedRunwayDepartureCheck, keyToEdit: "departureTime")
-                                        }
-                                        
-                                        if let actualRunwayDepartureCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["actualRunwayDeparture"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: actualRunwayDepartureCheck, keyToEdit: "departureTime")
-                                        }
-                                        
-                                        //diverted airport data
-                                        var divertedAirportArrivalCode = ""
-                                        var divertedAirportArrivalLongitudeDouble = Double()
-                                        var divertedAirportArrivalLatitudeDouble = Double()
-                                        var divertedAirportArrivalCity = ""
-                                        var divertedAirportArrivalUtcOffsetHours = Double()
-                                        
-                                        if let divertedAirportCheck = (((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["divertedAirport"] as? NSDictionary {
-                                            
-                                            divertedAirportArrivalCode = divertedAirportCheck["fs"] as! String
-                                            updateFlight(viewController: self, id: id, newValue: divertedAirportArrivalCode, keyToEdit: "departureAirport")
-                                            
-                                            divertedAirportArrivalLongitudeDouble = divertedAirportCheck["longitude"] as! Double
-                                            updateFlight(viewController: self, id: id, newValue: divertedAirportArrivalLongitudeDouble, keyToEdit: "arrivalLon")
-                                            
-                                            divertedAirportArrivalLatitudeDouble = divertedAirportCheck["latitude"] as! Double
-                                            updateFlight(viewController: self, id: id, newValue: divertedAirportArrivalLatitudeDouble, keyToEdit: "arrivalLat")
-                                            
-                                            divertedAirportArrivalCity = divertedAirportCheck["city"] as! String
-                                            updateFlight(viewController: self, id: id, newValue: divertedAirportArrivalCity, keyToEdit: "arrivalCity")
-                                            
-                                            divertedAirportArrivalUtcOffsetHours = divertedAirportCheck["utcOffsetHours"] as! Double
-                                            updateFlight(viewController: self, id: id, newValue: divertedAirportArrivalUtcOffsetHours, keyToEdit: "arrivalUtcOffset")
-                                            
-                                        }
-                                        
-                                        if let arrivalGateCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["airportResources"] as? NSDictionary)?["arrivalGate"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: arrivalGateCheck, keyToEdit: "arrivalGate")
-                                            
-                                        } else {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: "-", keyToEdit: "arrivalGate")
-                                            
-                                        }
-                                        
-                                        if let arrivalTerminalCheck = ((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["airportResources"] as? NSDictionary)?["arrivalTerminal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: arrivalTerminalCheck, keyToEdit: "arrivalTerminal")
-                                            
-                                        } else {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: "-", keyToEdit: "arrivalTerminal")
-                                        }
-                                        
-                                        //arrival timings
-                                        if let scheduledGateArrivalCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["scheduledGateArrival"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: scheduledGateArrivalCheck, keyToEdit: "arrivalDate")
-                                            
-                                        }
-                                        
-                                        if let estimatedGateArrivalCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["estimatedGateArrival"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: estimatedGateArrivalCheck, keyToEdit: "arrivalDate")
-                                        }
-                                        
-                                        if let actualGateArrivalCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["actualGateArrival"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: actualGateArrivalCheck, keyToEdit: "arrivalDate")
-                                            
-                                        }
-                                        
-                                        if let scheduledRunwayArrivalCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["scheduledRunwayArrival"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: scheduledRunwayArrivalCheck, keyToEdit: "arrivalDate")
-                                            
-                                        }
-                                        
-                                        if let estimatedRunwayArrivalCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["estimatedRunwayArrival"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: estimatedRunwayArrivalCheck, keyToEdit: "arrivalDate")
-                                            
-                                        }
-                                        
-                                        if let actualRunwayArrivalCheck = (((((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["operationalTimes"] as? NSDictionary)?["actualRunwayArrival"] as? NSDictionary)?["dateLocal"] as? String {
-                                            
-                                            updateFlight(viewController: self, id: id, newValue: actualRunwayArrivalCheck, keyToEdit: "arrivalDate")
-                                            
-                                        }
-                                        
-                                        
-                                        
-                                        DispatchQueue.main.async {
-                                            
-                                            self.flightArray = getFlightArray()
-                                            
-                                            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                                            DispatchQueue.main.async {
-                                                
-                                                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                                                
-                                                if irregularOperationsMessage1 != "" && irregularOperationsMessage2 != "" && confirmedIncidentMessage != "" && self.flightId != 0 {
-                                                    
-                                                    let alert = UIAlertController(title: "\(String(describing: confirmedIncidentMessage))", message: "\(irregularOperationsType1)\n\(irregularOperationsMessage1)\n\(irregularOperationsType2)\n\(irregularOperationsMessage2)\n\n" + NSLocalizedString("Would you like to add the replacement flight automatically?", comment: "") , preferredStyle: UIAlertControllerStyle.alert)
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Yes", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                        self.parseFlightID(dictionary: self.flightArray[index], index: index)
-                                                        
-                                                    }))
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("No", comment: ""), style: .default, handler: { (action) in }))
-                                                    
-                                                    self.present(alert, animated: true, completion: nil)
-                                                    
-                                                } else if irregularOperationsMessage1 != "" && irregularOperationsMessage2 != "" && confirmedIncidentMessage != "" {
-                                                    
-                                                    
-                                                    let alert = UIAlertController(title: "\(String(describing: confirmedIncidentMessage))", message: "\(irregularOperationsType1)\n\(irregularOperationsMessage1)\n\(irregularOperationsType2)\n\(irregularOperationsMessage2)" , preferredStyle: UIAlertControllerStyle.alert)
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                    }))
-                                                    
-                                                    self.present(alert, animated: true, completion: nil)
-                                                    
-                                                } else if irregularOperationsMessage1 != "" && irregularOperationsMessage2 != "" {
-                                                    
-                                                    let alert = UIAlertController(title: NSLocalizedString("Irregular operation!", comment: ""), message: "\(irregularOperationsType1)\n\(irregularOperationsMessage1)\n\(irregularOperationsType2)\n\(irregularOperationsMessage2)", preferredStyle: UIAlertControllerStyle.alert)
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                    }))
-                                                    
-                                                    self.present(alert, animated: true, completion: nil)
-                                                    
-                                                } else if irregularOperationsMessage1 != "" {
-                                                    
-                                                    let alert = UIAlertController(title: "\(irregularOperationsType1)", message: "\n\(irregularOperationsMessage1)", preferredStyle: UIAlertControllerStyle.alert)
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                    }))
-                                                    
-                                                    self.present(alert, animated: true, completion: nil)
-                                                    
-                                                } else if irregularOperationsType1 != "" {
-                                                    
-                                                    let alert = UIAlertController(title: NSLocalizedString("Irregular operation!", comment: ""), message: NSLocalizedString("This flight has an irregular operation of type:", comment: "") +  " \(irregularOperationsType1)", preferredStyle: UIAlertControllerStyle.alert)
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                                        
-                                                    }))
-                                                    
-                                                    self.present(alert, animated: true, completion: nil)
-                                                    
-                                                }
-                                                
-                                                //set notifications
-                                                let delegate = UIApplication.shared.delegate as? AppDelegate
-                                                
-                                                let departureDate = self.flightArray[index]["departureTime"] as! String
-                                                let utcOffset = self.flightArray[index]["departureUtcOffset"] as! Double
-                                                let departureCity = self.flightArray[index]["departureCity"] as! String
-                                                let arrivalCity = self.flightArray[index]["arrivalCity"] as! String
-                                                let arrivalDate = self.flightArray[index]["arrivalDate"] as! String
-                                                let arrivalOffset = self.flightArray[index]["arrivalUtcOffset"] as! Double
-                                                
-                                                let departingTerminal = self.flightArray[index]["departureTerminal"] as! String
-                                                let departingGate = self.flightArray[index]["departureGate"] as! String
-                                                let departingAirport = self.flightArray[index]["departureAirport"] as! String
-                                                let arrivalAirport = self.flightArray[index]["arrivalAirportCode"] as! String
-                                                
-                                                let flightNumber = self.flightArray[index]["flightNumber"] as! String
-                                                
-                                               delegate?.schedule48HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                    
-                                                delegate?.schedule4HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                    
-                                                delegate?.schedule2HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                    
-                                                delegate?.schedule1HourNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                    
-                                                delegate?.scheduleTakeOffNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                delegate?.scheduleLandingNotification(arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                    
-                                                print("scheduled notifications")
-                                                
-                                            }
-                                        }
-                                        
-                                        if let flightIdCheck = (((jsonFlightStatusData)["flightStatuses"] as? NSArray)?[0] as? NSDictionary)?["flightId"] as? Double {
-                                            
-                                            flightId = Int(flightIdCheck)
-                                            self.flightIDString = String(flightId)
-                                            
-                                            if self.flightStatusFormatted == "Departed" {
-                                                self.updateFlightFirstTime = true
-                                                self.parseFlightIDForTracking(index: index)
-                                            }
-                                        }
-                                        
-                                        if self.didTapMarker {
-                                            self.showFlightInfoWindows(flightIndex: self.flightIndex)
-                                        }
-                                        
-                                    } else {
-                                        
-                                        if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
-                                            
-                                            DispatchQueue.main.async {
-                                                
-                                                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                                                
-                                                let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                                                
-                                                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                                    
-                                                }))
-                                                
-                                                self.present(alert, animated: true, completion: nil)
-                                            }
-                                            
-                                        }
-                                        
-                                    }
-                                    
-                                } else {
-                                    DispatchQueue.main.async {
-                                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                } catch {
-                    
-                    DispatchQueue.main.async {
-                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                    }
-                    
-                    print("Error parsing")
-                    
-                }
-                
-            }
-            
-            task.resume()
-
-            
-        } else {
-            
-            print("more then 3 days")
-            DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            }
-        }
-    }*/
+    
     
     func directionsToArrivalAirport() {
         print("directionsToArrivalAirport")
@@ -1862,26 +1423,26 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
             case .authorizedAlways, .authorizedWhenInUse:
                 
-            var longitude:String!
-            var latitude:String!
+            var longitude:Double!
+            var latitude:Double!
             var name:String!
             
             switch (self.tappedMarker.accessibilityLabel?.components(separatedBy: " - ")[0])! {
             case "Departure Airport":
-                longitude = self.flights[self.flightIndex]["Airport Departure Longitude"]!
-                latitude = self.flights[self.flightIndex]["Airport Departure Latitude"]!
-                name = self.flights[self.flightIndex]["Departure Airport Code"]!
+                longitude = (self.flightArray[self.flightIndex]["departureLon"] as! Double)
+                latitude = (self.flightArray[self.flightIndex]["departureLat"] as! Double)
+                name = (self.flightArray[self.flightIndex]["departureAirport"] as! String)
             case "Arrival Airport":
-                longitude = self.flights[self.flightIndex]["Airport Arrival Longitude"]!
-                latitude = self.flights[self.flightIndex]["Airport Arrival Latitude"]!
-                name = self.flights[self.flightIndex]["Arrival Airport Code"]!
+                longitude = (self.flightArray[self.flightIndex]["arrivalLon"] as! Double)
+                latitude = (self.flightArray[self.flightIndex]["arrivalLat"] as! Double)
+                name = (self.flightArray[self.flightIndex]["arrivalAirportCode"] as! String)
             default:
                 break
             }
             
             if longitude != nil && latitude != nil {
                 
-                let coordinate = CLLocationCoordinate2DMake(Double(latitude)!,Double(longitude)!)
+                let coordinate = CLLocationCoordinate2DMake(latitude,longitude)
                 
                 
                 if (UIApplication.shared.canOpenURL(NSURL(string:"comgooglemaps://")! as URL)) {
@@ -1922,7 +1483,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 break
                 
                 }
-                
             }
         }
    }
@@ -1977,7 +1537,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                         let id = notification.identifier
                         
-                        if self.flights.count > 0 {
+                        if self.flightArray.count > 0 {
                             
                             switch id {
                             case "\(prefix)1HrNotification":
@@ -2002,6 +1562,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                         deleteFlight(viewController: self, flightIdentifier: identifier)
                         self.flightArray = getFlightArray()
+                        self.sortFlightsbyDepartureDate()
                         
                         UIView.animate(withDuration: 0.5, animations: {
                             self.blurEffectViewFlightInfoWindow.alpha = 0
@@ -2017,7 +1578,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         }
                     }
                     
-                    if self.flights.count > 0 {
+                    if self.flightArray.count > 0 {
                         
                         self.resetFlightZeroViewdidappear()
                         
@@ -2056,7 +1617,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         print("shareflight")
         
-        if self.isUserLoggedIn() == true {
+        print("usernames  = \(self.userNames)")
+        
+        if self.isUserLoggedIn() {
             
                 let alert = UIAlertController(title: NSLocalizedString("Share flight with", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
                 
@@ -2065,7 +1628,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     alert.addAction(UIAlertAction(title: " \(user)", style: .default, handler: { (action) in
                         
                         
-                        let flight = self.flights[self.flightIndex]
+                        let flight = self.flightArray[self.flightIndex]
                         self.activityLabel.text = "Sharing"
                         
                         
@@ -2456,9 +2019,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         DispatchQueue.main.async {
             self.liveFlightMarker.map = nil
-            self.getAirportCoordinates(flight: self.flightArray[0], index: 0)
+            if self.flightArray.count > 0 {
+               self.getAirportCoordinates(flight: self.flightArray[0], index: 0)
+            }
         }
-        
     }
     
     
@@ -2795,7 +2359,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     
                     if sharedFlights != nil {
                         
-                        let currentflightcount = self.flights.count
+                        let currentflightcount = self.flightArray.count
                         
                         if sharedFlights!.count > 0 {
                             
@@ -2807,20 +2371,11 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                 let flightDictionary = flight["flightDictionary"]
                                 let dictionary = flightDictionary as! NSDictionary
                                 let depLat = dictionary["departureLat"] as! Double
-                                //let depLatitude = Double(depLat)
                                 let depLon = dictionary["departureLon"] as! Double
-                                //let depLongitude = Double(depLon)
                                 let arrLat = dictionary["arrivalLat"] as! Double
-                                //let arrivalLat = Double(arrLat)
                                 let arrLon = dictionary["arrivalLon"] as! Double
-                                //let arrivalLongitude = Double(arrLon)
                                 let arrOffset = dictionary["arrivalUtcOffset"] as! Double
-                                //let arrivalOffset = Double(arrOffset)
                                 let depOffset = dictionary["departureUtcOffset"] as! Double
-                                //let departureOffset = Double(depOffset)
-                                
-                                
-                                print("shared flight = \(flight)")
                                 sharedFromArray.append(flight["shareFromUsername"] as! String)
                                 let id = (dictionary["publishedDeparture"] as! String) + (dictionary["airlineCode"] as! String) + (dictionary["flightNumber"] as! String)
                                 
@@ -2831,7 +2386,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                 } else {
                                     print("fail")
                                 }
-                                parseLeg2Only(viewController: self, dictionary: dictionary as! [String:Any], index: self.flights.count - 1)
+                                parseLeg2Only(viewController: self, dictionary: dictionary as! [String:Any], index: self.flightArray.count - 1)
                                 
                                 flight.deleteInBackground(block: { (success, error) in
                                     

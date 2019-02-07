@@ -11,7 +11,7 @@ import MapKit
 
 class SeatGuruViewController: UIViewController {
     
-    var selectedFlight:[String:String]!
+    var selectedFlight:[String:Any]!
     var carrierCode:String!
     var flightNumber:String!
     var departureDate:String!
@@ -29,13 +29,13 @@ class SeatGuruViewController: UIViewController {
     }
 
     func getSeatGuru() {
-        carrierCode = selectedFlight["Airline Code"]!
-        flightNumber = selectedFlight["Flight Number"]!
-        let departureDateUnformatted = selectedFlight["Published Departure"]!
+        carrierCode = selectedFlight["airlineCode"] as! String
+        flightNumber = selectedFlight["flightNumber"] as! String
+        let departureDateUnformatted = selectedFlight["publishedDeparture"] as! String
         departureDate = formatDate(date: departureDateUnformatted)
-        let departureAirportCode = selectedFlight["Departure Airport Code"]!
-        let arrivalAirportCode = selectedFlight["Arrival Airport Code"]!
-        let url = URL(string: "https://www.google.com/flights/#search;f=" + departureAirportCode + ";t=" + arrivalAirportCode + ";d=" + departureDate + ";r=;tt=o;sel=" + departureAirportCode + arrivalAirportCode + "0" + carrierCode + flightNumber)
+        let departureAirportCode = selectedFlight["departureAirport"] as! String
+        let arrivalAirportCode = selectedFlight["arrivalAirportCode"] as! String
+        let url = URL(string: "https://www.google.com/flights/#search;f=" + departureAirportCode + ";t=" + arrivalAirportCode + ";d=" + departureDate + ";r=;tt=o;sel=" + departureAirportCode + arrivalAirportCode + "0" + flightNumber)
         let request = NSURLRequest(url: url!)
         webView.loadRequest(request as URLRequest)
     }
