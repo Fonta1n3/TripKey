@@ -29,12 +29,13 @@ class SeatGuruViewController: UIViewController {
     }
 
     func getSeatGuru() {
-        carrierCode = selectedFlight["airlineCode"] as! String
-        flightNumber = selectedFlight["flightNumber"] as! String
-        let departureDateUnformatted = selectedFlight["publishedDeparture"] as! String
+        let flight = FlightStruct(dictionary: selectedFlight)
+        carrierCode = flight.airlineCode
+        flightNumber = flight.flightNumber
+        let departureDateUnformatted = flight.publishedDeparture
         departureDate = formatDate(date: departureDateUnformatted)
-        let departureAirportCode = selectedFlight["departureAirport"] as! String
-        let arrivalAirportCode = selectedFlight["arrivalAirportCode"] as! String
+        let departureAirportCode = flight.departureAirport
+        let arrivalAirportCode = flight.arrivalAirportCode
         let url = URL(string: "https://www.google.com/flights/#search;f=" + departureAirportCode + ";t=" + arrivalAirportCode + ";d=" + departureDate + ";r=;tt=o;sel=" + departureAirportCode + arrivalAirportCode + "0" + flightNumber)
         let request = NSURLRequest(url: url!)
         webView.loadRequest(request as URLRequest)

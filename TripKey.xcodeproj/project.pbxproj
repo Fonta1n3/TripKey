@@ -66,6 +66,7 @@
 		D0CC85FA1F7FE44200B8E105 /* info.png in Resources */ = {isa = PBXBuildFile; fileRef = D0CC85F91F7FE33B00B8E105 /* info.png */; };
 		D0CE61932207DF1F006F5D75 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D0CE61922207DF1F006F5D75 /* GoogleService-Info.plist */; };
 		D0CE61962207FAA0006F5D75 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */; };
+		D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CE619B22100B6A006F5D75 /* FlightStruct.swift */; };
 		D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D114481F23018D0020D8C5 /* back arrow-big.png */; };
 		D0D1C28721882AEB00BF8089 /* Bech32.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28521882AEB00BF8089 /* Bech32.swift */; };
 		D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */; };
@@ -163,6 +164,7 @@
 		D0CC85F91F7FE33B00B8E105 /* info.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = info.png; sourceTree = "<group>"; };
 		D0CE61922207DF1F006F5D75 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D0CE61952207FAA0006F5D75 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		D0CE619B22100B6A006F5D75 /* FlightStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightStruct.swift; sourceTree = "<group>"; };
 		D0D114481F23018D0020D8C5 /* back arrow-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back arrow-big.png"; sourceTree = "<group>"; };
 		D0D1C28521882AEB00BF8089 /* Bech32.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bech32.swift; sourceTree = "<group>"; };
 		D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegwitAddrCoder.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 				D0D1C28521882AEB00BF8089 /* Bech32.swift */,
 				D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */,
 				D069FBBA22013D6C00864659 /* Helpers.swift */,
+				D0CE619B22100B6A006F5D75 /* FlightStruct.swift */,
 				D001872E2199402500EEE21E /* Flight Table New */,
 				D01E74081F66587D002C3E06 /* Community */,
 				D0E4E5051D7A975700BF321A /* Log In / Profile */,
@@ -595,6 +598,7 @@
 				D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */,
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
+				D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */,
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
 				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,

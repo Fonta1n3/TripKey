@@ -27,13 +27,9 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     var users = [String: String]()
     var userNames = [String]()
     var followedUsername:String!
-    //var followedUserDictionary = Dictionary<String,Any>()
-    //var followedUserDictionaryArray = [Dictionary<String,Any>]()
     let backButton = UIButton()
     let addButton = UIButton()
     var flightArray = [[String:Any]]()
-    
-    
     
     func addButtons() {
         
@@ -75,21 +71,25 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
         let alert = UIAlertController(title: "\(NSLocalizedString("Share Flight", comment: ""))" + " " + "to \(user)", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
-        for flight in self.flightArray {
+        for dict in self.flightArray {
             
-            let flightNumber = flight["flightNumber"] as! String
-            let depCity = flight["departureAirport"] as! String
-            let arrCity = flight["arrivalAirportCode"] as! String
-            let date = convertDateTime(date: flight["departureTime"] as! String)
+            let flight = FlightStruct(dictionary: dict)
             
-            alert.addAction(UIAlertAction(title: NSLocalizedString("\(flightNumber) \(depCity) to \(arrCity), on \(date)", comment: ""), style: .default, handler: { (action) in
+            let departureAirport = flight.departureAirport
+            let departureCity = flight.departureCity
+            let arrivalAirport = flight.arrivalAirportCode
+            let arrivalCity = flight.arrivalCity
+            let departureDate = convertDateTime(date: flight.departureDate)
+            let flightNumber = flight.flightNumber
+            let arrivalDate = convertDateTime(date: flight.arrivalDate)
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("\(flightNumber) \(departureCity) to \(arrivalCity), on \(departureDate)", comment: ""), style: .default, handler: { (action) in
                 
-                let flight = flight
                 self.addActivityIndicatorCenter()
                 let sharedFlight = PFObject(className: "SharedFlight")
                 sharedFlight["shareToUsername"] = user
                 sharedFlight["shareFromUsername"] = PFUser.current()?.username
-                sharedFlight["flightDictionary"] = flight
+                sharedFlight["flightDictionary"] = dict
                 
                 sharedFlight.saveInBackground(block: { (success, error) in
                     
@@ -126,7 +126,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                                             var request = URLRequest(url: url)
                                             request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
                                             request.httpMethod = "POST"
-                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(username) shared a flight with you.\"}}".data(using: .utf8)
+                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(username) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
                                             
                                             URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
                                                 

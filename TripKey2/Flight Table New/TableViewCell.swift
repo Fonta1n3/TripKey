@@ -11,7 +11,6 @@ import UIKit
 class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var aircraftType: UILabel!
-    
     @IBOutlet weak var terminalLabel: UILabel!
     @IBOutlet weak var gateLabel: UILabel!
     @IBOutlet weak var arrivalGateLabel: UILabel!
@@ -54,27 +53,7 @@ class TableViewCell: UITableViewCell {
     
     
     
-    /*
-     
-     @IBOutlet var flightNumber: UILabel!
-     @IBOutlet var primaryCarrier: UILabel!
-     @IBOutlet var flightDuration: UILabel!
-     @IBOutlet var flightDurationLabel: UILabel!
-     @IBOutlet var departureCountry: UILabel!
-     @IBOutlet var departureAirportCode: UILabel!
-     @IBOutlet var arrivalCountry: UILabel!
-     @IBOutlet var arrivalAirportCode: UILabel!
-     
-     var tapShareAction: ((UITableViewCell) -> Void)?
-     let gradientLayer = CAGradientLayer()
-     
-     
-     
-     @IBAction func shareFlight(_ sender: Any) {
-     
-     tapShareAction?(self)
-     
-     }*/
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -87,8 +66,7 @@ class TableViewCell: UITableViewCell {
         DispatchQueue.main.async {
          
          // Configure the view for the selected state
-         
-            self.gradientLayer.frame = self.background.frame
+        self.gradientLayer.frame = self.background.frame
          
          // 3
          let color1 = UIColor.white.cgColor as CGColor
@@ -99,7 +77,7 @@ class TableViewCell: UITableViewCell {
          self.gradientLayer.locations = [0.4, 0.8]
          
          // 5
-            self.background.layer.addSublayer(self.gradientLayer)
+        self.background.layer.addSublayer(self.gradientLayer)
          
          }
     }

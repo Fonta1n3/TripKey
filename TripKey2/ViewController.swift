@@ -301,7 +301,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidAppear(_ animated: Bool) {
         
-        if isInternetAvailable() {
             
             if PFUser.current() != nil {
                 
@@ -325,10 +324,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 }
             }
 
-        } else {
-            
-            displayAlert(viewController: self, title: NSLocalizedString("No internet connection.", comment: ""), message: "Offline use for TripKey is coming soon, in the meantime please check your signal.")
-        }
+        
    }
     
     override func didReceiveMemoryWarning() {
