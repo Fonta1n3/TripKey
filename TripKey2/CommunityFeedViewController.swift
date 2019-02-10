@@ -200,7 +200,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                         for user in self.userNames {
                             deleteUserFromCoreData(viewController: self, username: user)
                         }
+                        
                         self.userNames.removeAll()
+                        
+                        
                         
                         for object in objects {
                             
@@ -216,6 +219,8 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                         self.userNames = getFollowedUsers()
                         
                         self.refresher.endRefreshing()
+                        
+                        self.feedTable.reloadData()
                         
                     } else {
                         //not following anyone
@@ -242,7 +247,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         feedTable.dataSource = self
         refresher = UIRefreshControl()
         refresher.attributedTitle = NSAttributedString(string: NSLocalizedString("Pull to Refresh", comment: ""))
-        refresher.addTarget(self, action: #selector(CommunityFeedViewController.refreshNow), for: UIControlEvents.valueChanged)
+        refresher.addTarget(self, action: #selector(CommunityFeedViewController.refresh), for: UIControlEvents.valueChanged)
         feedTable.addSubview(refresher)
         blurEffectView.alpha = 0
         blurEffectView.frame = self.view.bounds
@@ -250,15 +255,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        refreshNow()
-        feedTable.reloadData()
+        refresh()
+        //feedTable.reloadData()
     }
     
-    func refreshNow() {
-        userNames = getFollowedUsers()
-        refresher.endRefreshing()
-    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = feedTable.dequeueReusableCell(withIdentifier: "Community Feed", for: indexPath) as! FeedTableViewCell

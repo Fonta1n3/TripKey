@@ -650,16 +650,12 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                             departureDate = (flight as! NSDictionary)["departureTime"] as! String
                                             convertedDepartureDate = convertDateTime(date: departureDate)
                                             departureDateUtc = getUtcTime(time: departureDate, utcOffset: departureUtcOffset)
-                                            //departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
-                                            //departureDateUtcNumber = formatDateTimetoWhole(dateTime: departureDateUtc)
                                             urlDepartureDate = convertToURLDate(date: departureDate)
                                             
                                             arrivalDate = (flight as! NSDictionary)["arrivalTime"] as! String
                                             convertedArrivalDate = convertDateTime(date: arrivalDate)
                                             arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: arrivalUtcOffset)
-                                            //arrivalDateNumber = formatDateTimetoWhole(dateTime: arrivalDate)
                                             urlArrivalDate = convertToURLDate(date: arrivalDate)
-                                            //arrivalDateUtcNumber = formatDateTimetoWhole(dateTime: arrivalDateUtc)
                                             
                                             if let departureTerminalCheck = (flight as! NSDictionary)["departureTerminal"] as? String {
                                                 
@@ -830,13 +826,12 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, UITabl
                                                     
                                                     self.airlineCode.text = ""
                                                     self.flightNumber.text = ""
-                                                    //self.sortFlightsbyDepartureDate()
                                                     
-                                                    let id = departureDate + flightNumber
+                                                    let id = departureDate + airlineCode + flightNumber
                                                     
                                                     DispatchQueue.main.async {
                                                         
-                                                        let success = saveFlight(viewController: self, departureAirport: departureAirportCode, departureLat: departureLatitude, departureLon: departureLongitude, arrivalLat: arrivalLatitude, arrivalLon: arrivalLongitude, airlineCode: airlineCode, arrivalAirportCode: arrivalAirportCode, arrivalCity: arrivalCity, arrivalDate: arrivalDate, arrivalGate: arrivalGate, arrivalTerminal: arrivalTerminal, arrivalUtcOffset: arrivalUtcOffset, baggageClaim: "", departureCity: departureCity, departureGate: departureGate, departureTerminal: departureTerminal, departureTime: departureDate, departureUtcOffset: departureUtcOffset, flightDuration: "", flightNumber: flightNumber, flightStatus: "", primaryCarrier: airlineName, flightEquipment: aircraft, identifier: id, phoneNumber: phoneNumber, publishedDepartureUtc: departureDateUtc, urlArrivalDate: urlArrivalDate, publishedDeparture: departureDate, publishedArrival: arrivalDate)
+                                                        let success = saveFlight(viewController: self, departureAirport: departureAirportCode, departureLat: departureLatitude, departureLon: departureLongitude, arrivalLat: arrivalLatitude, arrivalLon: arrivalLongitude, airlineCode: airlineCode, arrivalAirportCode: arrivalAirportCode, arrivalCity: arrivalCity, arrivalDate: arrivalDate, arrivalGate: arrivalGate, arrivalTerminal: arrivalTerminal, arrivalUtcOffset: arrivalUtcOffset, baggageClaim: "", departureCity: departureCity, departureGate: departureGate, departureTerminal: departureTerminal, departureTime: departureDate, departureUtcOffset: departureUtcOffset, flightDuration: "", flightNumber: airlineCode + flightNumber, flightStatus: "", primaryCarrier: airlineName, flightEquipment: aircraft, identifier: id, phoneNumber: phoneNumber, publishedDepartureUtc: departureDateUtc, urlArrivalDate: urlArrivalDate, publishedDeparture: departureDate, publishedArrival: arrivalDate)
                                                         
                                                         if success {
                                                             print("saved new flight to coredata")
