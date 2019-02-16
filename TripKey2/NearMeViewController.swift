@@ -16,7 +16,7 @@ import Foundation
 import WatchConnectivity
 import UserNotifications
 
-class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate, UITextFieldDelegate, UITextViewDelegate, UISearchBarDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, WCSessionDelegate {
+class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate, UITextFieldDelegate, UITextViewDelegate, UISearchBarDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, WCSessionDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func sessionDidBecomeInactive(_ session: WCSession) {}
     
@@ -24,6 +24,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
     
+    let qrButton = UIButton()
+    let imagePicker = UIImagePickerController()
     var flightArray = [[String:Any]]()
     let liveFlightMarker = GMSMarker()
     let nextFlightButton = UIButton()
@@ -146,15 +148,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         }
     }
     
-    func promptUserToLogIn() {
+    func promptUserToFollowPeople() {
         
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: NSLocalizedString("You are not logged in.", comment: ""), message: NSLocalizedString("Please log in to share flights.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("No Thanks", comment: ""), style: .default, handler: { (action) in }))
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Log In", comment: ""), style: .default, handler: { (action) in
-                self.performSegue(withIdentifier: "logIn", sender: self)
-            }))
-            self.present(alert, animated: true, completion: nil)
+            displayAlert(viewController: self, title: "Oops", message: "You have not followed anyone yet. Get a friend to send their QR Code to you, then tap the add user button in the community table to upload the QR code. You can then easily share flights with them anytime.")
         }
     }
     
@@ -583,11 +580,134 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         }
     }
     
+    func firstTimeHere() {
+        print("firstTimeHere")
+        //Checks if User has used this version of the app before
+        //UserDefaults.standard.removeObject(forKey: "firstTime")
+        if UserDefaults.standard.object(forKey: "firstTime") == nil {
+            print("firstTime == nil")
+            
+            
+            //delete followed users
+            UserDefaults.standard.removeObject(forKey: "followedUsernames")
+            let getusers = getFollowedUsers()
+            for u in getusers {
+                let username = u["username"]!
+                deleteUserFromCoreData(viewController: self, username: username)
+                
+            }
+            
+            func randomString(length: Int) -> String {
+                let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                return String((0...length-1).map{ _ in letters.randomElement()! })
+            }
+            let userId = randomString(length: 35)
+            print("userId = \(userId)")
+            UserDefaults.standard.set(userId, forKey: "userId")
+            UserDefaults.standard.set(true, forKey: "firstTime")
+            
+            if PFUser.current() != nil {
+                
+                //user already logged in
+                //update userid
+                let post = PFObject(className: "Posts")
+                post["userid"] = userId
+                post["username"] = PFUser.current()!.username!
+                post.saveInBackground { (success, error) in
+                    if error != nil {
+                        print("error adding userid and username to posts")
+                    } else {
+                        print("User signed up with Parse")
+                    }
+                }
+                
+                //change username to user id to ensure backwards compatibility
+                PFUser.current()!.setObject(userId, forKey: "username")
+                PFUser.current()!.saveInBackground { (success, error) in
+                    if error != nil {
+                        print("error = \(String(describing: error))")
+                    } else {
+                        print("succesfully changed username to the userid")
+                    }
+                }
+                
+                
+            } else {
+                
+                //create account for new user
+                // temporary username
+                let temporaryUserName = randomString(length: 7)
+                let user = PFUser()
+                user.username = userId
+                user.password = userId
+                user.signUpInBackground { (success, error) in
+                    if error != nil {
+                        print("error signing user up \(error as Any)")
+                    } else {
+                        let query = PFQuery(className: "Posts")
+                        query.whereKey("userid", equalTo: (PFUser.current()?.objectId!)!)
+                        query.findObjectsInBackground(block: { (objects, error) in
+                            if let posts = objects {
+                                for post in posts {
+                                    post.deleteInBackground(block: { (success, error) in
+                                        if error != nil {
+                                            print("post can not be deleted")
+                                        } else {
+                                            print("post deleted")
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                        let post = PFObject(className: "Posts")
+                        post["userid"] = userId
+                        post["username"] = temporaryUserName
+                        post.saveInBackground { (success, error) in
+                            if error != nil {
+                                print("error adding userid and username to posts")
+                            } else {
+                                print("User signed up with Parse")
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            //get user ids first
+            if let userArray = getFollowedUsers() as? [[String:String]] {
+                
+                for user in userArray {
+                    
+                    let id = user["userid"]!
+                    let username = user["username"]!
+                    
+                    let query = PFQuery(className: "Posts")
+                    query.whereKey("userid", equalTo: id)
+                        query.findObjectsInBackground(block: { (objects, error) in
+                            if let posts = objects {
+                                if posts.count > 0 {
+                                    if username != posts[0]["username"] as! String {
+                                        //update in coredata
+                                        let newusername  = posts[0]["username"] as! String
+                                        let success = updateUserNameInCoreData(viewController: self, username: newusername, userId: id)
+                                        if success {
+                                            print("succesfully updated \(username) to \(newusername)")
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                }
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("viewdidload nearMe")
-        
+        firstTimeHere()
         didTapMarker = false
+        imagePicker.delegate = self
         mapView.frame = CGRect(x: 0, y: 20, width: view.frame.width, height: view.frame.height - 20)
         googleMapsView = GMSMapView(frame: mapView.frame)
         arrivalInfoWindow.terminalLabel.text = NSLocalizedString("Terminal", comment: "")
@@ -633,10 +753,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         convertUserDefaultsToCoreData()
         isUsersFirstTime()
            
-        if (PFUser.current() != nil) {
-            self.userNames = getFollowedUsers()
-        }
-        
         if howManyTimesUsed.count % 10 == 0 {
             self.askForReview()
         }
@@ -720,7 +836,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 DispatchQueue.main.async {
                     UserDefaults.standard.removeObject(forKey: "flights")
                     self.flightArray = getFlightArray()
-                    //self.sortFlightsbyDepartureDate()
                     self.resetFlightZeroViewdidappear()
                 }
             }
@@ -730,7 +845,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         } else {
             
             self.flightArray = getFlightArray()
-            //self.sortFlightsbyDepartureDate()
             showFlightOrUserLocation()
         }
     }
@@ -765,7 +879,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         flightArray = getFlightArray()
         getSharedFlights()
-        userNames = getFollowedUsers()
         
         if flightArray.count > 0 {
                 
@@ -786,27 +899,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             UserDefaults.standard.set(false, forKey: "userSwipedBack")
         }
         
-        if UserDefaults.standard.object(forKey: "followedUsernames") != nil {
-            
-            if let followedUsers = UserDefaults.standard.object(forKey: "followedUsernames") as? [Dictionary<String,Any>] {
-                
-                for user in followedUsers {
-                    
-                    let success = saveFollowedUserToCoreData(viewController: self, username: user["Username"] as! String)
-                    
-                    if success {
-                        UserDefaults.standard.removeObject(forKey: "followedUsernames")
-                        self.userNames = getFollowedUsers()
-                    }
-                    
-                }
-                
-            } else {
-                
-                self.userNames = getFollowedUsers()
-                
-            }
-        }
     }
     
    func askForReview() {
@@ -851,10 +943,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 vc.flightArray = self.flightArray
                 vc.userNames = self.userNames
             }
-        case "goToAddFlights":
-            if let vc = segue.destination as? FlightDetailsViewController {
-                vc.flightArray = self.flightArray
-            }
+            
         default:
             break
         }
@@ -912,6 +1001,15 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     func addButtons() {
         
+        qrButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
+        let qrButtonImage = UIImage(named: "whiteQR.png")
+        qrButton.setImage(qrButtonImage, for: .normal)
+        qrButton.backgroundColor = UIColor.clear
+        qrButton.layer.cornerRadius = 28
+        qrButton.addTarget(self, action: #selector(showUserInfo), for: .touchUpInside)
+        let qrButtonFrame = CGRect(x: googleMapsView.frame.maxX - 60, y: googleMapsView.frame.maxY - 140, width: 50, height: 50)
+        addCircleBlurBackground(frame: qrButtonFrame, button: qrButton)
+        
         tableButton.frame = CGRect(x: 10, y: 10, width: 30, height: 30)
         let tableButtonImage = UIImage(named: "whiteList.png")
         tableButton.setImage(tableButtonImage, for: .normal)
@@ -964,6 +1062,14 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         })
      }
     
+    @objc func showUserInfo() {
+        
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "logIn", sender: self)
+        }
+        
+    }
+    
     @objc func showTable() {
         if flightArray.count > 0 {
             
@@ -979,11 +1085,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     func showUsers() {
         
-        if self.isUserLoggedIn() {
-            self.goToUserFeed()
-        } else {
-            self.promptUserToLogIn()
-        }
+        self.goToUserFeed()
     }
     
     func goToUserFeed() {
@@ -1581,37 +1683,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                                 self.present(alert, animated: true, completion: nil)
                                                 
                                             }
-                                            
-                                            //set notifications
-                                            let delegate = UIApplication.shared.delegate as? AppDelegate
-                                            
-                                            let departureDate = flight.departureDate
-                                            let utcOffset = flight.departureUtcOffset
-                                            let departureCity = flight.departureCity
-                                            let arrivalCity = flight.arrivalCity
-                                            let arrivalDate = flight.arrivalDate
-                                            let arrivalOffset = flight.arrivalUtcOffset
-                                            
-                                            let departingTerminal = flight.departureTerminal
-                                            let departingGate = flight.departureGate
-                                            let departingAirport = flight.departureAirport
-                                            let arrivalAirport = flight.arrivalAirportCode
-                                            let flightNumber = flight.flightNumber
-                                            
-                                            delegate?.schedule48HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                            
-                                            delegate?.schedule4HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                            
-                                            delegate?.schedule2HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                            
-                                            delegate?.schedule1HourNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                            
-                                            delegate?.scheduleTakeOffNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                            
-                                            delegate?.scheduleLandingNotification(arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                            
-                                            print("scheduled notifications")
-                                            
                                         }
                                     }
                                     
@@ -1633,6 +1704,38 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                     }
                                     
                                     self.flightArray = getFlightArray()
+                                    
+                                    DispatchQueue.main.async {
+                                        //set notifications
+                                        let delegate = UIApplication.shared.delegate as? AppDelegate
+                                        
+                                        let departureDate = flight.departureDate
+                                        let utcOffset = flight.departureUtcOffset
+                                        let departureCity = flight.departureCity
+                                        let arrivalCity = flight.arrivalCity
+                                        let arrivalDate = flight.arrivalDate
+                                        let arrivalOffset = flight.arrivalUtcOffset
+                                        
+                                        let departingTerminal = flight.departureTerminal
+                                        let departingGate = flight.departureGate
+                                        let departingAirport = flight.departureAirport
+                                        let arrivalAirport = flight.arrivalAirportCode
+                                        let flightNumber = flight.flightNumber
+                                        
+                                        delegate?.schedule48HrNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                        
+                                        delegate?.schedule4HrNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                        
+                                        delegate?.schedule2HrNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                        
+                                        delegate?.schedule1HourNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                        
+                                        delegate?.scheduleTakeOffNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                        
+                                        delegate?.scheduleLandingNotification(id: id, arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                        
+                                        print("scheduled notifications")
+                                    }
                                     
                                 } else {
                                     
@@ -1807,12 +1910,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         print("removeFlight")
         
         let flight = FlightStruct(dictionary: self.flightArray[self.flightIndex])
-        let publishedDeparture = flight.publishedDeparture
-        let publishedArrival = flight.publishedArrival
         let flightnumber = flight.flightNumber
         let identifier  = flight.identifier
         let center = UNUserNotificationCenter.current()
-        let prefix = flightnumber + publishedDeparture
         
         DispatchQueue.main.async {
             let alert = UIAlertController(title: nil, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -1829,17 +1929,17 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         if self.flightArray.count > 0 {
                             
                             switch id {
-                            case "\(prefix)1HrNotification":
+                            case "\(identifier)1HrNotification":
                                 center.removePendingNotificationRequests(withIdentifiers: [id])
-                            case "\(prefix)2HrNotification":
+                            case "\(identifier)2HrNotification":
                                 center.removePendingNotificationRequests(withIdentifiers: [id])
-                            case "\(prefix)4HrNotification":
+                            case "\(identifier)4HrNotification":
                                 center.removePendingNotificationRequests(withIdentifiers: [id])
-                            case "\(prefix)48HrNotification":
+                            case "\(identifier)48HrNotification":
                                 center.removePendingNotificationRequests(withIdentifiers: [id])
-                            case "\(prefix)TakeOffNotification":
+                            case "\(identifier)TakeOffNotification":
                                 center.removePendingNotificationRequests(withIdentifiers: [id])
-                            case "\(flightnumber)\(publishedArrival)LandingNotification":
+                            case "\(identifier)LandingNotification":
                                 center.removePendingNotificationRequests(withIdentifiers: [id])
                             default:
                                 break
@@ -1905,135 +2005,210 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         print("shareflight")
         
-        if self.isUserLoggedIn() {
+        let followedUsers = getFollowedUsers()
+        if followedUsers.count > 0 {
             
-                let alert = UIAlertController(title: NSLocalizedString("Share flight with", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+            let alert = UIAlertController(title: NSLocalizedString("Share flight with", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+            
+            for user in followedUsers {
                 
-                for user in self.userNames {
+                let username = user["username"]!
+                let userid = user["userid"]!
+                var myusername = ""
+                
+                alert.addAction(UIAlertAction(title: " \(username)", style: .default, handler: { (action) in
                     
-                    alert.addAction(UIAlertAction(title: " \(user)", style: .default, handler: { (action) in
-                        
-                        
-                        //let flight = self.flightArray[self.flightIndex]
-                        let flight = FlightStruct(dictionary: self.flightArray[self.flightIndex])
-                        let departureAirport = flight.departureAirport
-                        let departureCity = flight.departureCity
-                        let arrivalAirport = flight.arrivalAirportCode
-                        let arrivalCity = flight.arrivalCity
-                        let departureDate = convertDateTime(date: flight.departureDate)
-                        let flightNumber = flight.flightNumber
-                        let arrivalDate = convertDateTime(date: flight.arrivalDate)
-                        self.activityLabel.text = "Sharing"
-                        
-                        
-                        let sharedFlight = PFObject(className: "SharedFlight")
-                        
-                        sharedFlight["shareToUsername"] = user
-                        sharedFlight["shareFromUsername"] = PFUser.current()?.username
-                        sharedFlight["flightDictionary"] = self.flightArray[self.flightIndex]
-                        
-                        sharedFlight.saveInBackground(block: { (success, error) in
-                            
-                            if error != nil {
+                    let myuserid = UserDefaults.standard.object(forKey: "userId") as! String
+                    let query = PFQuery(className: "Posts")
+                    query.whereKey("userid", equalTo: myuserid)
+                    query.findObjectsInBackground(block: { (objects, error) in
+                        if let posts = objects {
+                            if posts.count > 0 {
+                                myusername = posts[0]["username"] as! String
+                                let flight = FlightStruct(dictionary: self.flightArray[self.flightIndex])
+                                let departureAirport = flight.departureAirport
+                                let departureCity = flight.departureCity
+                                let arrivalAirport = flight.arrivalAirportCode
+                                let arrivalCity = flight.arrivalCity
+                                let departureDate = convertDateTime(date: flight.departureDate)
+                                let flightNumber = flight.flightNumber
+                                let arrivalDate = convertDateTime(date: flight.arrivalDate)
+                                self.activityLabel.text = "Sharing"
                                 
-                                DispatchQueue.main.async {
-                                    
-                                    self.activityIndicator.stopAnimating()
-                                    self.blurEffectViewActivity.removeFromSuperview()
-                                    self.activityLabel.removeFromSuperview()
-                                }
+                                let sharedFlight = PFObject(className: "SharedFlight")
+                                sharedFlight["shareToUsername"] = userid
+                                sharedFlight["shareFromUsername"] = myusername
+                                sharedFlight["flightDictionary"] = self.flightArray[self.flightIndex]
                                 
-                                
-                                let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                                
-                                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                    
-                                }))
-                                
-                                self.present(alert, animated: true, completion: nil)
-                                
-                            } else {
-                                
-                                DispatchQueue.main.async {
-                                    
-                                    self.activityIndicator.stopAnimating()
-                                    self.blurEffectViewActivity.removeFromSuperview()
-                                    self.activityLabel.removeFromSuperview()
-                                }
-                                
-                                let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
-                                
-                                let getUserFCM = PFUser.query()
-                                
-                                getUserFCM?.whereKey("username", equalTo: user)
-                                
-                                getUserFCM?.findObjectsInBackground { (tokens, error) in
+                                sharedFlight.saveInBackground(block: { (success, error) in
                                     
                                     if error != nil {
                                         
-                                        print("error = \(String(describing: error))")
+                                        DispatchQueue.main.async {
+                                            
+                                            self.activityIndicator.stopAnimating()
+                                            self.blurEffectViewActivity.removeFromSuperview()
+                                            self.activityLabel.removeFromSuperview()
+                                        }
+                                        
+                                        
+                                        let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
+                                        
+                                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
+                                            
+                                        }))
+                                        
+                                        self.present(alert, animated: true, completion: nil)
                                         
                                     } else {
                                         
-                                        for token in tokens! {
+                                        DispatchQueue.main.async {
                                             
-                                            if let fcmToken = token["firebaseToken"] as? String {
+                                            self.activityIndicator.stopAnimating()
+                                            self.blurEffectViewActivity.removeFromSuperview()
+                                            self.activityLabel.removeFromSuperview()
+                                        }
+                                        
+                                        let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(username)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                                        
+                                        let getUserFCM = PFUser.query()
+                                        
+                                        getUserFCM?.whereKey("username", equalTo: userid)
+                                        
+                                        getUserFCM?.findObjectsInBackground { (tokens, error) in
+                                            
+                                            if error != nil {
                                                 
-                                                let username = (PFUser.current()?.username)!
-                                                
-                                                if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
-                                                    
-                                                    var request = URLRequest(url: url)
-                                                    request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
-                                                    request.httpMethod = "POST"
-                                                    request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(username) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
-                                                    
-                                                    URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
-                                                        
-                                                        if error != nil {
-                                                            
-                                                            print(error!)
-                                                        } else {
-                                                            print("sent notification")
-                                                        }
-                                                        
-                                                    }).resume()
-                                                    
-                                                }
+                                                print("error = \(String(describing: error))")
                                                 
                                             } else {
                                                 
-                                                print("//user not enabled push notifications")
-                                                
+                                                for token in tokens! {
+                                                    
+                                                    if let fcmToken = token["firebaseToken"] as? String {
+                                                        
+                                                        if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
+                                                            
+                                                            var request = URLRequest(url: url)
+                                                            request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
+                                                            request.httpMethod = "POST"
+                                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(myusername) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
+                                                            
+                                                            URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
+                                                                
+                                                                if error != nil {
+                                                                    
+                                                                    print(error!)
+                                                                } else {
+                                                                    print("sent notification")
+                                                                }
+                                                                
+                                                            }).resume()
+                                                            
+                                                        }
+                                                        
+                                                    } else {
+                                                        
+                                                        print("//user not enabled push notifications")
+                                                        
+                                                    }
+                                                }
                                             }
                                         }
+                                        
+                                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
+                                        
+                                        self.present(alert, animated: true, completion: nil)
+                                        
                                     }
-                                }
-                                
-                                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                                
-                                self.present(alert, animated: true, completion: nil)
-                                
+                                })
                             }
-                        })
-                        
-                        
-                    }))
-                    
-                }
-                
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
-                    
-                    alert.dismiss(animated: true, completion: nil)
-                    
+                        }
+                    })
                 }))
+            }
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
                 
-                self.present(alert, animated: true, completion: nil)
+                alert.dismiss(animated: true, completion: nil)
+                
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
             
         } else {
             
-            self.promptUserToLogIn()
+            let alert = UIAlertController(title: NSLocalizedString("You have not followed anyone yet", comment: ""), message: NSLocalizedString("You can add someone by uploading their TripKey QR Code from your photos.", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Add", comment: ""), style: .default, handler: { (action) in
+                
+                DispatchQueue.main.async {
+                    self.chooseQRCodeFromLibrary()
+                }
+                
+            }))
+            
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { (action) in
+                
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
         }
+        
+    }
+    
+    @objc func chooseQRCodeFromLibrary() {
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            let detector:CIDetector=CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy:CIDetectorAccuracyHigh])!
+            let ciImage:CIImage = CIImage(image:pickedImage)!
+            var qrCodeLink = ""
+            let features = detector.features(in: ciImage)
+            
+            for feature in features as! [CIQRCodeFeature] {
+                qrCodeLink += feature.messageString!
+            }
+            
+            print(qrCodeLink)
+            
+            if qrCodeLink != "" {
+                
+                DispatchQueue.main.async {
+                    
+                    //follow user
+                    let query = PFQuery(className: "Posts")
+                    query.whereKey("userid", equalTo: qrCodeLink)
+                    query.findObjectsInBackground(block: { (objects, error) in
+                        if let posts = objects {
+                            if posts.count > 0 {
+                                //user exists, follow them, add username to coredata
+                                let username = posts[0]["username"] as! String
+                                let followed = saveFollowedUserToCoreData(viewController: self, username: username, userId: qrCodeLink)
+                                if followed {
+                                    displayAlert(viewController: self, title: "Success", message: "You followed \(username), now you can easliy share flights with them!")
+                                }
+                            } else {
+                                //user doesnt exist
+                                displayAlert(viewController: self, title: "Error", message: "It appears that user no longer exists.")
+                            }
+                        }
+                    })
+                }
+                
+            }
+            
+        }
+        
+        dismiss(animated: true, completion: nil)
     }
     
     func showFlightInfoWindows(flightIndex: Int) {
@@ -3127,37 +3302,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                                     self.present(alert, animated: true, completion: nil)
                                                     
                                                 }
-                                                
-                                                //set notifications
-                                                let delegate = UIApplication.shared.delegate as? AppDelegate
-                                                
-                                                let departureDate = flight.departureDate
-                                                let utcOffset = flight.departureUtcOffset
-                                                let departureCity = flight.departureCity
-                                                let arrivalCity = flight.arrivalCity
-                                                let arrivalDate = flight.arrivalDate
-                                                let arrivalOffset = flight.arrivalUtcOffset
-                                                
-                                                let departingTerminal = flight.departureTerminal
-                                                let departingGate = flight.departureGate
-                                                let departingAirport = flight.departureAirport
-                                                let arrivalAirport = flight.arrivalAirportCode
-                                                let flightNumber = flight.flightNumber
-                                                
-                                                delegate?.schedule48HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                delegate?.schedule4HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                delegate?.schedule2HrNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                delegate?.schedule1HourNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                delegate?.scheduleTakeOffNotification(departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                delegate?.scheduleLandingNotification(arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
-                                                
-                                                print("scheduled notifications")
-                                                
                                             }
                                         }
                                         
@@ -3179,6 +3323,38 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                         }
                                         
                                         self.flightArray = getFlightArray()
+                                        
+                                        DispatchQueue.main.async {
+                                            //set notifications
+                                            let delegate = UIApplication.shared.delegate as? AppDelegate
+                                            
+                                            let departureDate = flight.departureDate
+                                            let utcOffset = flight.departureUtcOffset
+                                            let departureCity = flight.departureCity
+                                            let arrivalCity = flight.arrivalCity
+                                            let arrivalDate = flight.arrivalDate
+                                            let arrivalOffset = flight.arrivalUtcOffset
+                                            
+                                            let departingTerminal = flight.departureTerminal
+                                            let departingGate = flight.departureGate
+                                            let departingAirport = flight.departureAirport
+                                            let arrivalAirport = flight.arrivalAirportCode
+                                            let flightNumber = flight.flightNumber
+                                            
+                                            delegate?.schedule48HrNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                            
+                                            delegate?.schedule4HrNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                            
+                                            delegate?.schedule2HrNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                            
+                                            delegate?.schedule1HourNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                            
+                                            delegate?.scheduleTakeOffNotification(id: id, departureDate: departureDate, departureOffset: utcOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                            
+                                            delegate?.scheduleLandingNotification(id: id, arrivalDate: arrivalDate, arrivalOffset: arrivalOffset, departureCity: departureCity, arrivalCity: arrivalCity, flightNumber: flightNumber, departingTerminal: departingTerminal, departingGate: departingGate, departingAirport: departingAirport, arrivingAirport: arrivalAirport)
+                                            
+                                            print("scheduled notifications")
+                                        }
                                         
                                     } else {
                                         
@@ -3234,7 +3410,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         }
     }
 
-    
 }
 
 

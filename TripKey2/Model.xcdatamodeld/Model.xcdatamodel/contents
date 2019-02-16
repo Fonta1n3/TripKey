@@ -33,10 +33,11 @@
         <attribute name="urlArrivalDate" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="FollowedUsers" representedClassName="FollowedUsers" syncable="YES" codeGenerationType="class">
+        <attribute name="userid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="60"/>
         <element name="Flight" positionX="-54" positionY="0" width="128" height="495"/>
+        <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="75"/>
     </elements>
 </model>

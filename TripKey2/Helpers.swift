@@ -334,11 +334,14 @@ public func formatFlightEquipment(flightEquipment: String) -> String {
     return aircraftString
 }
 
-public func saveFollowedUserToCoreData(viewController: UIViewController, username: String) -> Bool {
+public func saveFollowedUserToCoreData(viewController: UIViewController, username: String, userId: String) -> Bool {
     print("saveUserToCoreData")
     
     var appDelegate = AppDelegate()
     var success = Bool()
+    
+    let keys = ["username", "userid"]
+    let values = [username, userId]
     
     if let appDelegateCheck = UIApplication.shared.delegate as? AppDelegate {
         print("appDelegateCheck")
@@ -356,6 +359,7 @@ public func saveFollowedUserToCoreData(viewController: UIViewController, usernam
     print("context")
     let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "FollowedUsers")
     fetchRequest.returnsObjectsAsFaults = false
+    var userAlreadySaved = false
     
     do {
         
@@ -364,35 +368,47 @@ public func saveFollowedUserToCoreData(viewController: UIViewController, usernam
         if results.count > 0 {
             print("results exist")
             
-            var userAlreadySaved = false
-            
             for data in results {
                 
-                if data.value(forKey: "username") as! String == username {
+                for _ in keys {
                     
-                    userAlreadySaved = true
-            
+                    if values[1] == data.value(forKey: "userid") as? String {
+                        
+                        //already following
+                        userAlreadySaved = true
+                        displayAlert(viewController: viewController, title: "Error", message: "You are already following \(username)")
+                        
+                    } else {
+                        
+                        //user not saved yet
+                    }
                 }
+                
             }
             
             if !userAlreadySaved {
                 
                 let entity = NSEntityDescription.entity(forEntityName: "FollowedUsers", in: context)
-                let followedUser = NSManagedObject(entity: entity!, insertInto: context)
-                followedUser.setValue(username, forKey: "username")
+                let user = NSManagedObject(entity: entity!, insertInto: context)
                 
-                do {
+                for (index, key) in keys.enumerated() {
                     
-                    try context.save()
-                    success = true
-                    print("success saving \(username) to coredata")
+                    user.setValue(values[index], forKey: key)
                     
-                } catch {
-                    
-                    print("Failed saving")
-                    success = false
-                    
+                    do {
+                        
+                        try context.save()
+                        success = true
+                        print("saved user \(values[index])")
+                        
+                    } catch {
+                        
+                        print("Failed saving user \(values[index])")
+                        success = false
+                        
+                    }
                 }
+                
             }
             
         } else {
@@ -400,20 +416,24 @@ public func saveFollowedUserToCoreData(viewController: UIViewController, usernam
             print("no results so create one")
             
             let entity = NSEntityDescription.entity(forEntityName: "FollowedUsers", in: context)
-            let followedUser = NSManagedObject(entity: entity!, insertInto: context)
-            followedUser.setValue(username, forKey: "username")
+            let user = NSManagedObject(entity: entity!, insertInto: context)
             
-            do {
+            for (index, key) in keys.enumerated() {
                 
-                try context.save()
-                success = true
-                print("success saving to coredata")
+                user.setValue(values[index], forKey: key)
                 
-            } catch {
-                
-                print("Failed saving")
-                success = false
-                
+                do {
+                    
+                    try context.save()
+                    success = true
+                    print("saved user \(values[index])")
+                    
+                } catch {
+                    
+                    print("Failed saving user \(values[index])")
+                    success = false
+                    
+                }
             }
             
         }
@@ -484,11 +504,11 @@ public func deleteUserFromCoreData(viewController: UIViewController, username: S
     }
 }
 
-public func getFollowedUsers() -> [String] {
+public func getFollowedUsers() -> [[String:String]] {
     
     print("getFollowedUsers")
     
-    var followedUsers = [String]()
+    var followedUsers = [[String:String]]()
     
     guard let appDelegate =
         UIApplication.shared.delegate as? AppDelegate else {
@@ -496,27 +516,25 @@ public func getFollowedUsers() -> [String] {
     }
     
     let context = appDelegate.persistentContainer.viewContext
-    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "FollowedUsers")
+    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "FollowedUsers")
     fetchRequest.returnsObjectsAsFaults = false
+    fetchRequest.resultType = .dictionaryResultType
+    
     
     do {
         
-        let results = try context.fetch(fetchRequest) as [NSManagedObject]
-        
-        if results.count > 0 {
+        if let results = try context.fetch(fetchRequest) as? [[String:String]] {
             
-            for data in results {
+            if results.count > 0 {
                 
-                if let user = data.value(forKey: "username") as? String {
+                for user in results {
                     
                     followedUsers.append(user)
+                    
                 }
                 
             }
-            
         }
-        
-        
         
     } catch {
         
@@ -813,8 +831,6 @@ public func deleteFlight(viewController: UIViewController, flightIdentifier: Str
 
 public func updateFlight(viewController: UIViewController, id: String, newValue: Any, keyToEdit: String) {
     
-    
-    
     DispatchQueue.main.async {
         
         var appDelegate = AppDelegate()
@@ -893,3 +909,76 @@ public func formatFlightStatus(flightStatusUnformatted: String) -> String {
     }
     return formattedText
 }
+
+public func updateUserNameInCoreData(viewController: UIViewController, username: String, userId: String) -> Bool {
+    print("updateUserNameInCoreData")
+    
+    var appDelegate = AppDelegate()
+    var success = Bool()
+    
+    if let appDelegateCheck = UIApplication.shared.delegate as? AppDelegate {
+        print("appDelegateCheck")
+        
+        appDelegate = appDelegateCheck
+        
+    } else {
+        
+        displayAlert(viewController: viewController, title: "Error", message: "Something strange has happened and we do not have access to app delegate, please try again.")
+        success = false
+        
+    }
+    
+    let context = appDelegate.persistentContainer.viewContext
+    print("context")
+    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "FollowedUsers")
+    fetchRequest.returnsObjectsAsFaults = false
+    
+    do {
+        
+        let results = try context.fetch(fetchRequest) as [NSManagedObject]
+        
+        if results.count > 0 {
+            print("results exist")
+            
+            for data in results {
+                
+                if userId == data.value(forKey: "userid") as? String {
+                    
+                    //overwrite username
+                    data.setValue(username, forKey: "username")
+                    
+                    do {
+                        
+                        try context.save()
+                        print("updated \(username) succesfully")
+                        
+                    } catch {
+                        
+                        print("error editing")
+                        
+                    }
+                    
+                } else {
+                    
+                    
+                }
+                
+            }
+            
+        } else {
+            
+            print("no results")
+            
+        }
+            
+        
+    } catch {
+        
+        print("Failed")
+        
+    }
+    
+    return success
+}
+
+

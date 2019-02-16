@@ -11,8 +11,9 @@ import Parse
 import MapKit
 import CoreData
 
-class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    let imagePicker = UIImagePickerController()
     @IBOutlet weak var imageBackground: UIView!
     var resultsArray = [String]()
     @IBOutlet var goToProfile: UIBarButtonItem!
@@ -62,19 +63,31 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     @objc func add() {
-        self.performSegue(withIdentifier: "addUsers", sender: self)
+        DispatchQueue.main.async {
+            self.performSegue(withIdentifier: "addUser", sender: self)
+        }
+        
+        //chooseQRCodeFromLibrary()
     }
     
     func shareFlight(indexPath: Int) {
         
         let user = self.userNames[indexPath]
+        let followedUsers = getFollowedUsers()
+        var userIdToShareWith = ""
+        var myusername = ""
+        
+        for u in followedUsers {
+            if user == u["username"]! {
+                userIdToShareWith = u["userid"]!
+            }
+        }
         
         let alert = UIAlertController(title: "\(NSLocalizedString("Share Flight", comment: ""))" + " " + "to \(user)", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
         for dict in self.flightArray {
             
             let flight = FlightStruct(dictionary: dict)
-            
             let departureAirport = flight.departureAirport
             let departureCity = flight.departureCity
             let arrivalAirport = flight.arrivalAirportCode
@@ -86,61 +99,100 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             alert.addAction(UIAlertAction(title: NSLocalizedString("\(flightNumber) \(departureCity) to \(arrivalCity), on \(departureDate)", comment: ""), style: .default, handler: { (action) in
                 
                 self.addActivityIndicatorCenter()
-                let sharedFlight = PFObject(className: "SharedFlight")
-                sharedFlight["shareToUsername"] = user
-                sharedFlight["shareFromUsername"] = PFUser.current()?.username
-                sharedFlight["flightDictionary"] = dict
-                
-                sharedFlight.saveInBackground(block: { (success, error) in
-                    
-                    if error != nil {
-                        self.activityIndicator.stopAnimating()
-                        let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                        
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
+                let myuserid = UserDefaults.standard.object(forKey: "userId") as! String
+                let query = PFQuery(className: "Posts")
+                query.whereKey("userid", equalTo: myuserid)
+                query.findObjectsInBackground(block: { (objects, error) in
+                    if let posts = objects {
+                        if posts.count > 0 {
+                            myusername = posts[0]["username"] as! String
                             
-                        }))
-                        
-                        self.present(alert, animated: true, completion: nil)
-                        
-                    } else {
-                        
-                        self.activityIndicator.stopAnimating()
-                        let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
-                        let getUserFCM = PFUser.query()
-                        getUserFCM?.whereKey("username", equalTo: user)
-                        getUserFCM?.findObjectsInBackground { (tokens, error) in
+                            let sharedFlight = PFObject(className: "SharedFlight")
+                            sharedFlight["shareToUsername"] = userIdToShareWith
+                            sharedFlight["shareFromUsername"] = myusername
+                            sharedFlight["flightDictionary"] = dict
                             
-                            if error != nil {
-                                print("error = \(String(describing: error))")
-                            } else {
+                            sharedFlight.saveInBackground(block: { (success, error) in
                                 
-                                for token in tokens! {
+                                if error != nil {
                                     
-                                    if let fcmToken = token["firebaseToken"] as? String {
-                                                                                
-                                        let username = (PFUser.current()?.username)!
+                                    DispatchQueue.main.async {
                                         
-                                        if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
+                                        self.activityIndicator.stopAnimating()
+                                        
+                                    }
+                                    
+                                    
+                                    let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
+                                    
+                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
+                                        
+                                    }))
+                                    
+                                    self.present(alert, animated: true, completion: nil)
+                                    
+                                } else {
+                                    
+                                    DispatchQueue.main.async {
+                                        
+                                        self.activityIndicator.stopAnimating()
+                                        
+                                    }
+                                    
+                                    let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                                    
+                                    let getUserFCM = PFUser.query()
+                                    
+                                    getUserFCM?.whereKey("username", equalTo: userIdToShareWith)
+                                    
+                                    getUserFCM?.findObjectsInBackground { (tokens, error) in
+                                        
+                                        if error != nil {
                                             
-                                            var request = URLRequest(url: url)
-                                            request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
-                                            request.httpMethod = "POST"
-                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(username) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
+                                            print("error = \(String(describing: error))")
                                             
-                                            URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
+                                        } else {
+                                            
+                                            for token in tokens! {
                                                 
-                                                if error != nil {
-                                                    print(error!)
+                                                if let fcmToken = token["firebaseToken"] as? String {
+                                                    
+                                                    if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
+                                                        
+                                                        var request = URLRequest(url: url)
+                                                        request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
+                                                        request.httpMethod = "POST"
+                                                        request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(myusername) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
+                                                        
+                                                        URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
+                                                            
+                                                            if error != nil {
+                                                                
+                                                                print(error!)
+                                                            } else {
+                                                                print("sent notification")
+                                                            }
+                                                            
+                                                        }).resume()
+                                                        
+                                                    }
+                                                    
+                                                } else {
+                                                    
+                                                    print("//user not enabled push notifications")
+                                                    
                                                 }
-                                            }).resume()
+                                            }
                                         }
                                     }
+                                    
+                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
+                                    
+                                    self.present(alert, animated: true, completion: nil)
+                                    
                                 }
-                            }
+                            })
                         }
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                        self.present(alert, animated: true, completion: nil)
                     }
                 })
            }))
@@ -154,23 +206,14 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     
     @IBAction func goToProfile(_ sender: Any) {
         
-        if PFUser.current() != nil {
-            
-            DispatchQueue.main.async {
-                PFUser.logOut()
-                for user in self.userNames {
-                    deleteUserFromCoreData(viewController: self, username: user)
-                }
-                self.userNames.removeAll()
-                self.dismiss(animated: true, completion: nil)
-            }
-        }
+        
     }
     
     @IBAction func goToUsers(_ sender: Any) {
         print("searchUsers")
+        
         DispatchQueue.main.async {
-            displayAlert(viewController: self, title: "Your Username:", message: "\(String(describing: PFUser.current()!.username!))")
+            self.performSegue(withIdentifier: "goToMyAccount", sender: self)
         }
     }
     
@@ -182,57 +225,15 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     func refresh() {
         print("refresh")
         
-        
-        let query = PFQuery(className: "Followers")
-        query.whereKey("followerUsername", equalTo: (PFUser.current()?.username)!)
-        query.findObjectsInBackground(block: { (objects, error) in
-            
-            if error != nil {
-                
-                displayAlert(viewController: self, title: "Error", message: "Please try later.")
-                
-            } else {
-                
-                if let objects = objects {
-                    
-                    if objects.count > 0 {
-                        
-                        for user in self.userNames {
-                            deleteUserFromCoreData(viewController: self, username: user)
-                        }
-                        
-                        self.userNames.removeAll()
-                        
-                        
-                        
-                        for object in objects {
-                            
-                            let success = saveFollowedUserToCoreData(viewController: self, username: object["followedUsername"] as! String)
-                            
-                            if success {
-                                print("success refreshing followed users")
-                            } else {
-                                print("error refreshing followed users")
-                            }
-                        }
-                        
-                        self.userNames = getFollowedUsers()
-                        
-                        self.refresher.endRefreshing()
-                        
-                        self.feedTable.reloadData()
-                        
-                    } else {
-                        //not following anyone
-                        self.refresher.endRefreshing()
-                        
-                    }
-                    
-                }
-                
-            }
-            
-        })
+        self.userNames.removeAll()
+        let followedUsers = getFollowedUsers()
+        print("followedUsers = \(followedUsers)")
+        for user in followedUsers {
+            let username = user["username"]!
+            self.userNames.append(username)
+        }
+        self.refresher.endRefreshing()
+        self.feedTable.reloadData()
 
    }
     
@@ -242,7 +243,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         UserDefaults.standard.set(true, forKey: "userSwipedBack")
         addButtons()
         addUserButton.title = NSLocalizedString("Add Users", comment: "")
-        goToProfile.title = NSLocalizedString("Log Out", comment: "")
         feedTable.delegate = self
         feedTable.dataSource = self
         refresher = UIRefreshControl()
@@ -252,6 +252,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         blurEffectView.alpha = 0
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        imagePicker.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -288,36 +289,9 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
         if editingStyle == UITableViewCellEditingStyle.delete {
             
-            let query = PFQuery(className: "Followers")
-            query.whereKey("followerUsername", equalTo: (PFUser.current()?.username!)!)
-            query.whereKey("followedUsername", equalTo: self.userNames[indexPath.row])
-            query.findObjectsInBackground(block: { (objects, error) in
-                    
-                if error != nil {
-                        
-                    DispatchQueue.main.async {
-                        displayAlert(viewController: self, title: "Error", message: "Unable to unfollow. Please check your connection and try again later.")
-                    }
-                        
-                } else {
-                        
-                    if let objects = objects {
-                            
-                        for object in objects {
-                                    
-                            DispatchQueue.main.async {
-                                    
-                                let userUnfollowed = self.userNames[indexPath.row]
-                                deleteUserFromCoreData(viewController: self, username: userUnfollowed)
-                                self.userNames.remove(at: indexPath.row)
-                                displayAlert(viewController: self, title: "\(NSLocalizedString("You unfollowed", comment: "")) \(userUnfollowed)", message: "")
-                                object.deleteInBackground()
-                                self.feedTable.deleteRows(at: [indexPath], with: .fade)
-                            }
-                        }
-                    }
-                }
-            })
+            deleteUserFromCoreData(viewController: self, username: self.userNames[indexPath.row])
+            self.userNames.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
         }
     }
     
@@ -330,5 +304,60 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         view.addSubview(activityIndicator)
         activityIndicator.startAnimating()
         
+    }
+    
+    @objc func chooseQRCodeFromLibrary() {
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            let detector:CIDetector=CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy:CIDetectorAccuracyHigh])!
+            let ciImage:CIImage = CIImage(image:pickedImage)!
+            var qrCodeLink = ""
+            let features = detector.features(in: ciImage)
+            
+            for feature in features as! [CIQRCodeFeature] {
+                qrCodeLink += feature.messageString!
+            }
+            
+            print(qrCodeLink)
+            
+            if qrCodeLink != "" {
+                
+                DispatchQueue.main.async {
+                    
+                    //follow user
+                    let query = PFQuery(className: "Posts")
+                    query.whereKey("userid", equalTo: qrCodeLink)
+                    query.findObjectsInBackground(block: { (objects, error) in
+                        if let posts = objects {
+                            if posts.count > 0 {
+                                //user exists, follow them, add username to coredata
+                                let username = posts[0]["username"] as! String
+                                let followed = saveFollowedUserToCoreData(viewController: self, username: username, userId: qrCodeLink)
+                                if followed {
+                                    self.refresh()
+                                    displayAlert(viewController: self, title: "Success", message: "You followed \(username), now you can easliy share flights with them!")
+                                }
+                            } else {
+                                //user doesnt exist
+                                displayAlert(viewController: self, title: "Error", message: "It appears that user no longer exists.")
+                            }
+                        }
+                    })
+                }
+                
+            }
+            
+        }
+        
+        dismiss(animated: true, completion: nil)
     }
 }

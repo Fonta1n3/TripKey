@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>4.47</string>
+	<string>4.49</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -28,7 +28,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>112</string>
+	<string>114</string>
 	<key>FacebookAppID</key>
 	<string>337055533360129</string>
 	<key>FacebookDisplayName</key>
@@ -51,12 +51,16 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>So you can scan another users QR Code to share flights with them</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>So your friends can see your location</string>
 	<key>NSLocationUsageDescription</key>
 	<string>Because we want your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>So that we can show you your location on the map, show places near you and give you directions to places.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>So we can save your userid as a QR code to your photos, to allow you to easily share it with friends.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>So we can upload a profile image.</string>
 	<key>UIBackgroundModes</key>

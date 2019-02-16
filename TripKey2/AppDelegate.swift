@@ -202,7 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     
     
-    func schedule48HrNotification(departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
+    func schedule48HrNotification(id: String, departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         let departureDateFormatter = DateFormatter()
         departureDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
@@ -259,7 +259,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                 notification.body = "\(NSLocalizedString("Your flight from", comment: "")) \(departureCity) (\(departingAirport))  \(NSLocalizedString("to", comment: "")) \(arrivalCity) (\(arrivingAirport)) \(NSLocalizedString("is departing in 48 hours! Make sure to check in online and choose your seats.", comment: ""))"
             }
             
-            let identifier = "\(flightNumber + departureDate)48HrNotification"
+            let identifier = "\(id)48HrNotification"
             
             let request = UNNotificationRequest(identifier: identifier, content: notification, trigger: notificationTrigger)
             
@@ -283,7 +283,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     
     
-    func schedule4HrNotification(departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
+    func schedule4HrNotification(id: String, departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         
         let departureDateFormatter = DateFormatter()
@@ -342,7 +342,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                 notification.body = "\(NSLocalizedString("Your flight from", comment: "")) \(departureCity) (\(departingAirport))  \(NSLocalizedString("to", comment: "")) \(arrivalCity) (\(arrivingAirport)) \(NSLocalizedString("is departing in 4 hours. Use TripKey to effortlessly get directions to the airport.", comment: ""))"
             }
             
-            let request = UNNotificationRequest(identifier: "\(flightNumber + departureDate)4HrNotification", content: notification, trigger: notificationTrigger)
+            let request = UNNotificationRequest(identifier: "\(id)4HrNotification", content: notification, trigger: notificationTrigger)
             
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             
@@ -353,7 +353,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     
     
-    func schedule2HrNotification(departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
+    func schedule2HrNotification(id: String, departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         let departureDateFormatter = DateFormatter()
         departureDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
@@ -409,7 +409,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                 notification.body = "\(NSLocalizedString("Your flight from", comment: "")) \(departureCity) (\(departingAirport))  \(NSLocalizedString("to", comment: "")) \(arrivalCity) (\(arrivingAirport)) \(NSLocalizedString("is departing in 2 hours. Use TripKey to update your flight info", comment: ""))"
             }
             
-            let request = UNNotificationRequest(identifier: "\(flightNumber + departureDate)2HrNotification", content: notification, trigger: notificationTrigger)
+            let request = UNNotificationRequest(identifier: "\(id)2HrNotification", content: notification, trigger: notificationTrigger)
             
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             
@@ -418,7 +418,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
     }
     
-    func schedule1HourNotification(departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
+    func schedule1HourNotification(id: String, departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         let departureDateFormatter = DateFormatter()
         departureDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
@@ -476,7 +476,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                 
                 notification.body = "\(NSLocalizedString("Your flight from", comment: "")) \(departureCity) (\(departingAirport))  \(NSLocalizedString("to", comment: "")) \(arrivalCity) (\(arrivingAirport)) \(NSLocalizedString("is departing in 1 hour. The flight will board soon, check TripKey for updates.", comment: ""))"
             }
-            let request = UNNotificationRequest(identifier: "\(flightNumber + departureDate)1HrNotification", content: notification, trigger: notificationTrigger)
+            
+            let request = UNNotificationRequest(identifier: "\(id)1HrNotification", content: notification, trigger: notificationTrigger)
             
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             
@@ -484,7 +485,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         }
     }
     
-    func scheduleTakeOffNotification(departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
+    func scheduleTakeOffNotification(id: String, departureDate: String, departureOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         let departureDateFormatter = DateFormatter()
         departureDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
@@ -542,14 +543,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                 
                 notification.body = "\(NSLocalizedString("Your flight from", comment: "")) \(departureCity) (\(departingAirport))  \(NSLocalizedString("to", comment: "")) \(arrivalCity) (\(arrivingAirport)) \(NSLocalizedString("is scheduled to be departing now.", comment: ""))"
             }
-            let request = UNNotificationRequest(identifier: "\(flightNumber + departureDate)TakeOffNotification", content: notification, trigger: notificationTrigger)
+            let request = UNNotificationRequest(identifier: "\(id)TakeOffNotification", content: notification, trigger: notificationTrigger)
             
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
              print("scheduled takeoff notification = \(request.identifier)")
         }
     }
     
-    func scheduleLandingNotification(arrivalDate: String, arrivalOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
+    func scheduleLandingNotification(id: String, arrivalDate: String, arrivalOffset: Double, departureCity: String, arrivalCity: String, flightNumber: String, departingTerminal: String, departingGate: String, departingAirport: String, arrivingAirport: String) {
         
         let departureDateFormatter = DateFormatter()
         departureDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
@@ -610,7 +611,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
                 
                 notification.body = "\(NSLocalizedString("Your flight from", comment: "")) \(departureCity) (\(departingAirport))  \(NSLocalizedString("to", comment: "")) \(arrivalCity) (\(arrivingAirport)) \(NSLocalizedString("is scheduled to be landing now.", comment: ""))"
             }
-            let request = UNNotificationRequest(identifier: "\(flightNumber + arrivalDate)LandingNotification", content: notification, trigger: notificationTrigger)
+            let request = UNNotificationRequest(identifier: "\(id)LandingNotification", content: notification, trigger: notificationTrigger)
             
             UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
              print("scheduled landing notification = \(request.identifier)")

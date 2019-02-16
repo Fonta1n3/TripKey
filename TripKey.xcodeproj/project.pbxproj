@@ -11,8 +11,6 @@
 		D00187242199226100EEE21E /* whiteList.png in Resources */ = {isa = PBXBuildFile; fileRef = D00187232199226100EEE21E /* whiteList.png */; };
 		D0018732219948A000EEE21E /* FlightTableNewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0018731219948A000EEE21E /* FlightTableNewViewController.swift */; };
 		D00187342199556B00EEE21E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00187332199556B00EEE21E /* TableViewCell.swift */; };
-		D0030CFC1EE77F9B005B7271 /* CommunitySettings.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0030CFB1EE77F9B005B7271 /* CommunitySettings.xib */; };
-		D0030CFE1EE7820A005B7271 /* userLocationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0030CFD1EE7820A005B7271 /* userLocationPermission.swift */; };
 		D00BBF7F1D73C05500057B58 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = D00BBF7E1D73C05500057B58 /* Podfile */; };
 		D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */; };
 		D016EB801F078AEB00DEE5CD /* Date Picker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */; };
@@ -29,7 +27,8 @@
 		D025F593220402D5007D6D3B /* airplaneTrackerImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D025F592220402D5007D6D3B /* airplaneTrackerImage.png */; };
 		D025F59522040324007D6D3B /* airplaneSliderImage.png in Resources */ = {isa = PBXBuildFile; fileRef = D025F59422040324007D6D3B /* airplaneSliderImage.png */; };
 		D0286D6721E27AF300954991 /* ReadMe.md in Resources */ = {isa = PBXBuildFile; fileRef = D0286D6621E27AF300954991 /* ReadMe.md */; };
-		D03D5FAE2185BA8C004D8DE7 /* AddUsersTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */; };
+		D05CF0C72216D0A7001CE57A /* whiteQR.png in Resources */ = {isa = PBXBuildFile; fileRef = D05CF0C62216D0A7001CE57A /* whiteQR.png */; };
+		D05CF0C92217D0ED001CE57A /* QRScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D05CF0C82217D0ED001CE57A /* QRScannerViewController.swift */; };
 		D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D05F116F1ECD474A00BFA3F2 /* Main.storyboard */; };
 		D06184672205660800336A20 /* user_male@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = D06184662205660800336A20 /* user_male@3x.png */; };
 		D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */; };
@@ -68,8 +67,6 @@
 		D0CE61962207FAA0006F5D75 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */; };
 		D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CE619B22100B6A006F5D75 /* FlightStruct.swift */; };
 		D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D114481F23018D0020D8C5 /* back arrow-big.png */; };
-		D0D1C28721882AEB00BF8089 /* Bech32.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28521882AEB00BF8089 /* Bech32.swift */; };
-		D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */; };
 		D0D1C28A21882B0800BF8089 /* backButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D1C28921882B0800BF8089 /* backButton.png */; };
 		D0D526181E24917C004738DA /* Arrival Info Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0D526171E24917C004738DA /* Arrival Info Window.xib */; };
 		D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D526191E249210004738DA /* ArrivalInfoWindow.swift */; };
@@ -100,8 +97,6 @@
 		D00187232199226100EEE21E /* whiteList.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteList.png; sourceTree = "<group>"; };
 		D0018731219948A000EEE21E /* FlightTableNewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightTableNewViewController.swift; sourceTree = "<group>"; };
 		D00187332199556B00EEE21E /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
-		D0030CFB1EE77F9B005B7271 /* CommunitySettings.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommunitySettings.xib; sourceTree = "<group>"; };
-		D0030CFD1EE7820A005B7271 /* userLocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = userLocationPermission.swift; sourceTree = "<group>"; };
 		D00BBF7E1D73C05500057B58 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Date Picker.xib"; sourceTree = "<group>"; };
@@ -122,10 +117,11 @@
 		D0286D6621E27AF300954991 /* ReadMe.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReadMe.md; sourceTree = "<group>"; };
 		D03420211F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03420221F3AB3900039AF33 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Localizable.strings; sourceTree = "<group>"; };
-		D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddUsersTableViewController.swift; sourceTree = "<group>"; };
 		D03E74ED1F271928002E1357 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		D03E74EE1F271928002E1357 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		D0439E911D6A34D000FD60FC /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		D05CF0C62216D0A7001CE57A /* whiteQR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteQR.png; sourceTree = "<group>"; };
+		D05CF0C82217D0ED001CE57A /* QRScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = QRScannerViewController.swift; path = TripKey2/QRScannerViewController.swift; sourceTree = "<group>"; };
 		D05F116F1ECD474A00BFA3F2 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		D06184662205660800336A20 /* user_male@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "user_male@3x.png"; sourceTree = "<group>"; };
 		D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-add-user-male-filled-50.png"; sourceTree = "<group>"; };
@@ -166,8 +162,6 @@
 		D0CE61952207FAA0006F5D75 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		D0CE619B22100B6A006F5D75 /* FlightStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightStruct.swift; sourceTree = "<group>"; };
 		D0D114481F23018D0020D8C5 /* back arrow-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back arrow-big.png"; sourceTree = "<group>"; };
-		D0D1C28521882AEB00BF8089 /* Bech32.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bech32.swift; sourceTree = "<group>"; };
-		D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegwitAddrCoder.swift; sourceTree = "<group>"; };
 		D0D1C28921882B0800BF8089 /* backButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backButton.png; sourceTree = "<group>"; };
 		D0D526171E24917C004738DA /* Arrival Info Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Arrival Info Window.xib"; sourceTree = "<group>"; };
 		D0D526191E249210004738DA /* ArrivalInfoWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrivalInfoWindow.swift; sourceTree = "<group>"; };
@@ -219,9 +213,6 @@
 		D01E74081F66587D002C3E06 /* Community */ = {
 			isa = PBXGroup;
 			children = (
-				D03D5FAD2185BA8C004D8DE7 /* AddUsersTableViewController.swift */,
-				D0030CFB1EE77F9B005B7271 /* CommunitySettings.xib */,
-				D0030CFD1EE7820A005B7271 /* userLocationPermission.swift */,
 				D0F6DC471EC984A00026817A /* FeedTableViewCell.swift */,
 				D0F6DC451EC97EAE0026817A /* CommunityFeedViewController.swift */,
 			);
@@ -231,6 +222,7 @@
 		D01EE9A91D692B780048D6CE = {
 			isa = PBXGroup;
 			children = (
+				D05CF0C82217D0ED001CE57A /* QRScannerViewController.swift */,
 				D0286D6621E27AF300954991 /* ReadMe.md */,
 				D0E760F3217F016F00B6D31D /* TripKey.entitlements */,
 				D0C49B411F19EEB700D47983 /* Localizable.strings */,
@@ -255,10 +247,6 @@
 				D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */,
 				D0F42B621E41D1E800737461 /* NearMeViewController.swift */,
 				D05F116F1ECD474A00BFA3F2 /* Main.storyboard */,
-				D0D1C28521882AEB00BF8089 /* Bech32.swift */,
-				D0D1C28621882AEB00BF8089 /* SegwitAddrCoder.swift */,
-				D069FBBA22013D6C00864659 /* Helpers.swift */,
-				D0CE619B22100B6A006F5D75 /* FlightStruct.swift */,
 				D001872E2199402500EEE21E /* Flight Table New */,
 				D01E74081F66587D002C3E06 /* Community */,
 				D0E4E5051D7A975700BF321A /* Log In / Profile */,
@@ -313,6 +301,7 @@
 				D0D114481F23018D0020D8C5 /* back arrow-big.png */,
 				D075D8461F68D3FB004831B0 /* whiteCommunity.png */,
 				D075D8441F68D38B004831B0 /* whitePhone.png */,
+				D05CF0C62216D0A7001CE57A /* whiteQR.png */,
 				D0E24B971F584C11004FBF96 /* searchIconNew.png */,
 				D075D8421F68CD1C004831B0 /* delete-512.png */,
 				D025F5882203F45D007D6D3B /* newTakeOffToWest.png */,
@@ -341,6 +330,7 @@
 		D0A10F041D8AB6C200CE88BA /* Flights */ = {
 			isa = PBXGroup;
 			children = (
+				D0CE619B22100B6A006F5D75 /* FlightStruct.swift */,
 				D0D526191E249210004738DA /* ArrivalInfoWindow.swift */,
 				D0D526171E24917C004738DA /* Arrival Info Window.xib */,
 				D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */,
@@ -353,6 +343,7 @@
 		D0B9EB121DC12331000C837B /* Miscellaneous */ = {
 			isa = PBXGroup;
 			children = (
+				D069FBBA22013D6C00864659 /* Helpers.swift */,
 				D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */,
 				D0E84C8E1E15463000EA4C2F /* TripKey2.entitlements */,
 				D01EE9B51D692B780048D6CE /* AppDelegate.swift */,
@@ -467,7 +458,6 @@
 				D0BE53721F7219AE0068F9AD /* User-Profile.png in Resources */,
 				D025F5892203F45E007D6D3B /* newTakeOffToWest.png in Resources */,
 				D069FBB5220033F600864659 /* trackFlight.png in Resources */,
-				D0030CFC1EE77F9B005B7271 /* CommunitySettings.xib in Resources */,
 				D00BBF7F1D73C05500057B58 /* Podfile in Resources */,
 				D025F59522040324007D6D3B /* airplaneSliderImage.png in Resources */,
 				D0E24B981F584C11004FBF96 /* searchIconNew.png in Resources */,
@@ -495,6 +485,7 @@
 				D0C49B3F1F19EEB700D47983 /* Localizable.strings in Resources */,
 				D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */,
 				D069FBA721FFFF2000864659 /* white-plus.png in Resources */,
+				D05CF0C72216D0A7001CE57A /* whiteQR.png in Resources */,
 				D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */,
 				D025F58B2203FB39007D6D3B /* takeOffWestToEastImage.png in Resources */,
 				D098EFB6220725E3008A8E27 /* icons8-user-30.png in Resources */,
@@ -589,11 +580,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0F6DC461EC97EAE0026817A /* CommunityFeedViewController.swift in Sources */,
-				D0030CFE1EE7820A005B7271 /* userLocationPermission.swift in Sources */,
 				D0018732219948A000EEE21E /* FlightTableNewViewController.swift in Sources */,
 				D097603B1E141C0A0096D6F8 /* SeatGuruViewController.swift in Sources */,
 				D09FE4561D8A787D00D36EBF /* FlightDetailsViewController.swift in Sources */,
 				D0CE61962207FAA0006F5D75 /* Model.xcdatamodeld in Sources */,
+				D05CF0C92217D0ED001CE57A /* QRScannerViewController.swift in Sources */,
 				D01EE9B81D692B780048D6CE /* ViewController.swift in Sources */,
 				D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */,
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
@@ -602,10 +593,7 @@
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
 				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,
-				D0D1C28821882AEB00BF8089 /* SegwitAddrCoder.swift in Sources */,
 				D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */,
-				D0D1C28721882AEB00BF8089 /* Bech32.swift in Sources */,
-				D03D5FAE2185BA8C004D8DE7 /* AddUsersTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,7 +748,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TripKey.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 69FR345CDA;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -776,9 +764,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.fontaine.TripKeyLite;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c9890352-c8b4-4781-a8b5-21752b45472e";
-				PROVISIONING_PROFILE_SPECIFIER = TripKey2019;
+				PROVISIONING_PROFILE_SPECIFIER = TripKeyLiteDevelopment2019;
 				SWIFT_OBJC_BRIDGING_HEADER = "TripKey2/Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -809,6 +798,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = TripKey2019;
 				SWIFT_OBJC_BRIDGING_HEADER = "TripKey2/Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
