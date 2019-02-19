@@ -233,10 +233,18 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                     cell.landingOnTimeDelayed.text = "\(NSLocalizedString("Arriving", comment: "")) \(arrivalTimeDifference) \(NSLocalizedString("early", comment: ""))"
                 }
                 
+                
+                
                 let arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: arrivalOffset)
+                print("arrivalDateUtc = \(arrivalDateUtc)")
                 let timeTillLanding = self.secondsTillLanding(arrivalDateUTC: arrivalDateUtc)
+                print("timeTillLanding = \(timeTillLanding)")
+                
                 let departuerDateUtc = getUtcTime(time: departureDate, utcOffset: departureOffset)
+                print("departuerDateUtc = \(departuerDateUtc)")
                 let timeSinceTakeOff = self.secondsSinceTakeOff(departureDateUTC: departuerDateUtc)
+                print("timeSinceTakeOff = \(timeSinceTakeOff)")
+                
                 cell.slider.maximumValue = Float(timeSinceTakeOff + timeTillLanding)
                 cell.slider.minimumValue = Float(0)
                 cell.slider.value = Float(timeSinceTakeOff)
@@ -388,10 +396,10 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         
         for user in followedUsers {
             
-            alert.addAction(UIAlertAction(title: "\(user)", style: .default, handler: { (action) in
+            alert.addAction(UIAlertAction(title: "\(String(describing: user["username"]!))", style: .default, handler: { (action) in
                 
                 let sharedFlight = PFObject(className: "SharedFlight")
-                sharedFlight["shareToUsername"] = user
+                sharedFlight["shareToUsername"] = user["userid"]!
                 sharedFlight["shareFromUsername"] = PFUser.current()?.username
                 sharedFlight["departureDate"] = departureDate
                 sharedFlight["airlineCode"] = airlineCode
@@ -399,6 +407,8 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 sharedFlight["flightDictionary"] = self.flightArray[indexPath]
                 
                 sharedFlight.saveInBackground(block: { (success, error) in
+                    
+                    print("error = \(error)")
                     
                     if error != nil {
                         
@@ -414,7 +424,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                         
                         let getUserFCM = PFUser.query()
                         
-                        getUserFCM?.whereKey("username", equalTo: user)
+                        getUserFCM?.whereKey("username", equalTo: user["userid"]!)
                         
                         getUserFCM?.findObjectsInBackground { (tokens, error) in
                             
@@ -428,14 +438,12 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                                     
                                     if let fcmToken = token["firebaseToken"] as? String {
                                         
-                                        let username = (PFUser.current()?.username)!
-                                        
                                         if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
                                             
                                             var request = URLRequest(url: url)
                                             request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
                                             request.httpMethod = "POST"
-                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(username) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
+                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(user["username"]!) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
                                             
                                             URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
                                                 
@@ -458,7 +466,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                             }
                         }
                         
-                        let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to", comment: "")) \(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                        let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user["username"]!))", message: nil, preferredStyle: UIAlertControllerStyle.alert)
                         
                         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
                         
@@ -479,21 +487,68 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     func secondsTillLanding(arrivalDateUTC: String) -> Int {
         
-        let dateTimeFormatter = DateFormatter()
-        dateTimeFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        let dateToCheck = dateTimeFormatter.date(from: arrivalDateUTC)! as NSDate
-        let secondsFromNow = dateToCheck.timeIntervalSinceNow
-        return Int(abs(secondsFromNow))
+        let currentTime = Date()
+        print("currentTime = \(currentTime)")
+        
+        //get current utc time
+        let date = NSDate()
+        var secondsFromGMT: Int { return NSTimeZone.local.secondsFromGMT() }
+        var utcInterval = secondsFromGMT
+        
+        if utcInterval < 0 {
+            utcInterval = abs(utcInterval)
+        } else if utcInterval > 0 {
+            utcInterval = utcInterval * -1
+        } else if utcInterval == 0 {
+            utcInterval = 0
+        }
+        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        
+        //let date1 = dateFormatter.date(from: currentDateUtc)
+        let date2 = dateFormatter.date(from: arrivalDateUTC)
+        
+        let interval = currentDateUtc.timeIntervalSince(date2!)
+        
+        let secondsTillLanding = abs(Int(interval))
+        
+        
+        return secondsTillLanding
         
     }
     
     func secondsSinceTakeOff(departureDateUTC: String) -> Int {
         
-        let dateTimeFormatter = DateFormatter()
-        dateTimeFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        let dateToCheck = dateTimeFormatter.date(from: departureDateUTC)! as NSDate
-        let secondsSinceTakeOff = dateToCheck.timeIntervalSinceNow
-        return Int(abs(secondsSinceTakeOff))
+        let currentTime = Date()
+        print("currentTime = \(currentTime)")
+        
+        //get current utc time
+        let date = NSDate()
+        var secondsFromGMT: Int { return NSTimeZone.local.secondsFromGMT() }
+        var utcInterval = secondsFromGMT
+        
+        if utcInterval < 0 {
+            utcInterval = abs(utcInterval)
+        } else if utcInterval > 0 {
+            utcInterval = utcInterval * -1
+        } else if utcInterval == 0 {
+            utcInterval = 0
+        }
+        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+        
+        //let date1 = dateFormatter.date(from: currentDateUtc)
+        let date2 = dateFormatter.date(from: departureDateUTC)
+        
+        let interval = currentDateUtc.timeIntervalSince(date2!)
+        
+        let secondsSinceTakeoff = abs(Int(interval))
+        
+        return secondsSinceTakeoff
         
     }
     

@@ -31,6 +31,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         do {
             videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
         } catch {
+            failed()
             return
         }
         
@@ -45,7 +46,6 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
         
         if (captureSession.canAddOutput(metadataOutput)) {
             captureSession.addOutput(metadataOutput)
-            //metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.global(qos: .userInteractive))
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [AVMetadataObjectTypeQRCode]
         } else {
@@ -98,6 +98,8 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     }
     
     func failed() {
+        print("failed")
+        addButtons()
         let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
@@ -130,21 +132,7 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
             found(code: stringValue)
         }
         
-        //dismiss(animated: true)
     }
-    
-    /*func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        captureSession.stopRunning()
-        
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-            guard let stringValue = readableObject.stringValue else { return }
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            found(code: stringValue)
-        }
-        
-        dismiss(animated: true)
-    }*/
     
     func found(code: String) {
         print(code)

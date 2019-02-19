@@ -67,7 +67,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             self.performSegue(withIdentifier: "addUser", sender: self)
         }
         
-        //chooseQRCodeFromLibrary()
     }
     
     func shareFlight(indexPath: Int) {
@@ -109,7 +108,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                             
                             let sharedFlight = PFObject(className: "SharedFlight")
                             sharedFlight["shareToUsername"] = userIdToShareWith
-                            sharedFlight["shareFromUsername"] = myusername
+                            sharedFlight["shareFromUsername"] = myuserid
                             sharedFlight["flightDictionary"] = dict
                             
                             sharedFlight.saveInBackground(block: { (success, error) in

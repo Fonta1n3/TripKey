@@ -247,7 +247,6 @@
 				D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */,
 				D0F42B621E41D1E800737461 /* NearMeViewController.swift */,
 				D05F116F1ECD474A00BFA3F2 /* Main.storyboard */,
-				D001872E2199402500EEE21E /* Flight Table New */,
 				D01E74081F66587D002C3E06 /* Community */,
 				D0E4E5051D7A975700BF321A /* Log In / Profile */,
 				D0A10F041D8AB6C200CE88BA /* Flights */,
@@ -330,6 +329,7 @@
 		D0A10F041D8AB6C200CE88BA /* Flights */ = {
 			isa = PBXGroup;
 			children = (
+				D001872E2199402500EEE21E /* Flight Table New */,
 				D0CE619B22100B6A006F5D75 /* FlightStruct.swift */,
 				D0D526191E249210004738DA /* ArrivalInfoWindow.swift */,
 				D0D526171E24917C004738DA /* Arrival Info Window.xib */,
@@ -747,7 +747,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TripKey.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 69FR345CDA;

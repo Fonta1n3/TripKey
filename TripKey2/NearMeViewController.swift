@@ -2037,7 +2037,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                 
                                 let sharedFlight = PFObject(className: "SharedFlight")
                                 sharedFlight["shareToUsername"] = userid
-                                sharedFlight["shareFromUsername"] = myusername
+                                sharedFlight["shareFromUsername"] = myuserid
                                 sharedFlight["flightDictionary"] = self.flightArray[self.flightIndex]
                                 
                                 sharedFlight.saveInBackground(block: { (success, error) in
@@ -2590,219 +2590,224 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     func showFlightInfoWindow(index: Int, type: String) {
         
-        resetTimers()
-        let flight = FlightStruct(dictionary: self.flightArray[index])
-        self.getWeather(dictionary: self.flightArray[index], index: index, type: type)
-        var countDownString = String()
-        var offset = Double()
-        let publishedDeparture = flight.publishedDeparture
-        let departureOffset = flight.departureUtcOffset
-        let departureDate = flight.departureDate
-        let arrivalDate = flight.arrivalDate
-        let arrivalOffset = flight.arrivalUtcOffset
-        let flightStatus = flight.flightStatus
-        let flightNumber = flight.flightNumber
-        let departureCity = flight.departureCity
-        let departureAirport = flight.departureAirport
-        let departureTerminal = flight.departureTerminal
-        let departureGate = flight.departureGate
-        let arrivalCity = flight.arrivalCity
-        let arrivalAirportCode = flight.arrivalAirportCode
-        let arrivalTerminal = flight.arrivalTerminal
-        let arrivalGate = flight.arrivalGate
-        let baggageClaim = flight.baggageClaim
-        let flightDuration = getFlightDuration(departureDate: departureDate,
-                                               arrivalDate: arrivalDate,
-                                               departureOffset: departureOffset,
-                                               arrivalOffset: arrivalOffset)
-        
-        DispatchQueue.main.async {
+        if self.flightArray.count > 0 {
             
-            self.arrivalInfoWindow.arrivalFlightDuration.text = flightDuration
-            self.arrivalInfoWindow.flightIcon.alpha = 0.25
+            resetTimers()
+            let flight = FlightStruct(dictionary: self.flightArray[index])
+            self.getWeather(dictionary: self.flightArray[index], index: index, type: type)
+            var countDownString = String()
+            var offset = Double()
+            let publishedDeparture = flight.publishedDeparture
+            let departureOffset = flight.departureUtcOffset
+            let departureDate = flight.departureDate
+            let arrivalDate = flight.arrivalDate
+            let arrivalOffset = flight.arrivalUtcOffset
+            let flightStatus = flight.flightStatus
+            let flightNumber = flight.flightNumber
+            let departureCity = flight.departureCity
+            let departureAirport = flight.departureAirport
+            let departureTerminal = flight.departureTerminal
+            let departureGate = flight.departureGate
+            let arrivalCity = flight.arrivalCity
+            let arrivalAirportCode = flight.arrivalAirportCode
+            let arrivalTerminal = flight.arrivalTerminal
+            let arrivalGate = flight.arrivalGate
+            let baggageClaim = flight.baggageClaim
+            let flightDuration = getFlightDuration(departureDate: departureDate,
+                                                   arrivalDate: arrivalDate,
+                                                   departureOffset: departureOffset,
+                                                   arrivalOffset: arrivalOffset)
             
-            if type == "Departure" {
+            DispatchQueue.main.async {
                 
-                offset = departureOffset
-                countDownString = departureDate
-                self.arrivalInfoWindow.flightIcon.image = UIImage(named: "26_Airplane_take_off-512.png")
-                self.arrivalInfoWindow.arrivalAirportCode.text = "\(departureCity) " + "(\(departureAirport))"
-                self.arrivalInfoWindow.arrivalTerminal.text = departureTerminal
-                self.arrivalInfoWindow.arrivalGate.text = departureGate
-                self.arrivalInfoWindow.arrivalBaggageClaim.text = "-"
-                self.arrivalInfoWindow.arrivalTime.text = convertDateTime(date: departureDate)
+                self.arrivalInfoWindow.arrivalFlightDuration.text = flightDuration
+                self.arrivalInfoWindow.flightIcon.alpha = 0.25
                 
-            } else {
-                
-                offset = arrivalOffset
-                countDownString = arrivalDate
-                self.arrivalInfoWindow.flightIcon.image = UIImage(named: "airplane-landing-icon-256.png")
-                self.arrivalInfoWindow.arrivalAirportCode.text = "\(arrivalCity) " + "(\(arrivalAirportCode))"
-                self.arrivalInfoWindow.arrivalTerminal.text = arrivalTerminal
-                self.arrivalInfoWindow.arrivalGate.text = arrivalGate
-                self.arrivalInfoWindow.arrivalBaggageClaim.text = baggageClaim
-                self.arrivalInfoWindow.arrivalTime.text = convertDateTime(date: arrivalDate)
-                
-            }
-            
-            self.arrivalInfoWindow.arrivalFlightNumber.text = flightNumber
-            self.arrivalInfoWindow.arrivalFlightDuration.text = flightDuration
-            self.arrivalInfoWindow.arrivalStatus.text = flightStatus
-            
-        }
-        
-        //work out whether it took off on time or late and by how much
-        let departureTimeDifference = getTimeDifference(publishedTime: publishedDeparture, actualTime: departureDate)
-        let departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
-        let publishedDepartureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
-        
-        if publishedDepartureDateNumber > departureDateNumber {
-            
-            if flightStatus != "Departed" {
-                
-                DispatchQueue.main.async {
+                if type == "Departure" {
                     
-                    self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departing", comment: "")) \(departureTimeDifference) \(NSLocalizedString("early", comment: ""))"
+                    offset = departureOffset
+                    countDownString = departureDate
+                    self.arrivalInfoWindow.flightIcon.image = UIImage(named: "26_Airplane_take_off-512.png")
+                    self.arrivalInfoWindow.arrivalAirportCode.text = "\(departureCity) " + "(\(departureAirport))"
+                    self.arrivalInfoWindow.arrivalTerminal.text = departureTerminal
+                    self.arrivalInfoWindow.arrivalGate.text = departureGate
+                    self.arrivalInfoWindow.arrivalBaggageClaim.text = "-"
+                    self.arrivalInfoWindow.arrivalTime.text = convertDateTime(date: departureDate)
                     
-                }
-                
-            } else {
-                
-                DispatchQueue.main.async {
-                    
-                    self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departed", comment: "")) \(departureTimeDifference) \(NSLocalizedString("early", comment: ""))"
-                    
-                }
-            }
-            
-        } else if publishedDepartureDateNumber == departureDateNumber {
-            
-            if flightStatus != "Departed" {
-                
-                DispatchQueue.main.async {
-                    self.arrivalInfoWindow.arrivalDelayTime.text = NSLocalizedString("Departing on time", comment: "")
-                }
-                
-            } else {
-                
-                DispatchQueue.main.async {
-                    self.arrivalInfoWindow.arrivalDelayTime.text = NSLocalizedString("Departed on time", comment: "")
-                }
-            }
-            
-        } else if publishedDepartureDateNumber < departureDateNumber {
-            
-            if flightStatus != "Departed" {
-                
-                DispatchQueue.main.async {
-                    
-                    self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departing", comment: "")) \(departureTimeDifference) \(NSLocalizedString("late", comment: ""))"
-                    
-                }
-                
-            } else {
-                
-                DispatchQueue.main.async {
-                    
-                    self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departed", comment: "")) \(departureTimeDifference) \(NSLocalizedString("late", comment: ""))"
-                    
-                }
-            }
-        }
-        
-        DispatchQueue.main.async {
-            
-            self.arrivalInfoWindow.arrivalMins.isHidden = true
-            self.arrivalInfoWindow.arrivalHours.isHidden = true
-            self.arrivalInfoWindow.arrivaldays.isHidden = true
-            self.arrivalInfoWindow.arrivalMonths.isHidden = true
-            self.arrivalInfoWindow.arrivalMonthsLabel.isHidden = true
-            self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
-            self.arrivalInfoWindow.arrivalHoursLabel.isHidden = true
-            self.arrivalInfoWindow.arrivalMinsLabel.isHidden = true
-            self.arrivalInfoWindow.arrivalCoutdownView.isHidden = true
-            
-            self.departureInfoWindowTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
-                (_) in
-                
-                let monthsLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).months
-                let daysLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).days
-                let hoursLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).hours
-                let minutesLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).minutes
-                let secondsLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).seconds
-                
-                DispatchQueue.main.async {
-                    self.arrivalInfoWindow.arrivalMonths.text = "\(monthsLeft)"
-                    self.arrivalInfoWindow.arrivaldays.text = "\(daysLeft)"
-                    self.arrivalInfoWindow.arrivalHours.text = "\(hoursLeft)"
-                    self.arrivalInfoWindow.arrivalMins.text = "\(minutesLeft)"
-                    self.arrivalInfoWindow.arrivalSeconds.text = "\(secondsLeft)"
-                }
-                
-                if monthsLeft != 0 {
-                   
-                    self.arrivalInfoWindow.arrivalMins.isHidden = false
-                    self.arrivalInfoWindow.arrivalHours.isHidden = false
-                    self.arrivalInfoWindow.arrivaldays.isHidden = false
-                    self.arrivalInfoWindow.arrivalMonths.isHidden = false
-                    self.arrivalInfoWindow.arrivalMonthsLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalDaysLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalHoursLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
-                    
-                }
-                
-                if monthsLeft == 0 {
-                    self.arrivalInfoWindow.arrivalMins.isHidden = false
-                    self.arrivalInfoWindow.arrivalHours.isHidden = false
-                    self.arrivalInfoWindow.arrivaldays.isHidden = false
-                    self.arrivalInfoWindow.arrivalDaysLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalHoursLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
-                }
-                
-                if daysLeft == 0 && monthsLeft == 0 {
-                    self.arrivalInfoWindow.arrivaldays.isHidden = true
-                    self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
-                    
-                    self.arrivalInfoWindow.arrivalMins.isHidden = false
-                    self.arrivalInfoWindow.arrivalHours.isHidden = false
-                    self.arrivalInfoWindow.arrivalHoursLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
-                }
-                
-                if hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0 {
-                    self.arrivalInfoWindow.arrivalHours.isHidden = true
-                    self.arrivalInfoWindow.arrivaldays.isHidden = true
-                    self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
-                    self.arrivalInfoWindow.arrivalHoursLabel.isHidden = true
-                    
-                    self.arrivalInfoWindow.arrivalMins.isHidden = false
-                    self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
-                }
-                
-                if minutesLeft == 0 && hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0 {
-                    self.arrivalInfoWindow.arrivalHours.isHidden = true
-                    self.arrivalInfoWindow.arrivaldays.isHidden = true
-                    self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
-                    self.arrivalInfoWindow.arrivalHoursLabel.isHidden = true
-                    self.arrivalInfoWindow.arrivalMins.isHidden = true
-                    self.arrivalInfoWindow.arrivalMinsLabel.isHidden = true
-                    
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
-                }
-                
-                if secondsLeft == 0 && minutesLeft == 0 && hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0  {
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = true
                 } else {
-                    self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                    
+                    offset = arrivalOffset
+                    countDownString = arrivalDate
+                    self.arrivalInfoWindow.flightIcon.image = UIImage(named: "airplane-landing-icon-256.png")
+                    self.arrivalInfoWindow.arrivalAirportCode.text = "\(arrivalCity) " + "(\(arrivalAirportCode))"
+                    self.arrivalInfoWindow.arrivalTerminal.text = arrivalTerminal
+                    self.arrivalInfoWindow.arrivalGate.text = arrivalGate
+                    self.arrivalInfoWindow.arrivalBaggageClaim.text = baggageClaim
+                    self.arrivalInfoWindow.arrivalTime.text = convertDateTime(date: arrivalDate)
+                    
+                }
+                
+                self.arrivalInfoWindow.arrivalFlightNumber.text = flightNumber
+                self.arrivalInfoWindow.arrivalFlightDuration.text = flightDuration
+                self.arrivalInfoWindow.arrivalStatus.text = flightStatus
+                
+            }
+            
+            //work out whether it took off on time or late and by how much
+            let departureTimeDifference = getTimeDifference(publishedTime: publishedDeparture, actualTime: departureDate)
+            let departureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
+            let publishedDepartureDateNumber = formatDateTimetoWhole(dateTime: departureDate)
+            
+            if publishedDepartureDateNumber > departureDateNumber {
+                
+                if flightStatus != "Departed" {
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departing", comment: "")) \(departureTimeDifference) \(NSLocalizedString("early", comment: ""))"
+                        
+                    }
+                    
+                } else {
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departed", comment: "")) \(departureTimeDifference) \(NSLocalizedString("early", comment: ""))"
+                        
+                    }
+                }
+                
+            } else if publishedDepartureDateNumber == departureDateNumber {
+                
+                if flightStatus != "Departed" {
+                    
+                    DispatchQueue.main.async {
+                        self.arrivalInfoWindow.arrivalDelayTime.text = NSLocalizedString("Departing on time", comment: "")
+                    }
+                    
+                } else {
+                    
+                    DispatchQueue.main.async {
+                        self.arrivalInfoWindow.arrivalDelayTime.text = NSLocalizedString("Departed on time", comment: "")
+                    }
+                }
+                
+            } else if publishedDepartureDateNumber < departureDateNumber {
+                
+                if flightStatus != "Departed" {
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departing", comment: "")) \(departureTimeDifference) \(NSLocalizedString("late", comment: ""))"
+                        
+                    }
+                    
+                } else {
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.arrivalInfoWindow.arrivalDelayTime.text = "\(NSLocalizedString("Departed", comment: "")) \(departureTimeDifference) \(NSLocalizedString("late", comment: ""))"
+                        
+                    }
                 }
             }
+            
+            DispatchQueue.main.async {
+                
+                self.arrivalInfoWindow.arrivalMins.isHidden = true
+                self.arrivalInfoWindow.arrivalHours.isHidden = true
+                self.arrivalInfoWindow.arrivaldays.isHidden = true
+                self.arrivalInfoWindow.arrivalMonths.isHidden = true
+                self.arrivalInfoWindow.arrivalMonthsLabel.isHidden = true
+                self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
+                self.arrivalInfoWindow.arrivalHoursLabel.isHidden = true
+                self.arrivalInfoWindow.arrivalMinsLabel.isHidden = true
+                self.arrivalInfoWindow.arrivalCoutdownView.isHidden = true
+                
+                self.departureInfoWindowTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
+                    (_) in
+                    
+                    let monthsLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).months
+                    let daysLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).days
+                    let hoursLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).hours
+                    let minutesLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).minutes
+                    let secondsLeft = countDown(departureDate: countDownString, departureUtcOffset: offset).seconds
+                    
+                    DispatchQueue.main.async {
+                        self.arrivalInfoWindow.arrivalMonths.text = "\(monthsLeft)"
+                        self.arrivalInfoWindow.arrivaldays.text = "\(daysLeft)"
+                        self.arrivalInfoWindow.arrivalHours.text = "\(hoursLeft)"
+                        self.arrivalInfoWindow.arrivalMins.text = "\(minutesLeft)"
+                        self.arrivalInfoWindow.arrivalSeconds.text = "\(secondsLeft)"
+                    }
+                    
+                    if monthsLeft != 0 {
+                        
+                        self.arrivalInfoWindow.arrivalMins.isHidden = false
+                        self.arrivalInfoWindow.arrivalHours.isHidden = false
+                        self.arrivalInfoWindow.arrivaldays.isHidden = false
+                        self.arrivalInfoWindow.arrivalMonths.isHidden = false
+                        self.arrivalInfoWindow.arrivalMonthsLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalDaysLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalHoursLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                        
+                    }
+                    
+                    if monthsLeft == 0 {
+                        self.arrivalInfoWindow.arrivalMins.isHidden = false
+                        self.arrivalInfoWindow.arrivalHours.isHidden = false
+                        self.arrivalInfoWindow.arrivaldays.isHidden = false
+                        self.arrivalInfoWindow.arrivalDaysLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalHoursLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                    }
+                    
+                    if daysLeft == 0 && monthsLeft == 0 {
+                        self.arrivalInfoWindow.arrivaldays.isHidden = true
+                        self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
+                        
+                        self.arrivalInfoWindow.arrivalMins.isHidden = false
+                        self.arrivalInfoWindow.arrivalHours.isHidden = false
+                        self.arrivalInfoWindow.arrivalHoursLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                    }
+                    
+                    if hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0 {
+                        self.arrivalInfoWindow.arrivalHours.isHidden = true
+                        self.arrivalInfoWindow.arrivaldays.isHidden = true
+                        self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
+                        self.arrivalInfoWindow.arrivalHoursLabel.isHidden = true
+                        
+                        self.arrivalInfoWindow.arrivalMins.isHidden = false
+                        self.arrivalInfoWindow.arrivalMinsLabel.isHidden = false
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                    }
+                    
+                    if minutesLeft == 0 && hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0 {
+                        self.arrivalInfoWindow.arrivalHours.isHidden = true
+                        self.arrivalInfoWindow.arrivaldays.isHidden = true
+                        self.arrivalInfoWindow.arrivalDaysLabel.isHidden = true
+                        self.arrivalInfoWindow.arrivalHoursLabel.isHidden = true
+                        self.arrivalInfoWindow.arrivalMins.isHidden = true
+                        self.arrivalInfoWindow.arrivalMinsLabel.isHidden = true
+                        
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                    }
+                    
+                    if secondsLeft == 0 && minutesLeft == 0 && hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0  {
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = true
+                    } else {
+                        self.arrivalInfoWindow.arrivalCoutdownView.isHidden = false
+                    }
+                }
+            }
+            
         }
+        
     }
     
     func getSharedFlights() {
@@ -2830,25 +2835,43 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                             
                             var sharedFromArray = [String]()
                             var sharedFlightArray = [[String:Any]]()
+                            var sharedFrom = ""
+                            let dispatchGroup = DispatchGroup()
                             
                             for flight in sharedFlights! {
                                 
+                                dispatchGroup.enter()
                                 let flightDictionary = flight["flightDictionary"]
                                 let dictionary = flightDictionary as! NSDictionary
-                                sharedFromArray.append(flight["shareFromUsername"] as! String)
-                                sharedFlightArray.append(dictionary as! [String:Any])
-                                
-                                flight.deleteInBackground(block: { (success, error) in
+                                let query = PFQuery(className: "Posts")
+                                query.whereKey("userid", equalTo: flight["shareFromUsername"] as! String)
+                                query.findObjectsInBackground(block: { (objects, error) in
                                     
-                                    if error != nil {
-                                        print("error = \(error as Any)")
-                                    } else {
-                                        print("flight deleted from parse database")
+                                    if let posts = objects {
+                                        if posts.count > 0 {
+                                            
+                                            sharedFrom = posts[0]["username"] as! String
+                                            print("sharedFrom = \(sharedFrom)")
+                                            sharedFromArray.append(sharedFrom)
+                                            sharedFlightArray.append(dictionary as! [String:Any])
+                                            
+                                                flight.deleteInBackground(block: { (success, error) in
+                                                    
+                                                    if error != nil {
+                                                        print("error = \(error as Any)")
+                                                    } else {
+                                                        print("flight deleted from parse database")
+                                                        
+                                                    }
+                                                })
+                                        }
+                                        
+                                        dispatchGroup.leave()
                                     }
                                 })
                             }
                             
-                            DispatchQueue.main.async {
+                            dispatchGroup.notify(queue: .main) {
                                 
                                 let unique = Array(Set(sharedFromArray))
                                 var string = (unique.description).replacingOccurrences(of: "[", with: "")
