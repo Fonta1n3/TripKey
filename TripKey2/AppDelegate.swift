@@ -11,13 +11,11 @@ import CoreData
 import GoogleMaps
 import UserNotifications
 import Parse
-import Firebase
 
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    var token:String!
     var window: UIWindow?
     
     func switchControllers(viewControllerToBeDismissed:UIViewController,controllerToBePresented:UIViewController) {
@@ -38,7 +36,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         
-        
         Parse.enableLocalDatastore()
         
         let parseConfiguration = ParseClientConfiguration(block: { (ParseMutableClientConfiguration) -> Void in
@@ -52,21 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         Parse.initialize(with: parseConfiguration)
         GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
         
-        
-        // For iOS 10 display notification (sent via APNS)
-        if #available(iOS 10.0, *) {
-            
-            UNUserNotificationCenter.current().delegate = self
-            let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
-            UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
-            
-        } else {
-            
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-            application.registerUserNotificationSettings(settings)
-            
-        }
-        
         application.registerForRemoteNotifications()
         
         let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
@@ -79,97 +61,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         
         PFACL.setDefault(defaultACL, withAccessForCurrentUser: true)
         
-        if application.applicationState != UIApplicationState.background {
-            
-        }
-        
-        FirebaseApp.configure()
-        
-        Messaging.messaging().delegate = self
-        Messaging.messaging().shouldEstablishDirectChannel = true
-        
         return true
-    }
-    
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        
-        if PFUser.current() != nil {
-            
-            print("PFUser.current() = \(String(describing: PFUser.current()))")
-            print("fcmToken = \(fcmToken)")
-            
-            let user = PFUser.current()
-            
-            user?["firebaseToken"] = fcmToken
-            
-            user?.saveInBackground(block: { (success, error) in
-                
-                if success {
-                    
-                    print("save users firebaseToken to parse")
-                    
-                } else {
-                    
-                    print("could not save users device token to parse")
-                }
-            })
-        }
-    }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
-        
-        if let messageID = userInfo["gcmMessageIDKey"] {
-            
-            print("Message ID: \(messageID)")
-            
-        }
-        
-        print(userInfo)
-    }
-    
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        
-        if let messageID = userInfo["gcmMessageIDKey"] {
-            
-            print("Message ID: \(messageID)")
-            
-        }
-        
-        print(userInfo)
-        
-        completionHandler(UIBackgroundFetchResult.newData)
-        
-    }
-    
-    
-    func application(received remoteMessage: MessagingRemoteMessage) {
-        
-        print("applicationReceivedRemoteMessage ")
-        
-        print("remoteMessage.appData = \(remoteMessage.appData)")
-    }
-    
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        
-        print("Failed to register:", error)
-        
     }
     
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         
         return false
-    }
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-    }
-    
-    func applicationDidEnterBackground(_ application: UIApplication) {
-    }
-    
-    func applicationWillEnterForeground(_ application: UIApplication) {
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -612,9 +509,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
         var secondsFromGMT: Int { return NSTimeZone.local.secondsFromGMT() }
         let departureDateUtc = departureDateTime.addingTimeInterval((departureUtcInterval + Double(secondsFromGMT)))
         
-        // let currentDateFormatter = DateFormatter()
         let currentDateUtc = Date()
-        
         print("currentDateUtc = \(currentDateUtc)")
         let calendar = Calendar(identifier: .gregorian)
         let triggerDate = departureDateUtc
@@ -653,101 +548,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate {
              print("scheduled landing notification = \(request.identifier)")
         }
     }
-    
-    //--------------------------------------
-    // MARK: Push Notifications
-    //--------------------------------------
-    
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        
-        //this is where the APNS token has to be sent to the FCM
-        Messaging.messaging().apnsToken = deviceToken//
-        //self.token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        //print("token = \(String(describing: token))")
-        
-        /*if PFUser.current() != nil {
-            
-            let user = PFUser.current()
-            
-            user?["deviceToken"] = self.token
-            
-            user?.saveInBackground(block: { (success, error) in
-                
-                if success {
-                    
-                    print("save users device token to parse")
-                    
-                } else {
-                    
-                    print("could not save users device token to parse")
-                }
-                
-            })
-            
-            
-        }*/
-        
-        InstanceID.instanceID().instanceID { (result, error) in
-            if let error = error {
-                print("Error fetching remote instange ID: \(error)")
-            } else if let result = result {
-                print("Remote instance ID token: \(result.token)")
-                
-                if PFUser.current() != nil {
-                    
-                    if let user = PFUser.current() {
-                       
-                        user["firebaseToken"] = result.token
-                        user.saveInBackground(block: { (success, error) in
-                            
-                            if success {
-                                
-                                print("save users firebaseToken to parse")
-                                
-                            } else {
-                                
-                                print("could not save users device token to parse")
-                            }
-                        })
-                    }
-                }
-            }
-        }
-   }
 }
-
-extension AppDelegate: UNUserNotificationCenterDelegate {
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
-        let userInfo = response.notification.request.content.userInfo
-        
-        if let messageID = userInfo["gcmMessageIDKey"] {
-            print("Message ID: \(messageID)")
-        }
-        
-        print(userInfo)
-        
-        completionHandler()
-        
-        
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        
-        let userInfo = notification.request.content.userInfo
-        
-        if let messageID = userInfo["gcmMessageIDKey"] {
-            print("Message ID: \(messageID)")
-        }
-        
-        print(userInfo)
-        
-        completionHandler(.alert)
-        
-    }
-    
-}
-
 
 

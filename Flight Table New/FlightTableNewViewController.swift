@@ -383,13 +383,10 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         
         let followedUsers = getFollowedUsers()
         let flight = FlightStruct(dictionary: self.flightArray[indexPath])
-        let departureAirport = flight.departureAirport
         let departureCity = flight.departureCity
-        let arrivalAirport = flight.arrivalAirportCode
         let arrivalCity = flight.arrivalCity
         let departureDate = convertDateTime(date: flight.departureDate)
         let flightNumber = flight.flightNumber
-        let arrivalDate = convertDateTime(date: flight.arrivalDate)
         let airlineCode = flight.airlineCode
         
         let alert = UIAlertController(title: NSLocalizedString("Share Flight \(flightNumber) from \(departureCity) to \(arrivalCity), departing on \(departureDate) with:", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
@@ -408,63 +405,15 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 
                 sharedFlight.saveInBackground(block: { (success, error) in
                     
-                    print("error = \(error)")
-                    
                     if error != nil {
                         
                         let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
                         
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                            
-                        }))
+                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
                         
                         self.present(alert, animated: true, completion: nil)
                         
                     } else {
-                        
-                        let getUserFCM = PFUser.query()
-                        
-                        getUserFCM?.whereKey("username", equalTo: user["userid"]!)
-                        
-                        getUserFCM?.findObjectsInBackground { (tokens, error) in
-                            
-                            if error != nil {
-                                
-                                print("error = \(String(describing: error))")
-                                
-                            } else {
-                                
-                                for token in tokens! {
-                                    
-                                    if let fcmToken = token["firebaseToken"] as? String {
-                                        
-                                        if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
-                                            
-                                            var request = URLRequest(url: url)
-                                            request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
-                                            request.httpMethod = "POST"
-                                            request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(user["username"]!) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
-                                            
-                                            URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
-                                                
-                                                if error != nil {
-                                                    print(error!)
-                                                } else {
-                                                    print("sent notification")
-                                                }
-                                                
-                                            }).resume()
-                                            
-                                        }
-                                        
-                                    } else {
-                                        
-                                        print("//user not enabled push notifications")
-                                        
-                                    }
-                                }
-                            }
-                        }
                         
                         let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user["username"]!))", message: nil, preferredStyle: UIAlertControllerStyle.alert)
                         

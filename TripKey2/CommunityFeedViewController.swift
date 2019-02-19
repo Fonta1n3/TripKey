@@ -140,51 +140,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                                     
                                     let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
                                     
-                                    let getUserFCM = PFUser.query()
-                                    
-                                    getUserFCM?.whereKey("username", equalTo: userIdToShareWith)
-                                    
-                                    getUserFCM?.findObjectsInBackground { (tokens, error) in
-                                        
-                                        if error != nil {
-                                            
-                                            print("error = \(String(describing: error))")
-                                            
-                                        } else {
-                                            
-                                            for token in tokens! {
-                                                
-                                                if let fcmToken = token["firebaseToken"] as? String {
-                                                    
-                                                    if let url = URL(string: "https://fcm.googleapis.com/fcm/send") {
-                                                        
-                                                        var request = URLRequest(url: url)
-                                                        request.allHTTPHeaderFields = ["Content-Type":"application/json", "Authorization":"key=AAAASkgYWy4:APA91bFMTuMvXfwcVJbsKJqyBitkb9EUpvaHOkciT5wvtVHsaWmhxfLpqysRIdjgRaEDWKcb9tD5WCvqz67EvDyeSGswL-IEacN54UpVT8bhK1iAvKDvicOge6I6qaZDu8tAHOvzyjHs"]
-                                                        request.httpMethod = "POST"
-                                                        request.httpBody = "{\"to\":\"\(fcmToken)\",\"priority\":\"high\",\"notification\":{\"body\":\"\(myusername) shared flight \(flightNumber) with you, departing on \(departureDate) from \(departureCity) (\(departureAirport)) to \(arrivalCity) \((arrivalAirport)), arriving on \(arrivalDate). Open TripKey to see more details.\"}}".data(using: .utf8)
-                                                        
-                                                        URLSession.shared.dataTask(with: request, completionHandler: { (data, urlresponse, error) in
-                                                            
-                                                            if error != nil {
-                                                                
-                                                                print(error!)
-                                                            } else {
-                                                                print("sent notification")
-                                                            }
-                                                            
-                                                        }).resume()
-                                                        
-                                                    }
-                                                    
-                                                } else {
-                                                    
-                                                    print("//user not enabled push notifications")
-                                                    
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
                                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
                                     
                                     self.present(alert, animated: true, completion: nil)
