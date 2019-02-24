@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import EFQRCode
 
 class ViewController: UIViewController, UITextFieldDelegate {
     
@@ -16,7 +17,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     let userid = UserDefaults.standard.object(forKey: "userId") as! String
     let qrView = UIImageView()
     let backButton = UIButton()
-    @IBOutlet var logInView: UIView!
     var activityIndicator = UIActivityIndicatorView()
     let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     @IBOutlet var emailTextField: UITextField!
@@ -28,7 +28,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         DispatchQueue.main.async {
             
             self.backButton.removeFromSuperview()
-            self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
+            self.backButton.frame = CGRect(x: 5, y: 20, width: 25, height: 25)
             self.backButton.showsTouchWhenHighlighted = true
             let image = UIImage(imageLiteralResourceName: "backButton.png")
             self.backButton.setImage(image, for: .normal)
@@ -123,7 +123,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         addButtons()
         emailTextField.delegate = self
-        logInView.alpha = 0
         emailTextField.alpha = 0
         signupOrLoginButton.alpha = 0
         qrView.alpha = 0
@@ -152,7 +151,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     override func viewWillLayoutSubviews() {
-        qrView.frame = CGRect(x: 40, y: signupOrLoginButton.frame.maxX - 20, width: view.frame.width - 80, height: view.frame.width - 80)
+        qrView.frame = CGRect(x: 40, y: (view.frame.maxY / 2) - ((view.frame.width - 80) / 2), width: view.frame.width - 80, height: view.frame.width - 80)
         shareButton.frame = CGRect(x: view.frame.maxX - 90, y: view.frame.maxY - 60, width: 80, height: 55)
         qrLabel.frame = CGRect(x: 0, y: qrView.frame.maxY, width: view.frame.width, height: 18)
     }
@@ -161,13 +160,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         let qrImage = generateQrCode(key: userid)
         qrView.image = qrImage
-        view.addSubview(logInView)
         view.addSubview(qrView)
         view.addSubview(qrLabel)
         
         UIView.animate(withDuration: 0.3, animations: {
             
-            self.logInView.alpha = 1
             self.emailTextField.alpha = 1
             self.signupOrLoginButton.alpha = 1
             self.qrView.alpha = 1
@@ -180,7 +177,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     func generateQrCode(key: String) -> UIImage? {
         print("generateQrCode")
         
-        // Get define string to encode
+        /*// Get define string to encode
         let myString = key
         // Get data from the string
         let data = myString.data(using: String.Encoding.ascii)
@@ -209,7 +206,32 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.backgroundImage.alpha = 0
         }
         
-        return processedImage
+        return processedImage*/
+        
+        let pic = UIImage(named: "Tripkey-logo-white.png")!
+        let filter = CIFilter(name: "CISepiaTone")!
+        filter.setValue(CIImage(image: pic), forKey: kCIInputImageKey)
+        filter.setValue(1.0, forKey: kCIInputIntensityKey)
+        let ctx = CIContext(options:nil)
+        let watermark = ctx.createCGImage(filter.outputImage!, from:filter.outputImage!.extent)
+        let cgImage = EFQRCode.generate(content: key,
+                                        size: EFIntSize.init(width: 256, height: 256),
+                                        backgroundColor: UIColor.clear.cgColor,
+                                        foregroundColor: UIColor.white.cgColor,
+                                        watermark: watermark,
+                                        watermarkMode: EFWatermarkMode.center,
+                                        inputCorrectionLevel: EFInputCorrectionLevel.h,
+                                        icon: nil,
+                                        iconSize: nil,
+                                        allowTransparent: false,
+                                        pointShape: EFPointShape.circle,
+                                        mode: EFQRCodeMode.none,
+                                        binarizationThreshold: 0,
+                                        magnification: EFIntSize.init(width: 50, height: 50),
+                                        foregroundPointOffset: 0)
+        let qrImage = UIImage(cgImage: cgImage!)
+        
+        return qrImage
         
     }
     

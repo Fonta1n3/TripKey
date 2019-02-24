@@ -753,7 +753,7 @@ public func getFlightArray() -> [[String:Any]] {
                     
                 }
                 
-                flightArray = flightArray.sorted{ ($0["departureTime"] as! String) < ($1["departureTime"] as! String) }
+                flightArray = flightArray.sorted{ ($0["publishedDepartureUtc"] as! String) < ($1["publishedDepartureUtc"] as! String) }
                 
             }
             

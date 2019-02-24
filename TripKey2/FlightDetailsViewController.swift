@@ -10,7 +10,7 @@ import UIKit
 import StoreKit
 import UserNotifications
 
-class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver {
+class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, UITabBarControllerDelegate {
     
     let datePickerView = Bundle.main.loadNibNamed("Date Picker", owner: self, options: nil)?[0] as! DatePickerView
     let backButton = UIButton()
@@ -351,7 +351,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
     override func viewDidLoad() {
         super.viewDidLoad()
         print("This is viewdidload FlightDetailsViewController")
-        
+        tabBarController!.delegate = self
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurEffectView.alpha = 0
@@ -736,7 +736,8 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                                                     
                                                     alert.addAction(UIAlertAction(title: NSLocalizedString("Finished Adding Flights", comment: ""), style: .default, handler: { (action) in
                                                         
-                                                        self.performSegue(withIdentifier: "goToNearMe", sender: self)
+                                                        //self.performSegue(withIdentifier: "goToNearMe", sender: self)
+                                                        self.tabBarController!.selectedIndex = 0
                                                         
                                                     }))
                                                     
@@ -885,8 +886,11 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
         })
         
     }
+    
+}
 
-    
-    @IBAction func backToAddFlight(segue:UIStoryboardSegue) {}
-    
+extension FlightDetailsViewController  {
+    func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return MyTransition(viewControllers: tabBarController.viewControllers)
+    }
 }

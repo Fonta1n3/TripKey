@@ -11,9 +11,8 @@ import Parse
 import MapKit
 import CoreData
 
-class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     
-    let imagePicker = UIImagePickerController()
     @IBOutlet weak var imageBackground: UIView!
     var resultsArray = [String]()
     @IBOutlet var goToProfile: UIBarButtonItem!
@@ -32,17 +31,40 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     let addButton = UIButton()
     var flightArray = [[String:Any]]()
     
-    func addButtons() {
+    @IBAction func goToUserInfo(_ sender: Any) {
         
         DispatchQueue.main.async {
             
-            self.backButton.removeFromSuperview()
+            self.performSegue(withIdentifier: "goToMyAccount", sender: self)
+            
+        }
+        
+    }
+    
+    
+    @IBAction func goToAddUser(_ sender: Any) {
+        
+        DispatchQueue.main.async {
+            
+            self.performSegue(withIdentifier: "addUser", sender: self)
+            
+        }
+        
+    }
+    
+    
+    
+    /*func addButtons() {
+        
+        DispatchQueue.main.async {
+            
+            /*self.backButton.removeFromSuperview()
             self.backButton.frame = CGRect(x: 10, y: 30, width: 25, height: 25)
             self.backButton.showsTouchWhenHighlighted = true
             let image = UIImage(imageLiteralResourceName: "backButton.png")
             self.backButton.setImage(image, for: .normal)
             self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
-            self.view.addSubview(self.backButton)
+            self.view.addSubview(self.backButton)*/
             
             self.addButton.removeFromSuperview()
             self.addButton.frame = CGRect(x: self.view.frame.maxX - 40, y: 30, width: 30, height: 30)
@@ -54,27 +76,21 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             
         }
         
-    }
+    }*/
     
-    @objc func goBack() {
+    /*@objc func goBack() {
         
         self.dismiss(animated: true, completion: nil)
         
-    }
+    }*/
     
-    @objc func add() {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "addUser", sender: self)
-        }
-        
-    }
+    
     
     func shareFlight(indexPath: Int) {
         
         let user = self.userNames[indexPath]
         let followedUsers = getFollowedUsers()
         var userIdToShareWith = ""
-        var myusername = ""
         
         for u in followedUsers {
             if user == u["username"]! {
@@ -87,13 +103,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         for dict in self.flightArray {
             
             let flight = FlightStruct(dictionary: dict)
-            let departureAirport = flight.departureAirport
             let departureCity = flight.departureCity
-            let arrivalAirport = flight.arrivalAirportCode
             let arrivalCity = flight.arrivalCity
             let departureDate = convertDateTime(date: flight.departureDate)
             let flightNumber = flight.flightNumber
-            let arrivalDate = convertDateTime(date: flight.arrivalDate)
             
             alert.addAction(UIAlertAction(title: NSLocalizedString("\(flightNumber) \(departureCity) to \(arrivalCity), on \(departureDate)", comment: ""), style: .default, handler: { (action) in
                 
@@ -104,7 +117,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
                 query.findObjectsInBackground(block: { (objects, error) in
                     if let posts = objects {
                         if posts.count > 0 {
-                            myusername = posts[0]["username"] as! String
                             
                             let sharedFlight = PFObject(className: "SharedFlight")
                             sharedFlight["shareToUsername"] = userIdToShareWith
@@ -158,30 +170,11 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         self.present(alert, animated: true, completion: nil)
     }
     
-    @IBAction func goToProfile(_ sender: Any) {
-        
-        
-    }
-    
-    @IBAction func goToUsers(_ sender: Any) {
-        print("searchUsers")
-        
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "goToMyAccount", sender: self)
-        }
-    }
-    
-    @IBAction func back(_ sender: Any) {
-        UserDefaults.standard.set(true, forKey: "userSwipedBack")
-        dismiss(animated: true, completion: nil)
-    }
-    
     func refresh() {
         print("refresh")
         
         self.userNames.removeAll()
         let followedUsers = getFollowedUsers()
-        print("followedUsers = \(followedUsers)")
         for user in followedUsers {
             let username = user["username"]!
             self.userNames.append(username)
@@ -194,9 +187,7 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        UserDefaults.standard.set(true, forKey: "userSwipedBack")
-        addButtons()
-        addUserButton.title = NSLocalizedString("Add Users", comment: "")
+        tabBarController!.delegate = self
         feedTable.delegate = self
         feedTable.dataSource = self
         refresher = UIRefreshControl()
@@ -206,12 +197,14 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         blurEffectView.alpha = 0
         blurEffectView.frame = self.view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        imagePicker.delegate = self
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
+        flightArray = getFlightArray()
         refresh()
-        //feedTable.reloadData()
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -260,58 +253,10 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
     }
     
-    @objc func chooseQRCodeFromLibrary() {
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
-        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            
-            let detector:CIDetector=CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy:CIDetectorAccuracyHigh])!
-            let ciImage:CIImage = CIImage(image:pickedImage)!
-            var qrCodeLink = ""
-            let features = detector.features(in: ciImage)
-            
-            for feature in features as! [CIQRCodeFeature] {
-                qrCodeLink += feature.messageString!
-            }
-            
-            print(qrCodeLink)
-            
-            if qrCodeLink != "" {
-                
-                DispatchQueue.main.async {
-                    
-                    //follow user
-                    let query = PFQuery(className: "Posts")
-                    query.whereKey("userid", equalTo: qrCodeLink)
-                    query.findObjectsInBackground(block: { (objects, error) in
-                        if let posts = objects {
-                            if posts.count > 0 {
-                                //user exists, follow them, add username to coredata
-                                let username = posts[0]["username"] as! String
-                                let followed = saveFollowedUserToCoreData(viewController: self, username: username, userId: qrCodeLink)
-                                if followed {
-                                    self.refresh()
-                                    displayAlert(viewController: self, title: "Success", message: "You followed \(username), now you can easliy share flights with them!")
-                                }
-                            } else {
-                                //user doesnt exist
-                                displayAlert(viewController: self, title: "Error", message: "It appears that user no longer exists.")
-                            }
-                        }
-                    })
-                }
-                
-            }
-            
-        }
-        
-        dismiss(animated: true, completion: nil)
+}
+
+extension CommunityFeedViewController  {
+    func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return MyTransition(viewControllers: tabBarController.viewControllers)
     }
 }

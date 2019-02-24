@@ -9,76 +9,29 @@
 import UIKit
 import Parse
 
-class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     
     let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     var activityLabel = UILabel()
     @IBOutlet var actionLabel: UILabel!
     @IBOutlet var callLabel: UILabel!
-    let pointOfInterest = UIView()
-    var formattedFlightNumber = ""
-    var formattedDepartureDate = ""
-    var users = [String: String]()
-    var userNames = [String]()
-    var activityIndicator:UIActivityIndicatorView!
-    var flights = [Dictionary<String,String>]()
-    var airlineCodeURL = ""
-    var flightNumberURL = ""
-    var departureDateURL = ""
-    var departureAirportCodeURL = ""
-    var flightStatusFormatted = ""
-    var flightStatusUnformatted = ""
-    var selectedRow:Int!
-    var cellArray:[String] = []
-    var downlineFlightId = ""
-    var currentDateWhole = ""
-    var refresher:UIRefreshControl!
-    var publishedDeparture = ""
-    var actualDeparture = ""
-    var publishedArrival = ""
-    var actualArrival = ""
-    var flightId:Double! = 0
     let gradientLayer = CAGradientLayer()
-    var sortedFlights = [Dictionary<String,String>]()
-    var departureDatesStringArray: [String] = []
-    var departureDateString = ""
-    var flightTookOff:Bool!
-    var flightLanded:Bool!
-    var flightEstimatedArrivalString = ""
-    var flightActualDepartureString = ""
     @IBOutlet weak var flightTable: UITableView!
-    let button = UIButton()
     var flightArray = [[String:Any]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tabBarController!.delegate = self
         flightTable.delegate = self
         flightTable.dataSource = self
-        addBackButton()
     }
     
 
-    func addBackButton() {
-        button.frame = CGRect(x: 10, y: 40, width: 25, height: 25)
-        let backButtonImage = UIImage(named: "backButton.png")
-        button.setImage(backButtonImage, for: .normal)
-        button.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-        view.addSubview(button)
-    }
-    
-    @objc func addFlight() {
-        DispatchQueue.main.async {
-            self.performSegue(withIdentifier: "goToAddFlight", sender: self)
-        }
-    }
-    
-    @objc func goBack() {
-        UserDefaults.standard.set(true, forKey: "userSwipedBack")
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
+        
+        flightArray = getFlightArray()
         flightTable.reloadData()
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -529,5 +482,11 @@ extension UIImage {
         UIGraphicsEndImageContext()
         
         return newImage!
+    }
+}
+
+extension FlightTableNewViewController  {
+    func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return MyTransition(viewControllers: tabBarController.viewControllers)
     }
 }
