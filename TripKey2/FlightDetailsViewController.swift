@@ -12,8 +12,8 @@ import UserNotifications
 
 class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, UITabBarControllerDelegate {
     
+    let checkmarkview = UIImageView()
     let datePickerView = Bundle.main.loadNibNamed("Date Picker", owner: self, options: nil)?[0] as! DatePickerView
-    let backButton = UIButton()
     let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     var activityLabel = UILabel()
     var flightCount:[Int] = []
@@ -236,12 +236,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
             
     }
     
-    @IBAction func back(_ sender: Any) {
-        
-        dismiss(animated: true, completion: nil)
-        
-    }
-    
     func pleaseEnterFlightNumber() {
         
         DispatchQueue.main.async {
@@ -271,7 +265,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
    
     @IBAction func addFlight(_ sender: AnyObject) {
         
-       if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
+       /*if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
         
         DispatchQueue.main.async {
             
@@ -299,7 +293,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                 self.addDateView()
             }
             
-       } else if self.flightCount.count < 25 {
+       } else if self.flightCount.count < 25 {*/
         
             if airlineCode.text == "" {
                 pleaseEnterFlightNumber()
@@ -307,28 +301,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                 self.addDateView()
             }
         
-        }
-    }
-    
-    func addButtons() {
-        
-        DispatchQueue.main.async {
-            
-            self.backButton.removeFromSuperview()
-            self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
-            self.backButton.showsTouchWhenHighlighted = true
-            let image = UIImage(imageLiteralResourceName: "backButton.png")
-            self.backButton.setImage(image, for: .normal)
-            self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
-            self.view.addSubview(self.backButton)
-            
-        }
-    }
-    
-    @objc func goBack() {
-        
-        self.dismiss(animated: true, completion: nil)
-        
+        //}
     }
     
     @objc func closeDate() {
@@ -351,6 +324,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
     override func viewDidLoad() {
         super.viewDidLoad()
         print("This is viewdidload FlightDetailsViewController")
+        
         tabBarController!.delegate = self
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -379,11 +353,10 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
         
         UserDefaults.standard.removeObject(forKey: "airlines")
         
-        addButtons()
-        
         self.airlineCode.delegate = self
         
         let center = UNUserNotificationCenter.current()
+        let options: UNAuthorizationOptions = [.alert, .sound]
         
         center.getNotificationSettings { (settings) in
             
@@ -391,23 +364,33 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                 
                 DispatchQueue.main.async {
                     
-                    let alertController = UIAlertController(title: "You have not allowed notifications yet", message: "You will NOT get any notifications for this flight, please update notification settings for TripKey to get notifications.", preferredStyle: .alert)
+                    let alert = UIAlertController(title: NSLocalizedString("We would like to send you notifications about your flight", comment: ""), message: NSLocalizedString("We send you friendly reminders so that you do not forget about your flight and always make it to the airport on time, we keep them to a minimum", comment: ""), preferredStyle: UIAlertControllerStyle.actionSheet)
                     
-                    alertController.addAction(UIAlertAction(title: "No Thanks", style: .default, handler: { (action) in }))
-                    
-                    alertController.addAction(UIAlertAction(title: "Update Settings", style: .default, handler: { (action) in
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
                         
-                        if let url = NSURL(string:UIApplicationOpenSettingsURLString) {
+                        DispatchQueue.main.async {
                             
-                            UIApplication.shared.open(url as URL, options: [:], completionHandler: { _ in })
+                            center.requestAuthorization(options: options) {
+                                
+                                (granted, error) in
+                                
+                                if !granted {
+                                    
+                                    print("Norifications denied")
+                                    
+                                }
+                                
+                            }
                             
                         }
                         
                     }))
                     
-                    self.present(alertController, animated: true, completion: nil)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { (action) in
+                        
+                    }))
                     
-                    print("notifications denied")
+                    self.present(alert, animated: true, completion: nil)
                     
                 }
                 
@@ -678,7 +661,6 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                                                 ]
                                                 
                                                 let flightStruct = FlightStruct(dictionary: leg)
-                                                print("leg = \(String(describing: leg))")
                                                 flightStructArray.append(flightStruct)
                                                 
                                         }
@@ -732,20 +714,60 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                                                         print("saved new flight to coredata")
                                                     }
                                                     
-                                                    let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                                                    //insert check mark animation instead
+                                                    //add blur background
+                                                    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
+                                                    blurView.frame = self.view.frame
+                                                    blurView.alpha = 0
+                                                    self.view.addSubview(blurView)
                                                     
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Finished Adding Flights", comment: ""), style: .default, handler: { (action) in
+                                                    UIView.animate(withDuration: 0.3, animations: {
                                                         
-                                                        //self.performSegue(withIdentifier: "goToNearMe", sender: self)
-                                                        self.tabBarController!.selectedIndex = 0
+                                                        blurView.alpha = 1
                                                         
-                                                    }))
-                                                    
-                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Add Another Flight", comment: ""), style: .default, handler: { (action) in
+                                                    }, completion: { _ in
                                                         
-                                                    }))
-                                                    
-                                                    self.present(alert, animated: true, completion: nil)
+                                                        self.successAnimation()
+                                                        
+                                                        let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+                                                        
+                                                        alert.addAction(UIAlertAction(title: NSLocalizedString("Add another", comment: ""), style: .default, handler: { (action) in
+                                                            
+                                                            UIView.animate(withDuration: 0.3, animations: {
+                                                                
+                                                                blurView.alpha = 0
+                                                                self.checkmarkview.alpha = 0
+                                                                
+                                                            }, completion: { _ in
+                                                                
+                                                                blurView.removeFromSuperview()
+                                                                self.checkmarkview.removeFromSuperview()
+                                                                
+                                                            })
+                                                            
+                                                        }))
+                                                        
+                                                        alert.addAction(UIAlertAction(title: NSLocalizedString("Done", comment: ""), style: .cancel, handler: { (action) in
+                                                            
+                                                            UIView.animate(withDuration: 0.3, animations: {
+                                                                
+                                                                blurView.alpha = 0
+                                                                self.checkmarkview.alpha = 0
+                                                                
+                                                            }, completion: { _ in
+                                                                
+                                                                blurView.removeFromSuperview()
+                                                                self.checkmarkview.removeFromSuperview()
+                                                                
+                                                            })
+                                                            
+                                                            self.tabBarController!.selectedIndex = 0
+                                                            
+                                                        }))
+                                                        
+                                                        self.present(alert, animated: true, completion: nil)
+                                                        
+                                                    })
                                                     
                                                 }))
                                                 
@@ -820,6 +842,23 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
             
         }
         
+    }
+    
+    func successAnimation() {
+        
+        checkmarkview.frame = CGRect(x: self.view.center.x - 95, y: (self.view.center.y - 95) - (self.view.frame.height / 5), width: 190, height: 190)
+        checkmarkview.image = UIImage(named: "whiteCheck.png")
+        checkmarkview.alpha = 0
+        self.view.addSubview(checkmarkview)
+        
+        checkmarkview.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        
+        UIView.animate(withDuration: 2.0, delay: 0, usingSpringWithDamping: CGFloat(0.20), initialSpringVelocity: CGFloat(6.0), options: UIViewAnimationOptions.allowUserInteraction, animations: {
+            
+            self.checkmarkview.alpha = 1
+            self.checkmarkview.transform = CGAffineTransform.identity
+            
+        })
     }
     
     func removeActivity() {

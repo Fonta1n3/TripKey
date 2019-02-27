@@ -64,6 +64,7 @@ class TableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         DispatchQueue.main.async {
+            
          
          // Configure the view for the selected state
         self.gradientLayer.frame = self.background.frame
@@ -74,7 +75,9 @@ class TableViewCell: UITableViewCell {
          self.gradientLayer.colors = [color1, color2]
          
          // 4
-         self.gradientLayer.locations = [0.4, 0.8]
+         //self.gradientLayer.locations = [0.4, 0.8]
+            //self.gradientLayer.locations = [0.2, 1.0]
+            self.gradientLayer.locations = [0.0, 0.6]
          
          // 5
         self.background.layer.addSublayer(self.gradientLayer)

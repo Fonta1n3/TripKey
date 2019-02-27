@@ -28,11 +28,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
         DispatchQueue.main.async {
             
             self.backButton.removeFromSuperview()
-            self.backButton.frame = CGRect(x: 5, y: 20, width: 25, height: 25)
+            let device = UIDevice.modelName
+            if device == "Simulator iPhone X" || device == "iPhone X" || device == "Simulator iPhone XS" || device == "Simulator iPhone XR" || device == "Simulator iPhone XS Max" {
+                self.backButton.frame = CGRect(x: 5, y: 40, width: 25, height: 25)
+            } else {
+                self.backButton.frame = CGRect(x: 5, y: 20, width: 25, height: 25)
+            }
+            
             self.backButton.showsTouchWhenHighlighted = true
             let image = UIImage(imageLiteralResourceName: "backButton.png")
             self.backButton.setImage(image, for: .normal)
-            self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
+            self.backButton.addTarget(self, action: #selector(self.goBack), for: .allTouchEvents)
             self.view.addSubview(self.backButton)
             
             
@@ -41,7 +47,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.shareButton.setTitleColor(UIColor.white, for: .normal)
             self.shareButton.backgroundColor = UIColor.clear
             self.shareButton.titleLabel?.font = UIFont.init(name: "HelveticaNeue-Bold", size: 20)
-            self.shareButton.addTarget(self, action: #selector(self.share), for: .touchUpInside)
+            self.shareButton.addTarget(self, action: #selector(self.share), for: .allTouchEvents)
             self.view.addSubview(self.shareButton)
             
         }

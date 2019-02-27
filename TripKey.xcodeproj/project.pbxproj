@@ -30,6 +30,7 @@
 		D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */; };
 		D069FBB5220033F600864659 /* trackFlight.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB4220033F600864659 /* trackFlight.png */; };
 		D069FBBB22013D6C00864659 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D069FBBA22013D6C00864659 /* Helpers.swift */; };
+		D073DC51222675A90091D795 /* whiteCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = D073DC50222675A90091D795 /* whiteCheck.png */; };
 		D0756A63222266C1004EFD6E /* logoSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = D0756A62222266C1004EFD6E /* logoSmall.png */; };
 		D075D8431F68CD1C004831B0 /* delete-512.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8421F68CD1C004831B0 /* delete-512.png */; };
 		D075D8451F68D38B004831B0 /* whitePhone.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8441F68D38B004831B0 /* whitePhone.png */; };
@@ -39,6 +40,11 @@
 		D098EFB8220728A6008A8E27 /* icons8-male-user-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */; };
 		D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */ = {isa = PBXBuildFile; fileRef = D099B8A41F6CA9F40047EEE5 /* directions.png */; };
 		D09FE4561D8A787D00D36EBF /* FlightDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */; };
+		D0A1328422252A6200DBA953 /* CountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A1328322252A6200DBA953 /* CountDown.swift */; };
+		D0A1328622252A9800DBA953 /* CountDownView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0A1328522252A9800DBA953 /* CountDownView.xib */; };
+		D0A132882225694E00DBA953 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = D0A132872225694D00DBA953 /* share.png */; };
+		D0A1328A22256A3A00DBA953 /* qr.png in Resources */ = {isa = PBXBuildFile; fileRef = D0A1328922256A3A00DBA953 /* qr.png */; };
+		D0A1328C2225776800DBA953 /* menu.png in Resources */ = {isa = PBXBuildFile; fileRef = D0A1328B2225776700DBA953 /* menu.png */; };
 		D0A47C1B222277BE00CC03B8 /* watchShot.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A47C1A222277BE00CC03B8 /* watchShot.swift */; };
 		D0B8D0621E2E1BBA0096613F /* Tripkey-logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */; };
 		D0B8D0641E2E22950096613F /* icon-tripkey test.png in Resources */ = {isa = PBXBuildFile; fileRef = D0B8D0631E2E22950096613F /* icon-tripkey test.png */; };
@@ -114,6 +120,7 @@
 		D061846A2205688000336A20 /* icons8-add-user-male-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-add-user-male-filled-50.png"; sourceTree = "<group>"; };
 		D069FBB4220033F600864659 /* trackFlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackFlight.png; sourceTree = "<group>"; };
 		D069FBBA22013D6C00864659 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = /Users/peter/Documents/TripKey/TripKey2/Helpers.swift; sourceTree = "<absolute>"; };
+		D073DC50222675A90091D795 /* whiteCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCheck.png; sourceTree = "<group>"; };
 		D0756A62222266C1004EFD6E /* logoSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logoSmall.png; sourceTree = "<group>"; };
 		D075D8421F68CD1C004831B0 /* delete-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete-512.png"; sourceTree = "<group>"; };
 		D075D8441F68D38B004831B0 /* whitePhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whitePhone.png; sourceTree = "<group>"; };
@@ -123,6 +130,11 @@
 		D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-male-user-filled-50.png"; sourceTree = "<group>"; };
 		D099B8A41F6CA9F40047EEE5 /* directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = directions.png; sourceTree = "<group>"; };
 		D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlightDetailsViewController.swift; path = TripKey2/FlightDetailsViewController.swift; sourceTree = "<group>"; };
+		D0A1328322252A6200DBA953 /* CountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountDown.swift; sourceTree = "<group>"; };
+		D0A1328522252A9800DBA953 /* CountDownView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CountDownView.xib; sourceTree = "<group>"; };
+		D0A132872225694D00DBA953 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
+		D0A1328922256A3A00DBA953 /* qr.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = qr.png; sourceTree = "<group>"; };
+		D0A1328B2225776700DBA953 /* menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = menu.png; sourceTree = "<group>"; };
 		D0A47C1A222277BE00CC03B8 /* watchShot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = watchShot.swift; sourceTree = "<group>"; };
 		D0B8D0611E2E1BBA0096613F /* Tripkey-logo-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tripkey-logo-white.png"; sourceTree = "<group>"; };
 		D0B8D0631E2E22950096613F /* icon-tripkey test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-tripkey test.png"; sourceTree = "<group>"; };
@@ -226,6 +238,8 @@
 		D01EE9B41D692B780048D6CE /* TripKey2 */ = {
 			isa = PBXGroup;
 			children = (
+				D0A1328322252A6200DBA953 /* CountDown.swift */,
+				D0A1328522252A9800DBA953 /* CountDownView.xib */,
 				D0A47C1A222277BE00CC03B8 /* watchShot.swift */,
 				D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */,
 				D0F42B621E41D1E800737461 /* NearMeViewController.swift */,
@@ -270,7 +284,10 @@
 				D0CC85F91F7FE33B00B8E105 /* info.png */,
 				D0BB62AA2187081900D3B5B9 /* back2.png */,
 				D069FBB4220033F600864659 /* trackFlight.png */,
+				D0A1328B2225776700DBA953 /* menu.png */,
+				D0A1328922256A3A00DBA953 /* qr.png */,
 				D025F58A2203FB38007D6D3B /* takeOffWestToEastImage.png */,
+				D0A132872225694D00DBA953 /* share.png */,
 				D025F58C2203FC6E007D6D3B /* takeOffEastToWestImage.png */,
 				D025F58F2203FEFC007D6D3B /* landingEastToWest.png */,
 				D025F58E2203FEFC007D6D3B /* landingWestToEast.png */,
@@ -282,6 +299,7 @@
 				D025F5882203F45D007D6D3B /* newTakeOffToWest.png */,
 				D0CACD3F1E16BA6C00FA4DA2 /* heavy_rain_25.png */,
 				D0CACD401E16BA6C00FA4DA2 /* light_rain_25.png */,
+				D073DC50222675A90091D795 /* whiteCheck.png */,
 				D0CACD411E16BA6C00FA4DA2 /* medium_rain_25.png */,
 				D0CACD421E16BA6C00FA4DA2 /* mostly_cloudy_25.png */,
 				D0CACD431E16BA6C00FA4DA2 /* prtly_cloudy_sun_25.png */,
@@ -427,18 +445,23 @@
 			files = (
 				D01EE9C31D692B780048D6CE /* LaunchScreen.storyboard in Resources */,
 				D0286D6721E27AF300954991 /* ReadMe.md in Resources */,
+				D0A1328C2225776800DBA953 /* menu.png in Resources */,
 				D025F5892203F45E007D6D3B /* newTakeOffToWest.png in Resources */,
 				D069FBB5220033F600864659 /* trackFlight.png in Resources */,
 				D00BBF7F1D73C05500057B58 /* Podfile in Resources */,
 				D025F59522040324007D6D3B /* airplaneSliderImage.png in Resources */,
 				D025F5912203FEFC007D6D3B /* landingEastToWest.png in Resources */,
 				D0CACD481E16BA6C00FA4DA2 /* light_rain_25.png in Resources */,
+				D073DC51222675A90091D795 /* whiteCheck.png in Resources */,
 				D016EB801F078AEB00DEE5CD /* Date Picker.xib in Resources */,
+				D0A1328622252A9800DBA953 /* CountDownView.xib in Resources */,
 				D075D8431F68CD1C004831B0 /* delete-512.png in Resources */,
 				D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */,
 				D0756A63222266C1004EFD6E /* logoSmall.png in Resources */,
 				D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */,
 				D0CACD4A1E16BA6C00FA4DA2 /* mostly_cloudy_25.png in Resources */,
+				D0A1328A22256A3A00DBA953 /* qr.png in Resources */,
+				D0A132882225694E00DBA953 /* share.png in Resources */,
 				D025F58D2203FC6E007D6D3B /* takeOffEastToWestImage.png in Resources */,
 				D0D1C28A21882B0800BF8089 /* backButton.png in Resources */,
 				D0CACD4C1E16BA6C00FA4DA2 /* snow_25.png in Resources */,
@@ -551,6 +574,7 @@
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
 				D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */,
+				D0A1328422252A6200DBA953 /* CountDown.swift in Sources */,
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
 				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,

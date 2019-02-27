@@ -15,71 +15,6 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HfU-ew-QdQ">
-                    <rect key="frame" x="0.0" y="510" width="375" height="157"/>
-                    <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4yz-E5-Yn7">
-                            <rect key="frame" x="8" y="28" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="NWV-vX-UTu"/>
-                                <constraint firstAttribute="height" constant="50" id="VO2-6z-UoO"/>
-                            </constraints>
-                            <state key="normal" image="delete-512.png">
-                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Obm-XY-sKd">
-                            <rect key="frame" x="317" y="28" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="LQz-OI-cPw"/>
-                                <constraint firstAttribute="height" constant="50" id="SJE-FB-CY6"/>
-                            </constraints>
-                            <state key="normal" image="directions.png"/>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3cP-u5-uBM">
-                            <rect key="frame" x="236" y="28" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="50" id="0U3-mf-BCd"/>
-                                <constraint firstAttribute="height" constant="50" id="EjS-Hx-Lmy"/>
-                            </constraints>
-                            <state key="normal" image="info.png"/>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kT8-Lo-uOw">
-                            <rect key="frame" x="162.5" y="28" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="50" id="PSg-fc-isX"/>
-                                <constraint firstAttribute="width" constant="50" id="vwy-65-U4Z"/>
-                            </constraints>
-                            <state key="normal" image="whitePhone.png"/>
-                        </button>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p3t-ki-g6Y">
-                            <rect key="frame" x="88" y="28" width="50" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="50" id="eyL-xb-kW6"/>
-                                <constraint firstAttribute="width" constant="50" id="yEn-zW-C2x"/>
-                            </constraints>
-                            <state key="normal" image="whiteCommunity.png"/>
-                        </button>
-                    </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstItem="Obm-XY-sKd" firstAttribute="centerY" secondItem="HfU-ew-QdQ" secondAttribute="centerY" constant="-25.5" id="70s-ls-zJw"/>
-                        <constraint firstItem="p3t-ki-g6Y" firstAttribute="leading" secondItem="4yz-E5-Yn7" secondAttribute="trailing" constant="30" id="A5x-4h-x2P"/>
-                        <constraint firstAttribute="height" constant="157" id="AnA-93-fl2"/>
-                        <constraint firstItem="kT8-Lo-uOw" firstAttribute="centerX" secondItem="HfU-ew-QdQ" secondAttribute="centerX" id="E3q-M7-ClB"/>
-                        <constraint firstItem="3cP-u5-uBM" firstAttribute="centerY" secondItem="HfU-ew-QdQ" secondAttribute="centerY" constant="-25.5" id="Gxq-42-ssi"/>
-                        <constraint firstItem="kT8-Lo-uOw" firstAttribute="centerY" secondItem="HfU-ew-QdQ" secondAttribute="centerY" constant="-25.5" id="Tc3-eb-lUj"/>
-                        <constraint firstAttribute="trailing" secondItem="Obm-XY-sKd" secondAttribute="trailing" constant="8" id="UCU-fn-Hol"/>
-                        <constraint firstItem="3cP-u5-uBM" firstAttribute="centerY" secondItem="4yz-E5-Yn7" secondAttribute="centerY" id="VEA-HU-gXN"/>
-                        <constraint firstItem="kT8-Lo-uOw" firstAttribute="centerY" secondItem="4yz-E5-Yn7" secondAttribute="centerY" id="Vwa-NI-Ou1"/>
-                        <constraint firstItem="4yz-E5-Yn7" firstAttribute="leading" secondItem="HfU-ew-QdQ" secondAttribute="leading" constant="8" id="eGE-th-GMY"/>
-                        <constraint firstItem="p3t-ki-g6Y" firstAttribute="centerY" secondItem="HfU-ew-QdQ" secondAttribute="centerY" constant="-25.5" id="fMR-zg-8A8"/>
-                        <constraint firstItem="4yz-E5-Yn7" firstAttribute="centerY" secondItem="HfU-ew-QdQ" secondAttribute="centerY" constant="-25.5" id="m1J-AB-rfO"/>
-                        <constraint firstItem="Obm-XY-sKd" firstAttribute="leading" secondItem="3cP-u5-uBM" secondAttribute="trailing" constant="31" id="u59-pR-5EQ"/>
-                        <constraint firstItem="p3t-ki-g6Y" firstAttribute="centerY" secondItem="4yz-E5-Yn7" secondAttribute="centerY" id="w9j-VN-WEN"/>
-                        <constraint firstItem="Obm-XY-sKd" firstAttribute="centerY" secondItem="4yz-E5-Yn7" secondAttribute="centerY" id="zJA-eG-Uwm"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="sWt-Xb-kTF">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="181"/>
                     <subviews>
@@ -353,11 +288,8 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <gestureRecognizers/>
             <constraints>
-                <constraint firstItem="HfU-ew-QdQ" firstAttribute="leading" secondItem="ivP-JX-5Yj" secondAttribute="leading" id="6qe-1d-7rX"/>
                 <constraint firstAttribute="trailing" secondItem="sWt-Xb-kTF" secondAttribute="trailing" id="FLL-t5-hLf"/>
-                <constraint firstAttribute="trailing" secondItem="HfU-ew-QdQ" secondAttribute="trailing" id="SGy-6k-k4F"/>
                 <constraint firstItem="sWt-Xb-kTF" firstAttribute="leading" secondItem="ivP-JX-5Yj" secondAttribute="leading" id="iQE-N0-OOp"/>
-                <constraint firstAttribute="bottom" secondItem="HfU-ew-QdQ" secondAttribute="bottom" id="wJt-gK-NNS"/>
                 <constraint firstItem="sWt-Xb-kTF" firstAttribute="top" secondItem="ivP-JX-5Yj" secondAttribute="top" id="wym-Kc-jZ9"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -400,25 +332,12 @@
                 <outlet property="arrivalWeatherImage" destination="sgW-ka-aiR" id="RKO-kT-Gpt"/>
                 <outlet property="arrivaldays" destination="Clm-TB-yW6" id="LFR-05-4EY"/>
                 <outlet property="baggageLabel" destination="p1J-9Y-e4f" id="Bii-zG-FA9"/>
-                <outlet property="bottomView" destination="HfU-ew-QdQ" id="xRb-ya-8pm"/>
-                <outlet property="call" destination="kT8-Lo-uOw" id="STx-Ac-PiQ"/>
-                <outlet property="deleteFlight" destination="4yz-E5-Yn7" id="j9N-cs-bd8"/>
-                <outlet property="directions" destination="Obm-XY-sKd" id="1P2-Tx-j5B"/>
-                <outlet property="flightAmenities" destination="3cP-u5-uBM" id="mgh-4r-aGf"/>
                 <outlet property="flightIcon" destination="zyP-yM-7K7" id="Iny-Ce-cbK"/>
                 <outlet property="gateLabel" destination="5Dv-oT-Zoy" id="PU9-U5-507"/>
-                <outlet property="share" destination="p3t-ki-g6Y" id="qew-eG-ndt"/>
                 <outlet property="terminalLabel" destination="58e-6w-CjE" id="bSu-oe-TWZ"/>
                 <outlet property="topView" destination="sWt-Xb-kTF" id="qdf-wT-Eij"/>
             </connections>
             <point key="canvasLocation" x="100" y="-153.37331334332833"/>
         </view>
     </objects>
-    <resources>
-        <image name="delete-512.png" width="512" height="512"/>
-        <image name="directions.png" width="779" height="704"/>
-        <image name="info.png" width="720" height="720"/>
-        <image name="whiteCommunity.png" width="1000" height="1000"/>
-        <image name="whitePhone.png" width="256" height="256"/>
-    </resources>
 </document>

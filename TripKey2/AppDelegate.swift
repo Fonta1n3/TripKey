@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.all
+        return UIInterfaceOrientationMask.portrait
     }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
@@ -49,11 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.initialize(with: parseConfiguration)
         GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
         
-        application.registerForRemoteNotifications()
-        
-        let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
-        let category = UNNotificationCategory(identifier: "statusUpdates", actions: [action], intentIdentifiers: [], options: [])
-        UNUserNotificationCenter.current().setNotificationCategories([category])
+        //let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
+        //let category = UNNotificationCategory(identifier: "statusUpdates", actions: [action], intentIdentifiers: [], options: [])
+        //UNUserNotificationCenter.current().setNotificationCategories([category])
         
         let defaultACL = PFACL();
         defaultACL.hasPublicReadAccess = true
@@ -70,7 +68,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
+        
         self.saveContext()
+        
     }
     
     lazy var persistentContainer: NSPersistentContainer = {

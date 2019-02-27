@@ -240,9 +240,9 @@
 "Get Directions to the Airport" = "हवाई अड्डे के लिए दिशा निर्देश प्राप्त करें ";
 "Check Flight Amenities" = "उड़ान सुविधा जाचें";
 "Flight #" = "उड़ान #";
-"Departing on:" = "प्रस्थान";
+"Departure" = "प्रस्थान";
 "Add Flight" = "उड़ान जोडें";
-"Flight Added" = "उड़ान जुड़ गया";
+"Flight Added :)" = "उड़ान जुड़ गया:)";
 "Finished Adding Flights" = "उड़ाने जोड़ना समाप्त";
 "Add Another Flight" = "अन्य उड़ान जोडें";
 "Sorry no website registered" = "क्षमा करें कोई वेबसाइट पंजीकृत नहीं है";
@@ -444,31 +444,6 @@
 "Non-stop flight" = "नॉन-स्टॉप विमान";
 "Flight" = "विमान";
 
-//new
 
-"Choose an airline" = "एक एयरलाइन चुनें";
-"min" = "कार्यवृत्त";
-"hr" = "घण्टा";
-"miles" = "मिलेस";
-"km" = "किलोमिटर";
-"Nightlife / Alcohol" = "रात्रिजीवन / मदिरा";
-"Swipe left or right to go to the next place.\n\nSwipe up to see photos.\n\nSwipe down to close the place.\n\nTap the map to see opening hours or place info.\n\nPress the map to see street view." = "अगले स्थान पर जाने के लिए बाएं या दाएं स्वाइप करें.\n\nफ़ोटो देखने के लिए ऊपर की ओर स्वाइप करें.\n\nस्थान को बंद करने के लिए नीचे स्वाइप करें.\n\nखोलने का समय या स्थान जानकारी देखने के लिए मानचित्र को टैप करें.\n\nसड़क दृश्य देखने के लिए मानचित्र दबाएं.";
-"Backing Up" = "उदभारण";
 
-"Flight Reminder for flight" = "उड़ान के लिए उड़ान अनुस्मारक";
-"Your flight from" = "से आपकी उड़ान";
-"is departing in 2 hours. Use TripKey to update your flight info" = "2 घंटे में प्रस्थान हो रहा है. अपनी उड़ान जानकारी अपडेट करने के लिए TripKey का उपयोग करें";
-"is departing in 1 hour. The flight will board soon, check TripKey for updates." = "1 घंटे में प्रस्थान हो रहा है. उड़ान शीघ्र ही बोलेगी, अद्यतनों के लिए TripKey की जांच करें.";
-"is departing in 4 hours. Use TripKey to effortlessly get directions to the airport." = "4 घंटे में प्रस्थान हो रहा है. हवाई अड्डे के लिए आसानी से निर्देश प्राप्त करने के लिए ट्रिपकी का उपयोग करें.";
-"is departing in 48 hours! Make sure to check in online and choose your seats." = "48 घंटे में प्रस्थान हो रहा है. सुनिश्चित करें कि ऑनलाइन जांचें और अपनी सीटें चुनें";
-"Your passport is expiring in 6 months" = "आपका पासपोर्ट 6 महीने में समाप्त हो रहा है";
-"Many countries will not allow you entry with less then 6 months to go on your passport, try and renew it as soon as possible." = "कई देश आपके पासपोर्ट पर जाने के लिए कम से कम 6 महीने तक प्रवेश की अनुमति नहीं देंगे, जितनी जल्दी हो सके अपने पासपोर्ट को नवीनीकृत करें.";
 
-//newer
-"Tap the \"Near Me\" button to zoom into your location." = "अपने स्थान में ज़ूम करने के लिए मेरे पास नल बटन टैप करें।";
-"is scheduled to be departing now." = "अब प्रस्थान होने जा रहा है।";
-"is scheduled to be landing now." = "अब लैंडिंग होने जा रहा है।";
-"Youv'e reached your limit of free flights." = "आप अपनी उड़ानों की सीमा तक पहुंच गए हैं।";
-"You've already saved this place." = "आपने पहले से ही इस जगह को बचा लिया है";
-"Add flights?" = "उड़ानें जोड़ें?";
-"Flight Notifications" = "उड़ान सूचनाएं";

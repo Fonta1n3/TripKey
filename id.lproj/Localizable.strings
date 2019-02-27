@@ -240,9 +240,9 @@
 "Get Directions to the Airport" = "Dapatkan Petunjuk Arah ke Bandara";
 "Check Flight Amenities" = "Periksa fasilitas penerbangan";
 "Flight #" = "Penerbangan #";
-"Departing on:" = "Keberangkatan";
+"Departure" = "Keberangkatan";
 "Add Flight" = "Tambahkan Penerbangan";
-"Flight Added" = "Penerbangan Ditambahkan";
+"Flight Added :)" = "Penerbangan Ditambahkan :)";
 "Finished Adding Flights" = "Selesai Menambahkan Penerbangan";
 "Add Another Flight" = "Tambahkan Penerbangan Lainnya";
 "Sorry no website registered" = "Maaf, tidak ada situs yang terdaftar";
@@ -360,7 +360,7 @@
 
 "Tap the \"Community\" button to see all the TripKey users that you are following. Following a user on TripKey allows you to easily share places, share flights, share your location with specified users and get directions to that user. All with a quick tap." = "Tekan tombol \"Community\" untuk meihat seluruh pengguna TripKey yang Anda ikuti. Mengikuti seorang user di TripKey memudahkan Anda untuk berbagi tempat, jadwal penerbangan, lokasi, dan mendapatkan petunjuk arah ke pengguna tersebut. Semuanya dalam beberapa kali tekan saja.";
 
-
+//new
 
 "location" = "lokasi";
 
@@ -436,32 +436,9 @@
 "Non-stop flight" = "Penerbangan non-stop";
 "Flight" = "Penerbangan";
 
-//new
-
-"Choose an airline" = "Pilih maskapai penerbangan";
-"min" = "menit";
-"hr" = "jam";
-"miles" = "Mil";
-"km" = "km";
-"Swipe left or right to go to the next place.\n\nSwipe up to see photos.\n\nSwipe down to close the place.\n\nTap the map to see opening hours or place info.\n\nPress the map to see street view." = "Gesek ke kiri atau kanan untuk menuju ke tempat berikutnya.\n\nGesek ke atas untuk melihat foto.\n\nGesek ke bawah untuk menutup tempat itu.\n\nKetuk peta untuk melihat jam buka atau tempatkan info.\n\nTekan peta untuk melihat tampilan jalan.";
-"Backing Up" = "Mengunggah";
 
 
 
-"Flight Reminder for flight" = "Pengingat penerbangan untuk penerbangan";
-"Your flight from" = "Penerbanganmu dari";
-"is departing in 2 hours. Use TripKey to update your flight info" = "berangkat dalam 2 jam. Gunakan TripKey untuk memperbarui info penerbangan Anda";
-"is departing in 1 hour. The flight will board soon, check TripKey for updates." = "berangkat dalam 1 jam. Penerbangan akan segera naik, cek TripKey untuk update.";
-"is departing in 4 hours. Use TripKey to effortlessly get directions to the airport." = "berangkat dalam 4 jam. Gunakan TripKey untuk dengan mudah mendapatkan petunjuk arah ke bandara.";
-"is departing in 48 hours! Make sure to check in online and choose your seats." = "berangkat dalam 48 jam! Pastikan untuk check in online dan memilih tempat duduk Anda.";
-"Your passport is expiring in 6 months" = "Paspor Anda akan habis dalam 6 bulan";
-"Many countries will not allow you entry with less then 6 months to go on your passport, try and renew it as soon as possible." = "Banyak negara tidak akan mengizinkan Anda masuk dengan kurang dari 6 bulan untuk meneruskan paspor Anda, perbaharui paspor Anda secepatnya.";
 
-//newer
-"Tap the \"Near Me\" button to zoom into your location." = "Ketuk tombol \"Dekat Saya\" untuk memperbesar lokasi Anda";
-"is scheduled to be departing now." = "dijadwalkan akan berangkat sekarang.";
-"is scheduled to be landing now." = "dijadwalkan mendarat sekarang.";
-"Youv'e reached your limit of free flights." = "Anda telah mencapai batas penerbangan gratis Anda.";
-"You've already saved this place." = "Anda sudah menyimpan tempat ini.";
-"Add flights?" = "Tambahkan penerbangan?";
-"Flight Notifications" = "Pemberitahuan penerbangan";
+
+

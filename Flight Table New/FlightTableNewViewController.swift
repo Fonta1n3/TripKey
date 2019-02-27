@@ -21,9 +21,18 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        flightTable.alpha = 0
         tabBarController!.delegate = self
         flightTable.delegate = self
         flightTable.dataSource = self
+        
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask { return UIInterfaceOrientationMask.portrait }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        flightTable.alpha = 0
     }
     
 
@@ -31,6 +40,10 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         
         flightArray = getFlightArray()
         flightTable.reloadData()
+        
+        UIView.animate(withDuration: 0.3) {
+            self.flightTable.alpha = 1
+        }
         
     }
     
