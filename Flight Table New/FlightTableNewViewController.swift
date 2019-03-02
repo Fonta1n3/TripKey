@@ -8,6 +8,7 @@
 
 import UIKit
 import Parse
+import GoogleMaps
 
 class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     
@@ -32,37 +33,41 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask { return UIInterfaceOrientationMask.portrait }
     
     override func viewDidDisappear(_ animated: Bool) {
+        
         flightTable.alpha = 0
+        
     }
     
 
     override func viewDidAppear(_ animated: Bool) {
         
         flightArray = getFlightArray()
+        
         flightTable.reloadData()
         
         UIView.animate(withDuration: 0.3) {
+            
             self.flightTable.alpha = 1
+            
         }
         
     }
     
+    
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = flightTable.dequeueReusableCell(withIdentifier: "FlightCell", for: indexPath) as! TableViewCell
-        
         cell.terminalLabel.text = NSLocalizedString("Terminal", comment: "")
         cell.gateLabel.text = NSLocalizedString("Gate", comment: "")
         cell.arrivalGateLabel.text = NSLocalizedString("Gate", comment: "")
         cell.arrivalBaggageLabel.text = NSLocalizedString("Baggage", comment: "")
         cell.arrivalTerminalLabel.text = NSLocalizedString("Terminal", comment: "")
-        
         let thumbImage = UIImage(named: "airplaneSliderImage.png")?.resizeImage(targetSize: CGSize(width: 60, height: 60))
         cell.slider.setThumbImage(thumbImage, for: .normal)
         cell.slider.maximumValue = 1.0
         cell.slider.minimumValue = 0.0
         cell.slider.value = cell.slider.minimumValue
-        //cell.countdownView.isHidden = true
         
         cell.tapShareAction = {
             
@@ -94,18 +99,24 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         let arrTerminal = flight.arrivalTerminal
         let arrGate = flight.arrivalGate
         let baggage = flight.baggageClaim
-        
+        let departureAirportCoordinates = CLLocationCoordinate2D(latitude: flight.departureLat,
+                                                                 longitude: flight.departureLon)
+        let arrivalAirportCoordinates = CLLocationCoordinate2D(latitude: flight.arrivalLat,
+                                                               longitude: flight.arrivalLon)
+        let flightDistanceMeters = GMSGeometryDistance(departureAirportCoordinates, arrivalAirportCoordinates)
+        let formatter = MeasurementFormatter()
+        let meters = Measurement(value: flightDistanceMeters, unit: UnitLength.meters)
+        let distance = formatter.string(from: meters)
         let flightDuration = getFlightDuration(departureDate: departureDate,
                                                arrivalDate: arrivalDate,
                                                departureOffset: departureOffset,
                                                arrivalOffset: arrivalOffset)
-        
         let departureTimeDifference = getTimeDifference(publishedTime: publishedDeparture,
                                                         actualTime: departureDate)
-        
         let arrivalTimeDifference = getTimeDifference(publishedTime: publishedArrival,
                                                       actualTime: arrivalDate)
-            
+        
+        cell.distance.text = distance
         cell.status.text = NSLocalizedString(flightStatus, comment: "")
         cell.flightDuration.text = flightDuration
         cell.aircraftType.text = flightEquipment
@@ -121,45 +132,42 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         cell.arrivalDate.text = convertDateTime(date: arrivalDate)
         cell.flightDuration.text = flightDuration
         
-        if self.flightArray.count <= 3 {
-                
-            var monthsLeft = Int()
-            var daysLeft = Int()
-            var hoursLeft = Int()
-            var minutesLeft = Int()
-            var secondsLeft = Int()
+        var monthsLeft = Int()
+        var daysLeft = Int()
+        var hoursLeft = Int()
+        var minutesLeft = Int()
+        var secondsLeft = Int()
             
-            let _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
+        cell.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
                 (_) in
                 
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
                     
-                    if flightStatus != "Departed" {
+                if flightStatus != "Departed" {
                         
-                        cell.countDownLabel.text = NSLocalizedString("till departure", comment: "")
-                        monthsLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).months
-                        daysLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).days
-                        hoursLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).hours
-                        minutesLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).minutes
-                        secondsLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).seconds
+                    cell.countDownLabel.text = NSLocalizedString("till departure", comment: "")
+                    monthsLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).months
+                    daysLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).days
+                    hoursLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).hours
+                    minutesLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).minutes
+                    secondsLeft = countDown(departureDate: departureDate, departureUtcOffset: departureOffset).seconds
                         
-                    } else if flightStatus == "Departed" {
+                } else if flightStatus == "Departed" {
                         
-                        cell.countDownLabel.text = NSLocalizedString("till arrival", comment: "")
-                        monthsLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).months
-                        daysLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).days
-                        hoursLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).hours
-                        minutesLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).minutes
-                        secondsLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).seconds
-                    }
-                    
-                    cell.months.text = "\(monthsLeft)"
-                    cell.days.text = "\(daysLeft)"
-                    cell.hours.text = "\(hoursLeft)"
-                    cell.mins.text = "\(minutesLeft)"
-                    cell.secs.text = "\(secondsLeft)"
-                    
+                    cell.countDownLabel.text = NSLocalizedString("till arrival", comment: "")
+                    monthsLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).months
+                    daysLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).days
+                    hoursLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).hours
+                    minutesLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).minutes
+                    secondsLeft = countDown(departureDate: arrivalDate, departureUtcOffset: arrivalOffset).seconds
                 }
+                    
+                cell.months.text = "\(monthsLeft)"
+                cell.days.text = "\(daysLeft)"
+                cell.hours.text = "\(hoursLeft)"
+                cell.mins.text = "\(minutesLeft)"
+                cell.secs.text = "\(secondsLeft)"
+                    
             }
         }
         
@@ -199,17 +207,11 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                     cell.landingOnTimeDelayed.text = "\(NSLocalizedString("Arriving", comment: "")) \(arrivalTimeDifference) \(NSLocalizedString("early", comment: ""))"
                 }
                 
-                
-                
                 let arrivalDateUtc = getUtcTime(time: arrivalDate, utcOffset: arrivalOffset)
-                print("arrivalDateUtc = \(arrivalDateUtc)")
                 let timeTillLanding = self.secondsTillLanding(arrivalDateUTC: arrivalDateUtc)
-                print("timeTillLanding = \(timeTillLanding)")
                 
                 let departuerDateUtc = getUtcTime(time: departureDate, utcOffset: departureOffset)
-                print("departuerDateUtc = \(departuerDateUtc)")
                 let timeSinceTakeOff = self.secondsSinceTakeOff(departureDateUTC: departuerDateUtc)
-                print("timeSinceTakeOff = \(timeSinceTakeOff)")
                 
                 cell.slider.maximumValue = Float(timeSinceTakeOff + timeTillLanding)
                 cell.slider.minimumValue = Float(0)
@@ -237,6 +239,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 cell.slider.maximumValue = 1.0
                 cell.slider.minimumValue = 0.0
                 cell.slider.value = cell.slider.maximumValue
+                cell.countdownView.isHidden = true
                 
             }
             
@@ -246,102 +249,24 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             cell.slider.maximumValue = 1.0
             cell.slider.minimumValue = 0.0
             cell.slider.value = cell.slider.minimumValue
+            cell.countdownView.isHidden = true
             
         }
         
         return cell
-    }
-    
-    func setCountDown(type: String, date: String, offset: Double, indexPath: IndexPath) {
-        print("setcountdown = \(type) \(date) \(offset) \(indexPath)")
         
-        let cell = flightTable.dequeueReusableCell(withIdentifier: "FlightCell", for: indexPath) as! TableViewCell
-        
-        let _ = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
-            (_) in
-            
-            DispatchQueue.main.async {
-                
-                if type == "arrival" {
-                   cell.countDownLabel.text = NSLocalizedString("till arrival", comment: "")
-                } else if type == "departure" {
-                   cell.countDownLabel.text = NSLocalizedString("till departure", comment: "")
-                }
-                
-                let monthsLeft = countDown(departureDate: date, departureUtcOffset: offset).months
-                let daysLeft = countDown(departureDate: date, departureUtcOffset: offset).days
-                let hoursLeft = countDown(departureDate: date, departureUtcOffset: offset).hours
-                let minutesLeft = countDown(departureDate: date, departureUtcOffset: offset).minutes
-                let secondsLeft = countDown(departureDate: date, departureUtcOffset: offset).seconds
-                
-                DispatchQueue.main.async {
-                    cell.months.text = "\(monthsLeft)"
-                    cell.days.text = "\(daysLeft)"
-                    cell.hours.text = "\(hoursLeft)"
-                    cell.mins.text = "\(minutesLeft)"
-                    cell.secs.text = "\(secondsLeft)"
-                }
-                
-                if monthsLeft == 0 {
-                    
-                    cell.months.isHidden = true
-                    cell.monthsLabel.isHidden = true
-                    
-                }
-                
-                if daysLeft == 0 && monthsLeft == 0 {
-                    
-                    cell.days.isHidden = true
-                    cell.months.isHidden = true
-                    cell.monthsLabel.isHidden = true
-                    cell.daysLabel.isHidden = true
-                    
-                }
-                
-                if hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0 {
-                    
-                    cell.hours.isHidden = true
-                    cell.days.isHidden = true
-                    cell.months.isHidden = true
-                    cell.monthsLabel.isHidden = true
-                    cell.daysLabel.isHidden = true
-                    cell.hoursLabel.isHidden = true
-                    
-                }
-                
-                if minutesLeft == 0 && hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0 {
-                    
-                    cell.mins.isHidden = true
-                    cell.hours.isHidden = true
-                    cell.days.isHidden = true
-                    cell.months.isHidden = true
-                    cell.monthsLabel.isHidden = true
-                    cell.daysLabel.isHidden = true
-                    cell.hoursLabel.isHidden = true
-                    cell.minsLabel.isHidden = true
-                    
-                }
-                
-                if secondsLeft == 0 && minutesLeft == 0 && hoursLeft == 0 && daysLeft == 0 && monthsLeft == 0  {
-                    
-                    cell.countdownView.isHidden = true
-                    cell.countDownLabel.isHidden = true
-                    
-                } else {
-                    
-                    cell.countdownView.isHidden = false
-                    
-                }
-            }
-        }
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        
         return 1
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return self.flightArray.count
+        
     }
     
     
@@ -402,10 +327,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     func secondsTillLanding(arrivalDateUTC: String) -> Int {
         
-        let currentTime = Date()
-        print("currentTime = \(currentTime)")
-        
-        //get current utc time
         let date = NSDate()
         var secondsFromGMT: Int { return NSTimeZone.local.secondsFromGMT() }
         var utcInterval = secondsFromGMT
@@ -417,18 +338,13 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         } else if utcInterval == 0 {
             utcInterval = 0
         }
-        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
         
+        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-        
-        //let date1 = dateFormatter.date(from: currentDateUtc)
         let date2 = dateFormatter.date(from: arrivalDateUTC)
-        
         let interval = currentDateUtc.timeIntervalSince(date2!)
-        
         let secondsTillLanding = abs(Int(interval))
-        
         
         return secondsTillLanding
         
@@ -436,10 +352,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
     
     func secondsSinceTakeOff(departureDateUTC: String) -> Int {
         
-        let currentTime = Date()
-        print("currentTime = \(currentTime)")
-        
-        //get current utc time
         let date = NSDate()
         var secondsFromGMT: Int { return NSTimeZone.local.secondsFromGMT() }
         var utcInterval = secondsFromGMT
@@ -451,16 +363,13 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         } else if utcInterval == 0 {
             utcInterval = 0
         }
-        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
         
+        let currentDateUtc = date.addingTimeInterval(TimeInterval(utcInterval))
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
         
-        //let date1 = dateFormatter.date(from: currentDateUtc)
         let date2 = dateFormatter.date(from: departureDateUTC)
-        
         let interval = currentDateUtc.timeIntervalSince(date2!)
-        
         let secondsSinceTakeoff = abs(Int(interval))
         
         return secondsSinceTakeoff

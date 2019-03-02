@@ -16,6 +16,7 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var arrivalGateLabel: UILabel!
     @IBOutlet weak var arrivalTerminalLabel: UILabel!
     @IBOutlet weak var arrivalBaggageLabel: UILabel!
+    @IBOutlet var distance: UILabel!
     @IBOutlet weak var months: UILabel!
     @IBOutlet weak var countdownView: UIView!
     @IBOutlet weak var slider: UISlider!
@@ -45,14 +46,22 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var minsLabel: UILabel!
     var tapShareAction: ((UITableViewCell) -> Void)?
     let gradientLayer = CAGradientLayer()
+    var timer = Timer()
     
     
     @IBAction func shareFlight(_ sender: Any) {
+        
         tapShareAction?(self)
+        
     }
     
     
-    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        timer.invalidate()
+        
+    }
     
 
     override func awakeFromNib() {
@@ -65,24 +74,22 @@ class TableViewCell: UITableViewCell {
 
         DispatchQueue.main.async {
             
+            // Configure the view for the selected state
+            self.gradientLayer.frame = self.background.frame
          
-         // Configure the view for the selected state
-        self.gradientLayer.frame = self.background.frame
+            // 3
+            let color1 = UIColor.white.cgColor as CGColor
+            let color2 = UIColor(white: 0.3, alpha: 0.1).cgColor as CGColor
+            self.gradientLayer.colors = [color1, color2]
          
-         // 3
-         let color1 = UIColor.white.cgColor as CGColor
-         let color2 = UIColor(white: 1.0, alpha: 0.1).cgColor as CGColor
-         self.gradientLayer.colors = [color1, color2]
+            // 4
+            self.gradientLayer.locations = [0.0, 0.35]
          
-         // 4
-         //self.gradientLayer.locations = [0.4, 0.8]
-            //self.gradientLayer.locations = [0.2, 1.0]
-            self.gradientLayer.locations = [0.0, 0.6]
-         
-         // 5
-        self.background.layer.addSublayer(self.gradientLayer)
+            // 5
+            self.background.layer.addSublayer(self.gradientLayer)
          
          }
+        
     }
 
 }

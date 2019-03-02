@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="DepartureInfo" customModule="TripKey" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="100" height="30"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C25" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G2e-kA-bop" userLabel="gateNumber">
+                    <rect key="frame" x="13" y="4" width="34" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="But-H2-IbM"/>
+                        <constraint firstAttribute="width" constant="34" id="upr-rc-YQV"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gate" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7Fs-v6-q8i">
+                    <rect key="frame" x="21.5" y="21" width="17" height="9.5"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="8"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Term" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJl-hD-Uw2">
+                    <rect key="frame" x="63" y="21" width="17" height="9"/>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="8"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C25" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x51-6G-lnC" userLabel="terminalNumber">
+                    <rect key="frame" x="55" y="4" width="33" height="17"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="17" id="8eW-vz-l5y"/>
+                        <constraint firstAttribute="width" constant="33" id="arZ-cx-q14"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="x51-6G-lnC" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="4" id="6RO-8U-3LS"/>
+                <constraint firstItem="7Fs-v6-q8i" firstAttribute="centerX" secondItem="G2e-kA-bop" secondAttribute="centerX" id="Heh-kP-xoH"/>
+                <constraint firstItem="G2e-kA-bop" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="4" id="O5F-2o-leO"/>
+                <constraint firstItem="sJl-hD-Uw2" firstAttribute="top" secondItem="x51-6G-lnC" secondAttribute="bottom" id="Q6z-UT-PXS"/>
+                <constraint firstItem="x51-6G-lnC" firstAttribute="centerY" secondItem="G2e-kA-bop" secondAttribute="centerY" id="bzM-WG-uQs"/>
+                <constraint firstItem="x51-6G-lnC" firstAttribute="leading" secondItem="G2e-kA-bop" secondAttribute="trailing" constant="8" id="eJt-v6-oax"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="x51-6G-lnC" secondAttribute="trailing" constant="12" id="k9l-aV-UXw"/>
+                <constraint firstItem="7Fs-v6-q8i" firstAttribute="top" secondItem="G2e-kA-bop" secondAttribute="bottom" id="t4k-gc-pgy"/>
+                <constraint firstItem="G2e-kA-bop" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="13" id="wHu-QC-eqm"/>
+                <constraint firstItem="sJl-hD-Uw2" firstAttribute="centerX" secondItem="x51-6G-lnC" secondAttribute="centerX" id="xVM-YQ-qgh"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="departureGate" destination="G2e-kA-bop" id="HG6-sF-N76"/>
+                <outlet property="departureTerminal" destination="x51-6G-lnC" id="krm-5X-W8u"/>
+                <outlet property="descriptor" destination="7Fs-v6-q8i" id="lso-7s-InQ"/>
+            </connections>
+            <point key="canvasLocation" x="-27.199999999999999" y="-118.74062968515743"/>
+        </view>
+    </objects>
+</document>

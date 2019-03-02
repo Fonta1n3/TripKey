@@ -31,6 +31,7 @@
 		D069FBB5220033F600864659 /* trackFlight.png in Resources */ = {isa = PBXBuildFile; fileRef = D069FBB4220033F600864659 /* trackFlight.png */; };
 		D069FBBB22013D6C00864659 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D069FBBA22013D6C00864659 /* Helpers.swift */; };
 		D073DC51222675A90091D795 /* whiteCheck.png in Resources */ = {isa = PBXBuildFile; fileRef = D073DC50222675A90091D795 /* whiteCheck.png */; };
+		D073DC532227CC580091D795 /* myLocation.png in Resources */ = {isa = PBXBuildFile; fileRef = D073DC522227CC580091D795 /* myLocation.png */; };
 		D0756A63222266C1004EFD6E /* logoSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = D0756A62222266C1004EFD6E /* logoSmall.png */; };
 		D075D8431F68CD1C004831B0 /* delete-512.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8421F68CD1C004831B0 /* delete-512.png */; };
 		D075D8451F68D38B004831B0 /* whitePhone.png in Resources */ = {isa = PBXBuildFile; fileRef = D075D8441F68D38B004831B0 /* whitePhone.png */; };
@@ -38,6 +39,10 @@
 		D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */; };
 		D097603B1E141C0A0096D6F8 /* SeatGuruViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */; };
 		D098EFB8220728A6008A8E27 /* icons8-male-user-filled-50.png in Resources */ = {isa = PBXBuildFile; fileRef = D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */; };
+		D099B1B82228F7D8008CDF9A /* DepartureInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D099B1B72228F7D8008CDF9A /* DepartureInfo.swift */; };
+		D099B1BA2228F804008CDF9A /* DepartureInfo.xib in Resources */ = {isa = PBXBuildFile; fileRef = D099B1B92228F804008CDF9A /* DepartureInfo.xib */; };
+		D099B1BD2229551E008CDF9A /* TopLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D099B1BC2229551E008CDF9A /* TopLabelView.swift */; };
+		D099B1BF222960A3008CDF9A /* TopView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D099B1BE222960A3008CDF9A /* TopView.xib */; };
 		D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */ = {isa = PBXBuildFile; fileRef = D099B8A41F6CA9F40047EEE5 /* directions.png */; };
 		D09FE4561D8A787D00D36EBF /* FlightDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */; };
 		D0A1328422252A6200DBA953 /* CountDown.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0A1328322252A6200DBA953 /* CountDown.swift */; };
@@ -121,6 +126,7 @@
 		D069FBB4220033F600864659 /* trackFlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trackFlight.png; sourceTree = "<group>"; };
 		D069FBBA22013D6C00864659 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = /Users/peter/Documents/TripKey/TripKey2/Helpers.swift; sourceTree = "<absolute>"; };
 		D073DC50222675A90091D795 /* whiteCheck.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whiteCheck.png; sourceTree = "<group>"; };
+		D073DC522227CC580091D795 /* myLocation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = myLocation.png; sourceTree = "<group>"; };
 		D0756A62222266C1004EFD6E /* logoSmall.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logoSmall.png; sourceTree = "<group>"; };
 		D075D8421F68CD1C004831B0 /* delete-512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "delete-512.png"; sourceTree = "<group>"; };
 		D075D8441F68D38B004831B0 /* whitePhone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = whitePhone.png; sourceTree = "<group>"; };
@@ -128,6 +134,10 @@
 		D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeatGuruViewController.swift; sourceTree = "<group>"; };
 		D098EFB7220728A5008A8E27 /* icons8-male-user-filled-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icons8-male-user-filled-50.png"; sourceTree = "<group>"; };
+		D099B1B72228F7D8008CDF9A /* DepartureInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepartureInfo.swift; sourceTree = "<group>"; };
+		D099B1B92228F804008CDF9A /* DepartureInfo.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DepartureInfo.xib; sourceTree = "<group>"; };
+		D099B1BC2229551E008CDF9A /* TopLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopLabelView.swift; sourceTree = "<group>"; };
+		D099B1BE222960A3008CDF9A /* TopView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopView.xib; sourceTree = "<group>"; };
 		D099B8A41F6CA9F40047EEE5 /* directions.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = directions.png; sourceTree = "<group>"; };
 		D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FlightDetailsViewController.swift; path = TripKey2/FlightDetailsViewController.swift; sourceTree = "<group>"; };
 		D0A1328322252A6200DBA953 /* CountDown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountDown.swift; sourceTree = "<group>"; };
@@ -238,6 +248,10 @@
 		D01EE9B41D692B780048D6CE /* TripKey2 */ = {
 			isa = PBXGroup;
 			children = (
+				D099B1BE222960A3008CDF9A /* TopView.xib */,
+				D099B1BC2229551E008CDF9A /* TopLabelView.swift */,
+				D099B1B72228F7D8008CDF9A /* DepartureInfo.swift */,
+				D099B1B92228F804008CDF9A /* DepartureInfo.xib */,
 				D0A1328322252A6200DBA953 /* CountDown.swift */,
 				D0A1328522252A9800DBA953 /* CountDownView.xib */,
 				D0A47C1A222277BE00CC03B8 /* watchShot.swift */,
@@ -287,6 +301,7 @@
 				D0A1328B2225776700DBA953 /* menu.png */,
 				D0A1328922256A3A00DBA953 /* qr.png */,
 				D025F58A2203FB38007D6D3B /* takeOffWestToEastImage.png */,
+				D073DC522227CC580091D795 /* myLocation.png */,
 				D0A132872225694D00DBA953 /* share.png */,
 				D025F58C2203FC6E007D6D3B /* takeOffEastToWestImage.png */,
 				D025F58F2203FEFC007D6D3B /* landingEastToWest.png */,
@@ -448,6 +463,7 @@
 				D0A1328C2225776800DBA953 /* menu.png in Resources */,
 				D025F5892203F45E007D6D3B /* newTakeOffToWest.png in Resources */,
 				D069FBB5220033F600864659 /* trackFlight.png in Resources */,
+				D099B1BA2228F804008CDF9A /* DepartureInfo.xib in Resources */,
 				D00BBF7F1D73C05500057B58 /* Podfile in Resources */,
 				D025F59522040324007D6D3B /* airplaneSliderImage.png in Resources */,
 				D025F5912203FEFC007D6D3B /* landingEastToWest.png in Resources */,
@@ -458,6 +474,7 @@
 				D075D8431F68CD1C004831B0 /* delete-512.png in Resources */,
 				D08C49C41EF2AA1C009A9B7A /* Launch Screen.storyboard in Resources */,
 				D0756A63222266C1004EFD6E /* logoSmall.png in Resources */,
+				D099B1BF222960A3008CDF9A /* TopView.xib in Resources */,
 				D061846B2205688100336A20 /* icons8-add-user-male-filled-50.png in Resources */,
 				D0CACD4A1E16BA6C00FA4DA2 /* mostly_cloudy_25.png in Resources */,
 				D0A1328A22256A3A00DBA953 /* qr.png in Resources */,
@@ -475,6 +492,7 @@
 				D0CC85FA1F7FE44200B8E105 /* info.png in Resources */,
 				D025F5902203FEFC007D6D3B /* landingWestToEast.png in Resources */,
 				D0C49B3F1F19EEB700D47983 /* Localizable.strings in Resources */,
+				D073DC532227CC580091D795 /* myLocation.png in Resources */,
 				D05F11701ECD474A00BFA3F2 /* Main.storyboard in Resources */,
 				D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */,
 				D025F58B2203FB39007D6D3B /* takeOffWestToEastImage.png in Resources */,
@@ -573,6 +591,7 @@
 				D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */,
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
+				D099B1B82228F7D8008CDF9A /* DepartureInfo.swift in Sources */,
 				D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */,
 				D0A1328422252A6200DBA953 /* CountDown.swift in Sources */,
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
@@ -580,6 +599,7 @@
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,
 				D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */,
 				D0A47C1B222277BE00CC03B8 /* watchShot.swift in Sources */,
+				D099B1BD2229551E008CDF9A /* TopLabelView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,7 @@ import UserNotifications
 class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, UITabBarControllerDelegate {
     
     let checkmarkview = UIImageView()
+    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     let datePickerView = Bundle.main.loadNibNamed("Date Picker", owner: self, options: nil)?[0] as! DatePickerView
     let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     var activityLabel = UILabel()
@@ -265,7 +266,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
    
     @IBAction func addFlight(_ sender: AnyObject) {
         
-       /*if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
+       if self.flightCount.count >= 25 && self.nonConsumablePurchaseMade == false {
         
         DispatchQueue.main.async {
             
@@ -293,7 +294,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                 self.addDateView()
             }
             
-       } else if self.flightCount.count < 25 {*/
+       } else if self.flightCount.count < 25 {
         
             if airlineCode.text == "" {
                 pleaseEnterFlightNumber()
@@ -301,7 +302,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                 self.addDateView()
             }
         
-        //}
+        }
     }
     
     @objc func closeDate() {
@@ -543,6 +544,21 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                                     
                                     if scheduledFlightsArray.count > 0 {
                                         
+                                       DispatchQueue.main.async {
+                                            
+                                            self.blurView.frame = self.view.frame
+                                            self.blurView.alpha = 0
+                                            self.view.addSubview(self.blurView)
+                                            
+                                            UIView.animate(withDuration: 0.3, animations: {
+                                                
+                                                self.blurView.alpha = 1
+                                                
+                                            })
+                                            
+                                        }
+                                        
+                                        
                                         var airportDictionaries = [[String:Any]]()
                                         
                                         if let airportDicts = (((jsonFlightData)["appendix"] as? NSDictionary)?["airports"] as? NSArray) {
@@ -716,58 +732,45 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
                                                     
                                                     //insert check mark animation instead
                                                     //add blur background
-                                                    let blurView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
-                                                    blurView.frame = self.view.frame
-                                                    blurView.alpha = 0
-                                                    self.view.addSubview(blurView)
+                                                    self.successAnimation()
                                                     
-                                                    UIView.animate(withDuration: 0.3, animations: {
+                                                    let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+                                                    
+                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Add another", comment: ""), style: .default, handler: { (action) in
                                                         
-                                                        blurView.alpha = 1
-                                                        
-                                                    }, completion: { _ in
-                                                        
-                                                        self.successAnimation()
-                                                        
-                                                        let alert = UIAlertController(title: NSLocalizedString("Flight Added", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
-                                                        
-                                                        alert.addAction(UIAlertAction(title: NSLocalizedString("Add another", comment: ""), style: .default, handler: { (action) in
+                                                        UIView.animate(withDuration: 0.3, animations: {
                                                             
-                                                            UIView.animate(withDuration: 0.3, animations: {
-                                                                
-                                                                blurView.alpha = 0
-                                                                self.checkmarkview.alpha = 0
-                                                                
-                                                            }, completion: { _ in
-                                                                
-                                                                blurView.removeFromSuperview()
-                                                                self.checkmarkview.removeFromSuperview()
-                                                                
-                                                            })
+                                                            self.blurView.alpha = 0
+                                                            self.checkmarkview.alpha = 0
                                                             
-                                                        }))
+                                                        }, completion: { _ in
+                                                            
+                                                            self.blurView.removeFromSuperview()
+                                                            self.checkmarkview.removeFromSuperview()
+                                                            
+                                                        })
                                                         
-                                                        alert.addAction(UIAlertAction(title: NSLocalizedString("Done", comment: ""), style: .cancel, handler: { (action) in
-                                                            
-                                                            UIView.animate(withDuration: 0.3, animations: {
-                                                                
-                                                                blurView.alpha = 0
-                                                                self.checkmarkview.alpha = 0
-                                                                
-                                                            }, completion: { _ in
-                                                                
-                                                                blurView.removeFromSuperview()
-                                                                self.checkmarkview.removeFromSuperview()
-                                                                
-                                                            })
-                                                            
-                                                            self.tabBarController!.selectedIndex = 0
-                                                            
-                                                        }))
+                                                    }))
+                                                    
+                                                    alert.addAction(UIAlertAction(title: NSLocalizedString("Done", comment: ""), style: .cancel, handler: { (action) in
                                                         
-                                                        self.present(alert, animated: true, completion: nil)
+                                                        UIView.animate(withDuration: 0.3, animations: {
+                                                            
+                                                            self.blurView.alpha = 0
+                                                            self.checkmarkview.alpha = 0
+                                                            
+                                                        }, completion: { _ in
+                                                            
+                                                            self.blurView.removeFromSuperview()
+                                                            self.checkmarkview.removeFromSuperview()
+                                                            
+                                                        })
                                                         
-                                                    })
+                                                        self.tabBarController!.selectedIndex = 0
+                                                        
+                                                    }))
+                                                    
+                                                    self.present(alert, animated: true, completion: nil)
                                                     
                                                 }))
                                                 
@@ -849,6 +852,7 @@ class FlightDetailsViewController: UIViewController, UITextFieldDelegate, SKProd
         checkmarkview.frame = CGRect(x: self.view.center.x - 95, y: (self.view.center.y - 95) - (self.view.frame.height / 5), width: 190, height: 190)
         checkmarkview.image = UIImage(named: "whiteCheck.png")
         checkmarkview.alpha = 0
+        addShadow(view: checkmarkview)
         self.view.addSubview(checkmarkview)
         
         checkmarkview.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)

@@ -58,7 +58,7 @@
 	<key>NSLocationUsageDescription</key>
 	<string>Because we want your location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>So that we can show you your location on the map, show places near you and give you directions to places.</string>
+	<string>So that we can show you your location on the map, and give you directions to the airport.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>So we can save your userid as a QR code to your photos, to allow you to easily share it with friends.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
