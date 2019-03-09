@@ -9,8 +9,9 @@
 import Foundation
 
 
-struct FlightStruct: CustomStringConvertible {
+public struct FlightStruct: CustomStringConvertible {
     
+    let lastUpdated:String
     let flightNumber:String
     let publishedDepartureUtc:String
     let airlineCode:String
@@ -74,9 +75,10 @@ struct FlightStruct: CustomStringConvertible {
         self.publishedArrival = dictionary["publishedArrival"] as? String ?? ""
         self.publishedDeparture = dictionary["publishedDeparture"] as? String ?? ""
         self.urlArrivalDate = dictionary["urlArrivalDate"] as? String ?? ""
+        self.lastUpdated = dictionary["lastUpdated"] as? String ?? ""
     }
     
-    var description: String {
+    public var description: String {
         return ""
     }
     

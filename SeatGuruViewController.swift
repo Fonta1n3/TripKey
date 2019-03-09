@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MapKit
 
 class SeatGuruViewController: UIViewController {
     
@@ -19,16 +18,20 @@ class SeatGuruViewController: UIViewController {
     @IBOutlet var webView: UIWebView!
     
     @IBAction func back(_ sender: Any) {
+        
         dismiss(animated: true, completion: nil)
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserDefaults.standard.set(false, forKey: "userSwipedBack")
+        
         getSeatGuru()
+        
     }
 
     func getSeatGuru() {
+        
         let flight = FlightStruct(dictionary: selectedFlight)
         carrierCode = flight.airlineCode
         flightNumber = flight.flightNumber
@@ -39,9 +42,11 @@ class SeatGuruViewController: UIViewController {
         let url = URL(string: "https://www.google.com/flights/#search;f=" + departureAirportCode + ";t=" + arrivalAirportCode + ";d=" + departureDate + ";r=;tt=o;sel=" + departureAirportCode + arrivalAirportCode + "0" + flightNumber)
         let request = NSURLRequest(url: url!)
         webView.loadRequest(request as URLRequest)
+        
     }
     
     func formatDate(date: String) -> String {
+        
         let datearray = date.components(separatedBy: "T")
         let dateOnly = datearray[0]
         let dateComponents = dateOnly.components(separatedBy: "-")
@@ -50,5 +55,7 @@ class SeatGuruViewController: UIViewController {
         let day = dateComponents[2]
         let departureDateURL = "\(year)-\(month)-\(day)"
         return departureDateURL
+        
     }
+    
 }

@@ -49,10 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.initialize(with: parseConfiguration)
         GMSServices.provideAPIKey("AIzaSyCL5ZBnRQyLflgDj5uSvG-x35oEJTsphkw")
         
-        //let action = UNNotificationAction(identifier: "updateStatuses", title: "Get Directions to Airport", options: [])
-        //let category = UNNotificationCategory(identifier: "statusUpdates", actions: [action], intentIdentifiers: [], options: [])
-        //UNUserNotificationCenter.current().setNotificationCategories([category])
-        
         let defaultACL = PFACL();
         defaultACL.hasPublicReadAccess = true
         defaultACL.hasPublicWriteAccess = true
@@ -196,19 +192,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let request = UNNotificationRequest(identifier: identifier, content: notification, trigger: notificationTrigger)
             
-            UNUserNotificationCenter.current().add(request, withCompletionHandler: { (error) in
-                
-                if error != nil {
-                    
-                    print("error = \(String(describing: error))")
-                    
-                } else {
-                    
-                   print("scheduled 48 hr notification = \(request.identifier)")
-                }
-            })
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             
-            
+            print("scheduled 48 hr notification = \(request.identifier)")
             
         }
         
@@ -510,7 +496,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let departureDateUtc = departureDateTime.addingTimeInterval((departureUtcInterval + Double(secondsFromGMT)))
         
         let currentDateUtc = Date()
-        print("currentDateUtc = \(currentDateUtc)")
         let calendar = Calendar(identifier: .gregorian)
         let triggerDate = departureDateUtc
         

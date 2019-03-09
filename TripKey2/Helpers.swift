@@ -546,16 +546,72 @@ public func getFollowedUsers() -> [[String:String]] {
     
 }
 
-public func saveFlight(viewController: UIViewController, departureAirport: String, departureLat: Double, departureLon: Double, arrivalLat: Double, arrivalLon: Double, airlineCode: String, arrivalAirportCode: String, arrivalCity: String, arrivalDate: String, arrivalGate: String, arrivalTerminal: String, arrivalUtcOffset: Double, baggageClaim: String, departureCity: String, departureGate: String, departureTerminal: String, departureTime: String, departureUtcOffset: Double, flightDuration: String, flightNumber: String, flightStatus: String, primaryCarrier: String, flightEquipment: String, identifier: String, phoneNumber: String, publishedDepartureUtc: String, urlArrivalDate: String, publishedDeparture: String, publishedArrival: String) -> Bool {
+public func saveFlight(viewController: UIViewController, flight: FlightStruct/*departureAirport: String, departureLat: Double, departureLon: Double, arrivalLat: Double, arrivalLon: Double, airlineCode: String, arrivalAirportCode: String, arrivalCity: String, arrivalDate: String, arrivalGate: String, arrivalTerminal: String, arrivalUtcOffset: Double, baggageClaim: String, departureCity: String, departureGate: String, departureTerminal: String, departureTime: String, departureUtcOffset: Double, flightDuration: String, flightNumber: String, flightStatus: String, primaryCarrier: String, flightEquipment: String, identifier: String, phoneNumber: String, publishedDepartureUtc: String, urlArrivalDate: String, publishedDeparture: String, publishedArrival: String*/) -> Bool {
     
     print("saveFlight")
     
     var success = Bool()
     var alreadySaved = false
  
-    let keys = ["departureAirport", "departureLat", "departureLon", "arrivalLat", "arrivalLon", "airlineCode", "arrivalAirportCode", "arrivalCity", "arrivalDate", "arrivalGate", "arrivalTerminal", "arrivalUtcOffset", "baggageClaim", "departureCity", "departureGate", "departureTerminal", "departureTime", "departureUtcOffset", "flightDuration", "flightNumber", "flightStatus", "primaryCarrier", "flightEquipment", "identifier", "phoneNumber", "publishedDepartureUtc", "urlArrivalDate", "publishedDeparture", "publishedArrival"]
+    let keys = ["departureAirport",
+                "departureLat",
+                "departureLon",
+                "arrivalLat",
+                "arrivalLon",
+                "airlineCode",
+                "arrivalAirportCode",
+                "arrivalCity",
+                "arrivalDate",
+                "arrivalGate",
+                "arrivalTerminal",
+                "arrivalUtcOffset",
+                "baggageClaim",
+                "departureCity",
+                "departureGate",
+                "departureTerminal",
+                "departureTime",
+                "departureUtcOffset",
+                "flightDuration",
+                "flightNumber",
+                "flightStatus",
+                "primaryCarrier",
+                "flightEquipment",
+                "identifier",
+                "phoneNumber",
+                "publishedDepartureUtc",
+                "urlArrivalDate",
+                "publishedDeparture",
+                "publishedArrival"]
  
-    let values = [departureAirport, departureLat, departureLon, arrivalLat, arrivalLon, airlineCode, arrivalAirportCode, arrivalCity, arrivalDate, arrivalGate, arrivalTerminal, arrivalUtcOffset, baggageClaim, departureCity, departureGate, departureTerminal, departureTime, departureUtcOffset, flightDuration, flightNumber, flightStatus, primaryCarrier, flightEquipment, identifier, phoneNumber, publishedDepartureUtc, urlArrivalDate, publishedDeparture, publishedArrival] as [Any]
+    let values = [flight.departureAirport,
+                  flight.departureLat,
+                  flight.departureLon,
+                  flight.arrivalLat,
+                  flight.arrivalLon,
+                  flight.airlineCode,
+                  flight.arrivalAirportCode,
+                  flight.arrivalCity,
+                  flight.arrivalDate,
+                  flight.arrivalGate,
+                  flight.arrivalTerminal,
+                  flight.arrivalUtcOffset,
+                  flight.baggageClaim,
+                  flight.departureCity,
+                  flight.departureGate,
+                  flight.departureTerminal,
+                  flight.departureDate,
+                  flight.departureUtcOffset,
+                  flight.flightDuration,
+                  flight.flightNumber,
+                  flight.flightStatus,
+                  flight.primaryCarrier,
+                  flight.airplaneType,
+                  flight.identifier,
+                  flight.phoneNumber,
+                  flight.publishedDepartureUtc,
+                  flight.urlArrivalDate,
+                  flight.publishedDeparture,
+                  flight.publishedArrival] as [Any]
     
     var appDelegate = AppDelegate()
     

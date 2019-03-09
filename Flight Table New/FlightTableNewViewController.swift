@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Parse
 import GoogleMaps
 
 class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
@@ -171,11 +170,13 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             }
         }
         
-        if flightStatus == "Scheduled" {
+        switch flightStatus {
+            
+        case "Scheduled":
             
             DispatchQueue.main.async {
                 
-               if departureTimeDifference == "0min" {
+                if departureTimeDifference == "0min" {
                     
                     cell.landingOnTimeDelayed.text = NSLocalizedString("Departing on time", comment: "")
                     
@@ -187,10 +188,10 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                     
                     cell.landingOnTimeDelayed.text = "\(NSLocalizedString("Departing", comment: "")) \(departureTimeDifference) \(NSLocalizedString("early", comment: ""))"
                 }
-                    
+                
             }
             
-        } else if flightStatus == "Departed" || flightStatus == "Redirected" || flightStatus == "Diverted" {
+        case "Departed", "Redirected", "Diverted":
             
             DispatchQueue.main.async {
                 
@@ -219,7 +220,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 
             }
             
-        } else if flightStatus == "Landed" {
+        case "Landed":
             
             DispatchQueue.main.async {
                 
@@ -243,13 +244,17 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                 
             }
             
-        } else if flightStatus == "Cancelled" {
+        case "Cancelled":
             
             cell.status.text = NSLocalizedString("Cancelled", comment: "")
             cell.slider.maximumValue = 1.0
             cell.slider.minimumValue = 0.0
             cell.slider.value = cell.slider.minimumValue
             cell.countdownView.isHidden = true
+            
+        default:
+            
+            break
             
         }
         
@@ -278,7 +283,6 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         let arrivalCity = flight.arrivalCity
         let departureDate = convertDateTime(date: flight.departureDate)
         let flightNumber = flight.flightNumber
-        let airlineCode = flight.airlineCode
         
         let alert = UIAlertController(title: NSLocalizedString("Share Flight \(flightNumber) from \(departureCity) to \(arrivalCity), departing on \(departureDate) with:", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
         
@@ -286,33 +290,24 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             
             alert.addAction(UIAlertAction(title: "\(String(describing: user["username"]!))", style: .default, handler: { (action) in
                 
-                let sharedFlight = PFObject(className: "SharedFlight")
-                sharedFlight["shareToUsername"] = user["userid"]!
-                sharedFlight["shareFromUsername"] = PFUser.current()?.username
-                sharedFlight["departureDate"] = departureDate
-                sharedFlight["airlineCode"] = airlineCode
-                sharedFlight["flightNumber"] = flightNumber
-                sharedFlight["flightDictionary"] = self.flightArray[indexPath]
+                let shareFlight = ShareFlight.sharedInstance
                 
-                sharedFlight.saveInBackground(block: { (success, error) in
+                func success() {
                     
-                    if error != nil {
+                    if !shareFlight.errorBool {
                         
-                        let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                        
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                        
-                        self.present(alert, animated: true, completion: nil)
+                        displayAlert(viewController: self, title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user["username"]!))", message: "")
                         
                     } else {
                         
-                        let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user["username"]!))", message: nil, preferredStyle: UIAlertControllerStyle.alert)
+                        displayAlert(viewController: self, title: "\(NSLocalizedString("Error sharing flight with", comment: "")) \(String(describing: user["username"]!))", message: "")
                         
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                        
-                        self.present(alert, animated: true, completion: nil)
                     }
-                })
+                    
+                }
+                
+                shareFlight.shareFlight(flightToShare: self.flightArray[indexPath], toUserID: user["userid"]!, completion: success)
+                
             }))
         }
         

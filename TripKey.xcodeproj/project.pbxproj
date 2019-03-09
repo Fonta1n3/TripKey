@@ -13,6 +13,8 @@
 		D00BBF7F1D73C05500057B58 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = D00BBF7E1D73C05500057B58 /* Podfile */; };
 		D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */; };
 		D016EB801F078AEB00DEE5CD /* Date Picker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */; };
+		D01E95022230E8FF00BB0FF4 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01E95012230E8FF00BB0FF4 /* HTTPRequest.swift */; };
+		D01E95052231389200BB0FF4 /* ShareFlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01E95042231389200BB0FF4 /* ShareFlight.swift */; };
 		D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01EE9B51D692B780048D6CE /* AppDelegate.swift */; };
 		D01EE9B81D692B780048D6CE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01EE9B71D692B780048D6CE /* ViewController.swift */; };
 		D01EE9C01D692B780048D6CE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D01EE9BF1D692B780048D6CE /* Assets.xcassets */; };
@@ -72,8 +74,6 @@
 		D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0CE619B22100B6A006F5D75 /* FlightStruct.swift */; };
 		D0D114491F23018D0020D8C5 /* back arrow-big.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D114481F23018D0020D8C5 /* back arrow-big.png */; };
 		D0D1C28A21882B0800BF8089 /* backButton.png in Resources */ = {isa = PBXBuildFile; fileRef = D0D1C28921882B0800BF8089 /* backButton.png */; };
-		D0D526181E24917C004738DA /* Arrival Info Window.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0D526171E24917C004738DA /* Arrival Info Window.xib */; };
-		D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D526191E249210004738DA /* ArrivalInfoWindow.swift */; };
 		D0E760F5217F01EE00B6D31D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0E760F4217F01EE00B6D31D /* StoreKit.framework */; };
 		D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F42B621E41D1E800737461 /* NearMeViewController.swift */; };
 		D0F42DB21D7F6DAA0041CD82 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0F42DB11D7F6DAA0041CD82 /* CoreLocation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -101,6 +101,8 @@
 		D00BBF7E1D73C05500057B58 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Date Picker.xib"; sourceTree = "<group>"; };
+		D01E95012230E8FF00BB0FF4 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
+		D01E95042231389200BB0FF4 /* ShareFlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareFlight.swift; sourceTree = "<group>"; };
 		D01EE9B21D692B780048D6CE /* TripKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D01EE9B51D692B780048D6CE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D01EE9B71D692B780048D6CE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -169,8 +171,6 @@
 		D0CE619B22100B6A006F5D75 /* FlightStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightStruct.swift; sourceTree = "<group>"; };
 		D0D114481F23018D0020D8C5 /* back arrow-big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back arrow-big.png"; sourceTree = "<group>"; };
 		D0D1C28921882B0800BF8089 /* backButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backButton.png; sourceTree = "<group>"; };
-		D0D526171E24917C004738DA /* Arrival Info Window.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Arrival Info Window.xib"; sourceTree = "<group>"; };
-		D0D526191E249210004738DA /* ArrivalInfoWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrivalInfoWindow.swift; sourceTree = "<group>"; };
 		D0E760F3217F016F00B6D31D /* TripKey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TripKey.entitlements; sourceTree = "<group>"; };
 		D0E760F4217F01EE00B6D31D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		D0E84C8E1E15463000EA4C2F /* TripKey2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TripKey2.entitlements; sourceTree = "<group>"; };
@@ -224,12 +224,25 @@
 			name = Community;
 			sourceTree = "<group>";
 		};
+		D01E9503223126E600BB0FF4 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				D099B1BE222960A3008CDF9A /* TopView.xib */,
+				D099B1BC2229551E008CDF9A /* TopLabelView.swift */,
+				D099B1B72228F7D8008CDF9A /* DepartureInfo.swift */,
+				D099B1B92228F804008CDF9A /* DepartureInfo.xib */,
+				D0A1328322252A6200DBA953 /* CountDown.swift */,
+				D0A1328522252A9800DBA953 /* CountDownView.xib */,
+				D0F42B621E41D1E800737461 /* NearMeViewController.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		D01EE9A91D692B780048D6CE = {
 			isa = PBXGroup;
 			children = (
 				D0286D6621E27AF300954991 /* ReadMe.md */,
 				D0E760F3217F016F00B6D31D /* TripKey.entitlements */,
-				D0C49B411F19EEB700D47983 /* Localizable.strings */,
 				D01EE9B41D692B780048D6CE /* TripKey2 */,
 				D01EE9B31D692B780048D6CE /* Products */,
 				D0439E901D6A321200FD60FC /* Frameworks */,
@@ -248,18 +261,12 @@
 		D01EE9B41D692B780048D6CE /* TripKey2 */ = {
 			isa = PBXGroup;
 			children = (
-				D099B1BE222960A3008CDF9A /* TopView.xib */,
-				D099B1BC2229551E008CDF9A /* TopLabelView.swift */,
-				D099B1B72228F7D8008CDF9A /* DepartureInfo.swift */,
-				D099B1B92228F804008CDF9A /* DepartureInfo.xib */,
-				D0A1328322252A6200DBA953 /* CountDown.swift */,
-				D0A1328522252A9800DBA953 /* CountDownView.xib */,
-				D0A47C1A222277BE00CC03B8 /* watchShot.swift */,
+				D01E95042231389200BB0FF4 /* ShareFlight.swift */,
 				D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */,
-				D0F42B621E41D1E800737461 /* NearMeViewController.swift */,
 				D05F116F1ECD474A00BFA3F2 /* Main.storyboard */,
+				D01E9503223126E600BB0FF4 /* Home */,
 				D01E74081F66587D002C3E06 /* Community */,
-				D0E4E5051D7A975700BF321A /* Log In / Profile */,
+				D0E4E5051D7A975700BF321A /* Account Profile */,
 				D0A10F041D8AB6C200CE88BA /* Flights */,
 				D08337461D6E857000E4713F /* Picture Files */,
 				D0B9EB121DC12331000C837B /* Miscellaneous */,
@@ -335,10 +342,10 @@
 		D0A10F041D8AB6C200CE88BA /* Flights */ = {
 			isa = PBXGroup;
 			children = (
+				D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */,
+				D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */,
 				D001872E2199402500EEE21E /* Flight Table New */,
 				D0CE619B22100B6A006F5D75 /* FlightStruct.swift */,
-				D0D526191E249210004738DA /* ArrivalInfoWindow.swift */,
-				D0D526171E24917C004738DA /* Arrival Info Window.xib */,
 				D097603A1E141C0A0096D6F8 /* SeatGuruViewController.swift */,
 				D09FE4551D8A787D00D36EBF /* FlightDetailsViewController.swift */,
 			);
@@ -349,6 +356,9 @@
 		D0B9EB121DC12331000C837B /* Miscellaneous */ = {
 			isa = PBXGroup;
 			children = (
+				D0C49B411F19EEB700D47983 /* Localizable.strings */,
+				D0A47C1A222277BE00CC03B8 /* watchShot.swift */,
+				D01E95012230E8FF00BB0FF4 /* HTTPRequest.swift */,
 				D069FBBA22013D6C00864659 /* Helpers.swift */,
 				D08C49C31EF2AA1C009A9B7A /* Launch Screen.storyboard */,
 				D0E84C8E1E15463000EA4C2F /* TripKey2.entitlements */,
@@ -360,14 +370,12 @@
 			name = Miscellaneous;
 			sourceTree = "<group>";
 		};
-		D0E4E5051D7A975700BF321A /* Log In / Profile */ = {
+		D0E4E5051D7A975700BF321A /* Account Profile */ = {
 			isa = PBXGroup;
 			children = (
-				D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */,
-				D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */,
 				D01EE9B71D692B780048D6CE /* ViewController.swift */,
 			);
-			name = "Log In / Profile";
+			name = "Account Profile";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -484,7 +492,6 @@
 				D0CACD4C1E16BA6C00FA4DA2 /* snow_25.png in Resources */,
 				D099B8A51F6CA9F40047EEE5 /* directions.png in Resources */,
 				D075D8471F68D3FB004831B0 /* whiteCommunity.png in Resources */,
-				D0D526181E24917C004738DA /* Arrival Info Window.xib in Resources */,
 				D0CACD521E16FA1C00FA4DA2 /* haze_25.png in Resources */,
 				D0CACD471E16BA6C00FA4DA2 /* heavy_rain_25.png in Resources */,
 				D0B8D0621E2E1BBA0096613F /* Tripkey-logo-white.png in Resources */,
@@ -588,7 +595,6 @@
 				D0CE61962207FAA0006F5D75 /* Model.xcdatamodeld in Sources */,
 				D05CF0C92217D0ED001CE57A /* QRScannerViewController.swift in Sources */,
 				D01EE9B81D692B780048D6CE /* ViewController.swift in Sources */,
-				D0D5261A1E249210004738DA /* ArrivalInfoWindow.swift in Sources */,
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
 				D099B1B82228F7D8008CDF9A /* DepartureInfo.swift in Sources */,
@@ -598,6 +604,8 @@
 				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
 				D0F42B631E41D1E800737461 /* NearMeViewController.swift in Sources */,
 				D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */,
+				D01E95022230E8FF00BB0FF4 /* HTTPRequest.swift in Sources */,
+				D01E95052231389200BB0FF4 /* ShareFlight.swift in Sources */,
 				D0A47C1B222277BE00CC03B8 /* watchShot.swift in Sources */,
 				D099B1BD2229551E008CDF9A /* TopLabelView.swift in Sources */,
 			);

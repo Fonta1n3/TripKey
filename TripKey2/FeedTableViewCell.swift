@@ -12,7 +12,6 @@ class FeedTableViewCell: UITableViewCell {
     
     @IBOutlet var shareFlightLabel: UIButton!
     var tapShareFlightAction: ((UITableViewCell) -> Void)?
-    //@IBOutlet var postedImage: UIImageView!
     @IBOutlet var userName: UILabel!
     
     @IBAction func shareFlight(_ sender: Any) {
@@ -31,11 +30,6 @@ class FeedTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
-        //self.postedImage.clipsToBounds = true
-        //self.postedImage.layer.cornerRadius = self.postedImage.frame.size.width / 2
-        //shareFlightLabel.clipsToBounds = true
-        //shareFlightLabel.layer.cornerRadius = shareFlightLabel.frame.size.width / 2
-    }
+   }
 
 }

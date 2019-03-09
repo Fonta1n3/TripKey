@@ -25,6 +25,7 @@
         <attribute name="flightNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="flightStatus" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastUpdated" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="phoneNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="primaryCarrier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="publishedArrival" optional="YES" attributeType="String" syncable="YES"/>
@@ -37,7 +38,7 @@
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Flight" positionX="-54" positionY="0" width="128" height="495"/>
+        <element name="Flight" positionX="-54" positionY="0" width="128" height="510"/>
         <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="75"/>
     </elements>
 </model>

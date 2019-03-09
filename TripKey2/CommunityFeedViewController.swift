@@ -7,28 +7,19 @@
 //
 
 import UIKit
-import Parse
-import MapKit
 import CoreData
 
 class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     
     @IBOutlet weak var imageBackground: UIView!
-    var resultsArray = [String]()
     @IBOutlet var goToProfile: UIBarButtonItem!
-    let blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark)
-    let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
     @IBOutlet var addUserButton: UIBarButtonItem!
     @IBOutlet var myProfileButton: UILabel!
     @IBOutlet var addUsersButton: UILabel!
-    var activityIndicator:UIActivityIndicatorView!
     @IBOutlet var feedTable: UITableView!
     var refresher: UIRefreshControl!
     var users = [String: String]()
     var userNames = [String]()
-    var followedUsername:String!
-    let backButton = UIButton()
-    let addButton = UIButton()
     var flightArray = [[String:Any]]()
     
     @IBAction func goToUserInfo(_ sender: Any) {
@@ -41,7 +32,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         
     }
     
-    
     @IBAction func goToAddUser(_ sender: Any) {
         
         DispatchQueue.main.async {
@@ -51,40 +41,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         }
         
     }
-    
-    
-    
-    /*func addButtons() {
-        
-        DispatchQueue.main.async {
-            
-            /*self.backButton.removeFromSuperview()
-            self.backButton.frame = CGRect(x: 10, y: 30, width: 25, height: 25)
-            self.backButton.showsTouchWhenHighlighted = true
-            let image = UIImage(imageLiteralResourceName: "backButton.png")
-            self.backButton.setImage(image, for: .normal)
-            self.backButton.addTarget(self, action: #selector(self.goBack), for: .touchUpInside)
-            self.view.addSubview(self.backButton)*/
-            
-            self.addButton.removeFromSuperview()
-            self.addButton.frame = CGRect(x: self.view.frame.maxX - 40, y: 30, width: 30, height: 30)
-            self.addButton.showsTouchWhenHighlighted = true
-            let addImage = UIImage(imageLiteralResourceName: "icons8-add-user-male-filled-50.png")
-            self.addButton.setImage(addImage, for: .normal)
-            self.addButton.addTarget(self, action: #selector(self.add), for: .touchUpInside)
-            self.view.addSubview(self.addButton)
-            
-        }
-        
-    }*/
-    
-    /*@objc func goBack() {
-        
-        self.dismiss(animated: true, completion: nil)
-        
-    }*/
-    
-    
     
     func shareFlight(indexPath: Int) {
         
@@ -110,64 +66,37 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             
             alert.addAction(UIAlertAction(title: NSLocalizedString("\(flightNumber) \(departureCity) to \(arrivalCity), on \(departureDate)", comment: ""), style: .default, handler: { (action) in
                 
-                self.addActivityIndicatorCenter()
-                let myuserid = UserDefaults.standard.object(forKey: "userId") as! String
-                let query = PFQuery(className: "Posts")
-                query.whereKey("userid", equalTo: myuserid)
-                query.findObjectsInBackground(block: { (objects, error) in
-                    if let posts = objects {
-                        if posts.count > 0 {
-                            
-                            let sharedFlight = PFObject(className: "SharedFlight")
-                            sharedFlight["shareToUsername"] = userIdToShareWith
-                            sharedFlight["shareFromUsername"] = myuserid
-                            sharedFlight["flightDictionary"] = dict
-                            
-                            sharedFlight.saveInBackground(block: { (success, error) in
-                                
-                                if error != nil {
-                                    
-                                    DispatchQueue.main.async {
-                                        
-                                        self.activityIndicator.stopAnimating()
-                                        
-                                    }
-                                    
-                                    
-                                    let alert = UIAlertController(title: NSLocalizedString("Could not share flight", comment: ""), message: NSLocalizedString("Please try again later", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                                    
-                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in
-                                        
-                                    }))
-                                    
-                                    self.present(alert, animated: true, completion: nil)
-                                    
-                                } else {
-                                    
-                                    DispatchQueue.main.async {
-                                        
-                                        self.activityIndicator.stopAnimating()
-                                        
-                                    }
-                                    
-                                    let alert = UIAlertController(title: "\(NSLocalizedString("Flight shared to " , comment: ""))\(user)", message: nil, preferredStyle: UIAlertControllerStyle.alert)
-                                    
-                                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: { (action) in }))
-                                    
-                                    self.present(alert, animated: true, completion: nil)
-                                    
-                                }
-                            })
-                        }
+                let shareFlight = ShareFlight.sharedInstance
+                
+                func success() {
+                    
+                    if !shareFlight.errorBool {
+                        
+                        displayAlert(viewController: self,
+                                     title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user))", message: "")
+                        
+                    } else {
+                        
+                        displayAlert(viewController: self,
+                                     title: "\(NSLocalizedString("Error sharing flight with", comment: "")) \(String(describing: user))", message: "")
+                        
                     }
-                })
+                    
+                }
+                
+                shareFlight.shareFlight(flightToShare: dict, toUserID: userIdToShareWith, completion: success)
            }))
+            
         }
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) in
+            
             alert.dismiss(animated: true, completion: nil)
+            
         }))
+        
         self.present(alert, animated: true, completion: nil)
+        
     }
     
     func refresh() {
@@ -194,9 +123,6 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
         refresher.attributedTitle = NSAttributedString(string: NSLocalizedString("Pull to Refresh", comment: ""))
         refresher.addTarget(self, action: #selector(CommunityFeedViewController.refresh), for: UIControlEvents.valueChanged)
         feedTable.addSubview(refresher)
-        blurEffectView.alpha = 0
-        blurEffectView.frame = self.view.bounds
-        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
     }
     
@@ -239,17 +165,8 @@ class CommunityFeedViewController: UIViewController, UITableViewDelegate, UITabl
             deleteUserFromCoreData(viewController: self, username: self.userNames[indexPath.row])
             self.userNames.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            
         }
-    }
-    
-    func addActivityIndicatorCenter() {
-        
-        self.activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
-        view.addSubview(activityIndicator)
-        activityIndicator.startAnimating()
         
     }
     
