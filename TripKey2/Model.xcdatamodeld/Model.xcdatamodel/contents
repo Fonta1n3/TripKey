@@ -31,14 +31,16 @@
         <attribute name="publishedArrival" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="publishedDeparture" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="publishedDepartureUtc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sharedFrom" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="urlArrivalDate" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="FollowedUsers" representedClassName="FollowedUsers" syncable="YES" codeGenerationType="class">
+        <attribute name="profileImage" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
         <attribute name="userid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="username" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Flight" positionX="-54" positionY="0" width="128" height="510"/>
-        <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="Flight" positionX="-54" positionY="0" width="128" height="525"/>
+        <element name="FollowedUsers" positionX="-63" positionY="-18" width="128" height="90"/>
     </elements>
 </model>

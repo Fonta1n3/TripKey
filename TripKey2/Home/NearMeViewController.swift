@@ -14,6 +14,7 @@ import Parse
 import Foundation
 import WatchConnectivity
 import UserNotifications
+import SwiftKeychainWrapper
 
 class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationManagerDelegate, WCSessionDelegate, UITabBarControllerDelegate {
     
@@ -23,6 +24,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
     
+    let activityCenter = CenterActivityView()
     let menuButton = UIButton()
     let myLocationButton = UIButton()
     let cityLabel = UILabel()
@@ -45,13 +47,22 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var position:CLLocationCoordinate2D!
     var icon:UIImage!
     var overlay:GMSGroundOverlay!
-    let topLabelsView = Bundle.main.loadNibNamed("TopView", owner: self, options: nil)?[0] as! TopLabelView
-    let countDownView = Bundle.main.loadNibNamed("CountDownView", owner: self, options: nil)?[0] as! CountDown
-    let departureInfoView = Bundle.main.loadNibNamed("DepartureInfo", owner: self, options: nil)?[0] as! DepartureInfo
-    let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
-    let circleView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
-    var activityLabel = UILabel()
-    let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
+    
+    let topLabelsView = Bundle.main.loadNibNamed("TopView",
+                                                 owner: self,
+                                                 options: nil)?[0] as! TopLabelView
+    
+    let countDownView = Bundle.main.loadNibNamed("CountDownView",
+                                                 owner: self,
+                                                 options: nil)?[0] as! CountDown
+    
+    let departureInfoView = Bundle.main.loadNibNamed("DepartureInfo",
+                                                     owner: self,
+                                                     options: nil)?[0] as! DepartureInfo
+    
+    let circleView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.light))
+    let blurEffectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.light))
+    
     var departureMarkerArray:[GMSMarker] = []
     var arrivalMarkerArray:[GMSMarker] = []
     var routePolyline:GMSPolyline!
@@ -61,7 +72,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     var tappedMarker:GMSMarker!
     var bounds = GMSCoordinateBounds()
     var airportBounds = GMSCoordinateBounds()
-    var activityIndicator:UIActivityIndicatorView!
+    
     @IBOutlet weak var mapView: GMSMapView!
     var menuVisible = false
     
@@ -117,131 +128,134 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
     }
     
+    func isUserIDSavedToKeychain() -> Bool {
+        
+        var boolToRetrun = Bool()
+        
+        if (KeychainWrapper.standard.string(forKey: "userId")) != nil {
+            
+            boolToRetrun = true
+            
+        } else {
+            
+            boolToRetrun = false
+            
+        }
+        
+        return boolToRetrun
+    }
+    
     func firstTimeHere() {
         print("firstTimeHere")
         
         //Checks if User has used this version of the app before
         if UserDefaults.standard.object(forKey: "firstTime") == nil {
             
-            //delete followed users
-            UserDefaults.standard.removeObject(forKey: "followedUsernames")
-            let getusers = getFollowedUsers()
-            
-            for u in getusers {
+            func saveUserToParse(userId: String) {
                 
-                let username = u["username"]!
-                deleteUserFromCoreData(viewController: self, username: username)
+                UserDefaults.standard.set(true, forKey: "firstTime")
                 
-            }
-            
-            func randomString(length: Int) -> String {
-                
-                let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                return String((0...length-1).map{ _ in letters.randomElement()! })
-                
-            }
-            
-            let userId = randomString(length: 35)
-            UserDefaults.standard.set(userId, forKey: "userId")
-            UserDefaults.standard.set(true, forKey: "firstTime")
-            
-            if PFUser.current() != nil {
-                
-                //user already logged in
-                //update userid
-                let post = PFObject(className: "Posts")
-                post["userid"] = userId
-                post["username"] = PFUser.current()!.username!
-                
-                post.saveInBackground { (success, error) in
+                if PFUser.current() != nil {
                     
-                    if error != nil {
-                        
-                        print("error adding userid and username to posts")
-                        
-                    } else {
-                        
-                        print("User signed up with Parse")
-                        
-                    }
+                    print("user already logged in")
+                    //user already logged in
+                    //update userid
+                    let post = PFObject(className: "Posts")
+                    post["userid"] = userId
+                    post["username"] = PFUser.current()!.username!
                     
-                }
-                
-                //change username to user id to ensure backwards compatibility
-                PFUser.current()!.setObject(userId, forKey: "username")
-                
-                PFUser.current()!.saveInBackground { (success, error) in
-                    
-                    if error != nil {
+                    post.saveInBackground { (success, error) in
                         
-                        print("error = \(String(describing: error))")
-                        
-                    } else {
-                        
-                        print("succesfully changed username to the userid")
-                        
-                    }
-                    
-                }
-                
-            } else {
-                
-                //create account for new user
-                let temporaryUserName = randomString(length: 7)
-                let user = PFUser()
-                user.username = userId
-                user.password = userId
-                
-                user.signUpInBackground { (success, error) in
-                    
-                    if error != nil {
-                        
-                        print("error signing user up \(error as Any)")
-                        
-                    } else {
-                        
-                        let query = PFQuery(className: "Posts")
-                        query.whereKey("userid", equalTo: (PFUser.current()?.objectId!)!)
-                        
-                        query.findObjectsInBackground(block: { (objects, error) in
+                        if error != nil {
                             
-                            if let posts = objects {
+                            print("error adding userid and username to posts")
+                            
+                        } else {
+                            
+                            print("User signed up with Parse")
+                            
+                            //change username to user id to ensure backwards compatibility
+                            PFUser.current()!.setObject(userId, forKey: "username")
+                            
+                            PFUser.current()!.saveInBackground { (success, error) in
                                 
-                                for post in posts {
+                                if error != nil {
                                     
-                                    post.deleteInBackground(block: { (success, error) in
-                                        
-                                        if error != nil {
-                                            
-                                            print("post can not be deleted")
-                                            
-                                        } else {
-                                            
-                                            print("post deleted")
-                                            
-                                        }
-                                        
-                                    })
+                                    print("error = \(String(describing: error))")
+                                    
+                                } else {
+                                    
+                                    print("succesfully changed username to the userid")
                                     
                                 }
                                 
                             }
                             
-                        })
+                        }
                         
-                        let post = PFObject(className: "Posts")
-                        post["userid"] = userId
-                        post["username"] = temporaryUserName
+                    }
+                    
+                } else {
+                    
+                    //create account for new user
+                    print("create account for new user")
+                    let temporaryUserName = randomString(length: 7)
+                    let user = PFUser()
+                    user.username = userId
+                    user.password = userId
+                    
+                    user.signUpInBackground { (success, error) in
                         
-                        post.saveInBackground { (success, error) in
+                        if error != nil {
                             
-                            if error != nil {
+                            print("error signing user up \(error as Any)")
+                            
+                        } else {
+                            
+                            let query = PFQuery(className: "Posts")
+                            query.whereKey("userid", equalTo: (PFUser.current()?.objectId!)!)
+                            
+                            query.findObjectsInBackground(block: { (objects, error) in
                                 
-                                print("error adding userid and username to posts")
+                                if let posts = objects {
+                                    
+                                    for post in posts {
+                                        
+                                        post.deleteInBackground(block: { (success, error) in
+                                            
+                                            if error != nil {
+                                                
+                                                print("post can not be deleted")
+                                                
+                                            } else {
+                                                
+                                                print("post deleted")
+                                                
+                                            }
+                                            
+                                        })
+                                        
+                                    }
+                                    
+                                }
                                 
-                            } else {
+                            })
+                            
+                            let post = PFObject(className: "Posts")
+                            post["userid"] = userId
+                            post["username"] = temporaryUserName
+                            
+                            post.saveInBackground { (success, error) in
                                 
-                                print("User signed up with Parse")
+                                if error != nil {
+                                    
+                                    print("error adding userid and username to posts")
+                                    
+                                } else {
+                                    
+                                    print("User signed up with Parse")
+                                    
+                                }
                                 
                             }
                             
@@ -253,9 +267,59 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
             }
             
+            //delete followed users
+            UserDefaults.standard.removeObject(forKey: "followedUsernames")
+            let getusers = getFollowedUsers()
+            
+            for u in getusers {
+                
+                let userid = u["userid"]!
+                deleteUserFromCoreData(viewController: self, userid: userid as! String)
+                
+            }
+            
+            func randomString(length: Int) -> String {
+                
+                let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                return String((0...length-1).map{ _ in letters.randomElement()! })
+                
+            }
+            
+            if !isUserIDSavedToKeychain() {
+                
+                let userId = randomString(length: 35)
+                UserDefaults.standard.set(userId, forKey: "userId")
+                saveUserToParse(userId: userId)
+                
+            } else {
+                
+                if (KeychainWrapper.standard.string(forKey: "userId")) != nil {
+                    
+                    let userId = KeychainWrapper.standard.string(forKey: "userId")!
+                    UserDefaults.standard.set(userId, forKey: "userId")
+                    //saveUserToParse(userId: userId)
+                    
+                    print("userid = \(userId)")
+                    
+                    PFUser.logInWithUsername(inBackground: userId, password: userId) { (user, error) in
+                        
+                        if error != nil {
+                            
+                            print("error loggin in \(String(describing: error))")
+                            
+                        } else {
+                            
+                            print("succesfully logged user in from keychain")
+                        
+                        }
+                    }
+                }
+                
+            }
+            
         } else {
             
-            //get user ids first
+            //updates usernames in coredata
             let userArray = getFollowedUsers()
             
                 if userArray.count > 0 {
@@ -264,8 +328,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     
                     if let id = user["userid"] as? String {
                         
-                        let username = user["username"]!
-                        
+                        let username = user["username"] as! String
                         let query = PFQuery(className: "Posts")
                         query.whereKey("userid", equalTo: id)
                         
@@ -277,7 +340,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                     
                                     if username != posts[0]["username"] as! String {
                                         
-                                        //update in coredata
                                         let newusername  = posts[0]["username"] as! String
                                         let success = updateUserNameInCoreData(viewController: self,
                                                                                username: newusername,
@@ -314,26 +376,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         tabBarController!.delegate = self
         firstTimeHere()
         didTapMarker = false
-        self.activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0,
-                                                                       y: 0,
-                                                                       width: 50,
-                                                                       height: 50))
-        activityIndicator.center = self.view.center
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
-        view.addSubview(activityIndicator)
-        activityIndicator.isUserInteractionEnabled = true
-        mapView.settings.rotateGestures = false
-        mapView.settings.tiltGestures = false
-        mapView.isBuildingsEnabled = true
-        mapView.settings.compassButton = false
-        mapView.accessibilityElementsHidden = false
-        mapView.mapType = GMSMapViewType.hybrid
+        setMapSettings()
         isUsersFirstTime()
-           
-        if howManyTimesUsed.count % 10 == 0 {
-            self.askForReview()
-        }
+        askForReview()
+        convertUserIdtoKeychain()
         
         switch(CLLocationManager.authorizationStatus()) {
             
@@ -352,6 +398,49 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         default:
             
             break
+            
+        }
+        
+    }
+    
+    func convertUserIdtoKeychain() {
+        
+        let isUserIdSavedToKeychain = isUserIDSavedToKeychain()
+        
+        if !isUserIdSavedToKeychain {
+            
+            saveUserIdToKeychain()
+            
+        }
+        
+    }
+    
+    func setMapSettings() {
+        
+        mapView.settings.rotateGestures = false
+        mapView.settings.tiltGestures = false
+        mapView.isBuildingsEnabled = true
+        mapView.settings.compassButton = false
+        mapView.accessibilityElementsHidden = false
+        mapView.mapType = GMSMapViewType.hybrid
+        
+    }
+    
+    func saveUserIdToKeychain() {
+        
+        if let userid = UserDefaults.standard.object(forKey: "userId") as? String {
+            
+            let saveSuccessful = KeychainWrapper.standard.set(userid, forKey: "userId")
+            
+            if saveSuccessful {
+                
+                print("user id saved to keychain succesfully")
+                
+            } else {
+                
+                print("failed saving user id to keychain")
+                
+            }
             
         }
         
@@ -428,7 +517,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         showFlightOrUserLocation()
         getSharedFlights()
         
-        
         if flightArray.count > 0 {
             
             getFlightData(flightDictionary: flightArray[0], completion: self.resetFlightZeroViewdidappear)
@@ -439,7 +527,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
                 for i in 1 ... flightIndexMax {
                     
-                    parseLeg2Only(dictionary: flightArray[i], index: i)
+                    parseFlight(dictionary: flightArray[i], index: i)
                     
                 }
                 
@@ -453,11 +541,15 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     
    func askForReview() {
     
-        DispatchQueue.main.async {
+        if howManyTimesUsed.count % 10 == 0 {
             
-            if #available( iOS 10.3,*){
+            DispatchQueue.main.async {
                 
-                SKStoreReviewController.requestReview()
+                if #available( iOS 10.3,*){
+                    
+                    SKStoreReviewController.requestReview()
+                    
+                }
                 
             }
             
@@ -916,27 +1008,11 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         let zoom = Float(mapView.camera.zoom)
         self.iconZoom = zoom
         
-        //if zoom <= 8 {
+        DispatchQueue.main.async {
             
-           DispatchQueue.main.async {
+            self.updateLines()
             
-                self.updateLines()
-            
-            }
-            
-        /*} else if zoom > 8 {
-            
-            DispatchQueue.main.async {
-                
-                for polyline in self.routePolylineArray {
-                    
-                    polyline.map = nil
-                    
-                }
-                
-            }
-            
-        }*/
+        }
         
      }
     
@@ -1001,57 +1077,12 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
     }
     
-    func addActivityIndicatorCenter() {
+    func addActivityIndicatorCenter(description: String) {
         
         DispatchQueue.main.async {
             
-            self.activityLabel.frame = CGRect(x: 0,
-                                              y: 0,
-                                              width: 150,
-                                              height: 20)
-            
-            self.activityLabel.center = CGPoint(x: self.view.frame.width/2 ,
-                                                y: self.view.frame.height/1.815)
-            
-            self.activityLabel.font = UIFont(name: "HelveticaNeue-Light", size: 15.0)
-            self.activityLabel.textColor = UIColor.white
-            self.activityLabel.text = "Getting Flight Data"
-            self.activityLabel.textAlignment = .center
-            self.activityLabel.alpha = 0
-            
-            self.activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0,
-                                                                           y: 0,
-                                                                           width: 50,
-                                                                           height: 50))
-            self.activityIndicator.center = self.view.center
-            self.activityIndicator.hidesWhenStopped = true
-            self.activityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.whiteLarge
-            self.activityIndicator.isUserInteractionEnabled = true
-            self.activityIndicator.startAnimating()
-            self.activityIndicator.alpha = 0
-            
-            self.blurEffectViewActivity.frame = CGRect(x: 0,
-                                                       y: 0,
-                                                       width: 150,
-                                                       height: 120)
-            
-            self.blurEffectViewActivity.center = CGPoint(x: self.view.center.x,
-                                                         y: ((self.view.center.y) + 14))
-            
-            self.blurEffectViewActivity.alpha = 0
-            self.blurEffectViewActivity.layer.cornerRadius = 30
-            self.blurEffectViewActivity.clipsToBounds = true
-            self.view.addSubview(self.blurEffectViewActivity)
-            self.view.addSubview(self.activityLabel)
-            self.view.addSubview(self.activityIndicator)
-            
-            UIView.animate(withDuration: 0.5, animations: {
-                
-                self.blurEffectViewActivity.alpha = 1
-                self.activityIndicator.alpha = 1
-                self.activityLabel.alpha = 1
-                
-            })
+            self.activityCenter.activityDescription = description
+            self.activityCenter.add(viewController: self)
             
         }
         
@@ -1073,30 +1104,32 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
             }
             
-            let jsonFlightStatusData = MakeHttpRequest.sharedInstance.dictToReturn
-            
-            if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
+            if let jsonFlightStatusData = MakeHttpRequest.sharedInstance.dictToReturn as? NSDictionary {
                 
-                if flightStatusesArray.count == 0 {
+                if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
                     
-                    print("no status")
-                    
-                } else if flightStatusesArray.count > 0 {
-                    
-                    self.parseFlightStatus(jsonFlightStatusData: jsonFlightStatusData, id: id)
-                    
-                } else {
-                    
-                    if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
+                    if flightStatusesArray.count == 0 {
                         
-                        DispatchQueue.main.async {
+                        print("no status")
+                        
+                    } else if flightStatusesArray.count > 0 {
+                        
+                        self.parseFlightStatus(jsonFlightStatusData: jsonFlightStatusData, id: id)
+                        
+                    } else {
+                        
+                        if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
                             
-                            let errorTitle = NSLocalizedString("Error", comment: "")
-                            let errorMessage = NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: "")
+                            DispatchQueue.main.async {
+                                
+                                let errorTitle = NSLocalizedString("Error", comment: "")
+                                let errorMessage = NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: "")
+                                
+                                displayAlert(viewController: self,
+                                             title: errorTitle,
+                                             message: errorMessage)
+                            }
                             
-                            displayAlert(viewController: self,
-                                         title: errorTitle,
-                                         message: errorMessage)
                         }
                         
                     }
@@ -1109,19 +1142,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         let url = "flightstatus/rest/v2/json/flight/status/" + flightId
         MakeHttpRequest.sharedInstance.getRequest(api: url, completion: getDict)
-        
-    }
-    
-    func removeSpinner() {
-        
-        DispatchQueue.main.async {
-            
-            self.activityIndicator.stopAnimating()
-            self.blurEffectViewActivity.removeFromSuperview()
-            self.activityLabel.removeFromSuperview()
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            
-        }
         
     }
     
@@ -1430,7 +1450,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 })
             }))
             
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""), style: .cancel, handler: { (action) in }))
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: ""),
+                                          style: .cancel,
+                                          handler: { (action) in }))
             
             self.present(alert, animated: true, completion: nil)
             
@@ -1445,14 +1467,17 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         if followedUsers.count > 0 {
             
-            let alert = UIAlertController(title: NSLocalizedString("Share flight with", comment: ""), message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+            let title = NSLocalizedString("Share flight with", comment: "")
+            let alert = UIAlertController(title: title, message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
             
             for user in followedUsers {
                 
-                let username = user["username"]!
-                let userid = user["userid"]!
+                let username = user["username"] as! String
+                let userid = user["userid"] as! String
                 
-                alert.addAction(UIAlertAction(title: " \(username)", style: .default, handler: { (action) in
+                alert.addAction(UIAlertAction(title: username, style: .default, handler: { (action) in
+                                        
+                    self.addActivityIndicatorCenter(description: "Sharing Flight")
                     
                     let shareFlight = ShareFlight.sharedInstance
                     
@@ -1460,11 +1485,17 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                         if !shareFlight.errorBool {
                             
-                            displayAlert(viewController: self, title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user["username"]!))", message: "")
-                            
+                            self.activityCenter.remove()
+                            let successView = SuccessAlertView()
+                            successView.labelText = "Flight Shared to \(username)"
+                            successView.addSuccessView(viewController: self)
+                           
                         } else {
                             
-                            displayAlert(viewController: self, title: "\(NSLocalizedString("Error sharing flight with", comment: "")) \(String(describing: user["username"]!))", message: "")
+                            self.activityCenter.remove()
+                            let title = NSLocalizedString("Error", comment: "")
+                            let message = NSLocalizedString("We had an issue sharing your flight with", comment: "") + " " + username
+                            displayAlert(viewController: self, title: title, message: message)
                             
                         }
                         
@@ -1588,7 +1619,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         let wholenumberestimated = formatDateTimetoWhole(dateTime: estimatedTime)
         let difference = wholenumberestimated - wholenumberpublished
         
-        let timeDescription = getTimeDifference(publishedTime: publishedTime, actualTime: estimatedTime)
+        let timeDescription = getTimeDifference(publishedTime: publishedTime,
+                                                actualTime: estimatedTime)
         
         if difference > 10 {
             
@@ -1670,8 +1702,10 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         blurViewArray.removeAll()
         
         let currentFlight = FlightStruct(dictionary: flight)
+        
         let flightActive = didFlightAlreadyTakeoff(departureDate: currentFlight.departureDate,
                                                    utcOffset: currentFlight.departureUtcOffset)
+        
         let flightStatus = currentFlight.flightStatus
         
         var dateForCountDown = String()
@@ -1704,6 +1738,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     
                     let countDownLabels = countDown(departureDate: dateForCountDown,
                                                     departureUtcOffset: offsetForCountdown)
+                    
                     self.countDownView.months.text = "\(countDownLabels.months)"
                     self.countDownView.days.text = "\(countDownLabels.days)"
                     self.countDownView.hours.text = "\(countDownLabels.hours)"
@@ -1753,18 +1788,23 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         let status = currentFlight.flightStatus
         
+        let convertedArrival = convertDateTime(date: currentFlight.arrivalDate)
+        let convertedDeparture = convertDateTime(date: currentFlight.departureDate)
+        
         switch status {
             
         case "Departed":
             
-            topLabelsView.timeLabel.text = "Arriving \(convertDateTime(date: currentFlight.arrivalDate))"
+            topLabelsView.timeLabel.text = "Arriving \(convertedArrival)"
+            
             onTimeLabel.text = onTime(label: onTimeLabel,
                                       publishedTime: currentFlight.publishedArrival,
                                       estimatedTime: currentFlight.arrivalDate)
             
         case "Landed":
             
-            topLabelsView.timeLabel.text = "Landed \(convertDateTime(date: currentFlight.arrivalDate))"
+            topLabelsView.timeLabel.text = "Landed \(convertedArrival)"
+            
             onTimeLabel.text = onTime(label: onTimeLabel,
                                       publishedTime: currentFlight.publishedArrival,
                                       estimatedTime: currentFlight.arrivalDate)
@@ -1775,7 +1815,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             
         case "Diverted", "Redirected":
             
-            topLabelsView.timeLabel.text = "Arriving \(convertDateTime(date: currentFlight.arrivalDate))"
+            topLabelsView.timeLabel.text = "Arriving \(convertedArrival)"
+            
             onTimeLabel.text = onTime(label: onTimeLabel,
                                       publishedTime: currentFlight.publishedArrival,
                                       estimatedTime: currentFlight.arrivalDate)
@@ -1784,7 +1825,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             
         default:
             
-            topLabelsView.timeLabel.text = "Departing \(convertDateTime(date: currentFlight.departureDate))"
+            topLabelsView.timeLabel.text = "Departing \(convertedDeparture)"
+            
             onTimeLabel.text = onTime(label: onTimeLabel,
                                       publishedTime: currentFlight.publishedDeparture,
                                       estimatedTime: currentFlight.departureDate)
@@ -1804,17 +1846,47 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
              "Simulator iPhone XR",
              "Simulator iPhone XS Max":
             
-            statusLabelFrame = CGRect(x: 10, y: 75, width: 110, height: 32)
-            cframe = CGRect(x: self.mapView.frame.maxX - 180, y: 75, width: 170, height: 32)
-            onTimeLabelFrame = CGRect(x: view.frame.maxX - 120, y: 112, width: 110, height: 32)
-            topLabelsViewFrame = CGRect(x: 10, y: 38, width: view.frame.width - 20, height: 32)
+            statusLabelFrame = CGRect(x: 10,
+                                      y: 75,
+                                      width: 110,
+                                      height: 32)
+            
+            cframe = CGRect(x: self.mapView.frame.maxX - 180,
+                            y: 75,
+                            width: 170,
+                            height: 32)
+            
+            onTimeLabelFrame = CGRect(x: view.frame.maxX - 120,
+                                      y: 112,
+                                      width: 110,
+                                      height: 32)
+            
+            topLabelsViewFrame = CGRect(x: 10,
+                                        y: 38,
+                                        width: view.frame.width - 20,
+                                        height: 32)
             
         default:
             
-            statusLabelFrame = CGRect(x: 10, y: 55, width: 110, height: 32)
-            cframe = CGRect(x: self.mapView.frame.maxX - 180, y: 55, width: 170, height: 32)
-            onTimeLabelFrame = CGRect(x: view.frame.maxX - 120, y: 92, width: 110, height: 32)
-            topLabelsViewFrame = CGRect(x: 10, y: 18, width: view.frame.width - 20, height: 32)
+            statusLabelFrame = CGRect(x: 10,
+                                      y: 55,
+                                      width: 110,
+                                      height: 32)
+            
+            cframe = CGRect(x: self.mapView.frame.maxX - 180,
+                            y: 55,
+                            width: 170,
+                            height: 32)
+            
+            onTimeLabelFrame = CGRect(x: view.frame.maxX - 120,
+                                      y: 92,
+                                      width: 110,
+                                      height: 32)
+            
+            topLabelsViewFrame = CGRect(x: 10,
+                                        y: 18,
+                                        width: view.frame.width - 20,
+                                        height: 32)
             
         }
         
@@ -1952,9 +2024,16 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                     self.arrivalMarkerArray.append(self.arrivalMarker)
                         
                     self.routePolyline.map = self.mapView
-                    let styles = [GMSStrokeStyle.solidColor(.clear), GMSStrokeStyle.solidColor(.white)]
-                    let scale = 1.0 / self.mapView.projection.points(forMeters: 1, at: self.mapView.camera.target)
-                    let lengths: [Double] = [(Double(8.0 * scale)), (Double(5.0 * scale))]
+                    
+                    let styles = [GMSStrokeStyle.solidColor(.clear),
+                                  GMSStrokeStyle.solidColor(.white)]
+                    
+                    let scale = 1.0 / self.mapView.projection.points(forMeters: 1,
+                                                                     at: self.mapView.camera.target)
+                    
+                    let lengths: [Double] = [(Double(8.0 * scale)),
+                                             (Double(5.0 * scale))]
+                    
                     self.routePolyline.spans = GMSStyleSpans(self.routePolyline.path!,
                                                              styles,
                                                              lengths as [NSNumber],
@@ -1971,6 +2050,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         bounds = bounds.includingCoordinate(marker.position)
                         
                     }
+                    
                     for marker in self.arrivalMarkerArray {
                         
                         bounds = bounds.includingCoordinate(marker.position)
@@ -2003,10 +2083,20 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 DispatchQueue.main.async {
                     
                     polyLine.map = self.mapView
-                    let styles = [GMSStrokeStyle.solidColor(.clear), GMSStrokeStyle.solidColor(.white)]
-                    let scale = 1.0 / self.mapView.projection.points(forMeters: 1, at: self.mapView.camera.target)
-                    let lengths: [Double] = [(Double(8.0 * scale)), (Double(5 * scale))]
-                    polyLine.spans = GMSStyleSpans(polyLine.path!, styles, lengths as [NSNumber], GMSLengthKind.rhumb)
+                    
+                    let styles = [GMSStrokeStyle.solidColor(.clear),
+                                  GMSStrokeStyle.solidColor(.white)]
+                    
+                    let scale = 1.0 / self.mapView.projection.points(forMeters: 1,
+                                                                     at: self.mapView.camera.target)
+                    
+                    let lengths: [Double] = [(Double(8.0 * scale)),
+                                             (Double(5 * scale))]
+                    
+                    polyLine.spans = GMSStyleSpans(polyLine.path!,
+                                                   styles,
+                                                   lengths as [NSNumber],
+                                                   GMSLengthKind.rhumb)
                     
                 }
                 
@@ -2117,125 +2207,194 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     func parseFlightIDForTracking(flightId: String, index: Int) {
         print("parseFlightIDForTracking")
         
-        func getDict() {
-            print("getDict")
+        let userimage = UIImageView()
+        
+        for flight in self.flightArray {
             
-            let flightTrackDictionary = MakeHttpRequest.sharedInstance.dictToReturn["flightTrack"] as! NSDictionary
+            let str = FlightStruct(dictionary: flight)
             
-            print("flightTrackDictionary = \(flightTrackDictionary)")
-            
-            if let bearingCheck = flightTrackDictionary["bearing"] as? Double {
+            if str.flightId == flightId {
                 
-                self.bearing = bearingCheck
+                if str.sharedFrom != "" {
+                    
+                    let users = getFollowedUsers()
+                    
+                    for u in users {
+                        
+                        let userid = u["userid"] as! String
+                        
+                        if userid == str.sharedFrom {
+                            
+                            if let data = u["profileImage"] as? Data {
+                                
+                                userimage.image = UIImage(data: data)
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    
+                }
                 
             }
             
-            if let positionsCheck = flightTrackDictionary["positions"] as? NSArray {
+        }
+        
+        func getDict() {
+            print("getDict")
+            
+            if let flightTrackDictionary = MakeHttpRequest.sharedInstance.dictToReturn["flightTrack"] as? NSDictionary {
                 
-                if positionsCheck.count > 0 {
+                if let bearingCheck = flightTrackDictionary["bearing"] as? Double {
                     
-                    var altitude:Double!
-                    var latitude:Double!
-                    var longitude:Double!
-                    var speed:Double!
+                    self.bearing = bearingCheck
                     
-                    if let altitudeCheck = (positionsCheck[0] as? NSDictionary)?["altitudeFt"] as? Double {
-                        
-                        altitude = altitudeCheck
-                        
-                    }
+                }
+                
+                if let positionsCheck = flightTrackDictionary["positions"] as? NSArray {
                     
-                    if let latitudeCheck = (positionsCheck[0] as? NSDictionary)?["lat"] as? Double {
+                    if positionsCheck.count > 0 {
                         
-                        latitude = latitudeCheck
+                        var altitude:Double!
+                        var latitude:Double!
+                        var longitude:Double!
+                        var speed:Double!
                         
-                    }
-                    
-                    if let longitudeCheck = (positionsCheck[0] as? NSDictionary)?["lon"] as? Double {
+                        if let altitudeCheck = (positionsCheck[0] as? NSDictionary)?["altitudeFt"] as? Double {
+                            
+                            altitude = altitudeCheck
+                            
+                        }
                         
-                        longitude = longitudeCheck
+                        if let latitudeCheck = (positionsCheck[0] as? NSDictionary)?["lat"] as? Double {
+                            
+                            latitude = latitudeCheck
+                            
+                        }
                         
-                    }
-                    
-                    if let speedCheck = (positionsCheck[0] as? NSDictionary)?["speedMph"] as? Double {
+                        if let longitudeCheck = (positionsCheck[0] as? NSDictionary)?["lon"] as? Double {
+                            
+                            longitude = longitudeCheck
+                            
+                        }
                         
-                        speed = speedCheck
+                        if let speedCheck = (positionsCheck[0] as? NSDictionary)?["speedMph"] as? Double {
+                            
+                            speed = speedCheck
+                            
+                        }
                         
-                    }
-                    
-                    if altitude != nil && latitude != nil && longitude != nil && speed != nil {
+                        if altitude != nil && latitude != nil && longitude != nil && speed != nil {
+                            
+                            DispatchQueue.main.async {
+                                
+                                self.liveFlightMarker.map = nil
+                                self.position = CLLocationCoordinate2DMake(latitude!, longitude!)
+                                self.liveFlightMarker.position = self.position
+                                self.liveFlightMarker.appearAnimation = GMSMarkerAnimation.pop
+                                let liveFlightMarkerImageView = UIImageView()
+                                liveFlightMarkerImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
+                                liveFlightMarkerImageView.image = UIImage(named: "airplaneTrackerImage.png")
+                                self.liveFlightMarker.iconView = liveFlightMarkerImageView
+                                self.liveFlightMarker.rotation = self.bearing
+                                self.liveFlightMarker.isTappable = true
+                                self.liveFlightMarker.accessibilityLabel = "Airplane Location, \(index)"
+                                self.liveFlightMarker.map = self.mapView
+                                
+                                userimage.frame = CGRect(x: 0,
+                                                         y: 0,
+                                                         width: 60,
+                                                         height: 60)
+                                
+                                userimage.layer.cornerRadius = 30
+                                userimage.clipsToBounds = true
+                                let userMarker = GMSMarker()
+                                userMarker.iconView = userimage
+                                userMarker.position = self.position
+                                self.departureMarkerArray.append(userMarker)
+                                userMarker.appearAnimation = GMSMarkerAnimation.pop
+                                userMarker.groundAnchor = CGPoint(x: 1.5, y: 1.5)
+                                userMarker.map = self.mapView
+                                
+                            }
+                            
+                        }
+                        
+                        //get flight path
+                        let path = GMSMutablePath()
+                        let polylinePath = GMSMutablePath()
                         
                         DispatchQueue.main.async {
                             
-                            self.liveFlightMarker.map = nil
-                            self.position = CLLocationCoordinate2DMake(latitude!, longitude!)
-                            self.liveFlightMarker.position = self.position
-                            self.liveFlightMarker.appearAnimation = GMSMarkerAnimation.pop
-                            let liveFlightMarkerImageView = UIImageView()
-                            liveFlightMarkerImageView.frame = CGRect(x: 0, y: 0, width: 70, height: 70)
-                            liveFlightMarkerImageView.image = UIImage(named: "airplaneTrackerImage.png")
-                            self.liveFlightMarker.iconView = liveFlightMarkerImageView
-                            self.liveFlightMarker.rotation = self.bearing
-                            self.liveFlightMarker.isTappable = true
-                            self.liveFlightMarker.accessibilityLabel = "Airplane Location, \(index)"
-                            self.liveFlightMarker.map = self.mapView
+                            polylinePath.removeAllCoordinates()
+                            
+                            if self.routePolyline != nil {
+                                
+                                self.routePolyline.map = nil
+                                
+                            }
+                            
+                            for line in self.routePolylineArray {
+                                
+                                line.map = nil
+                                
+                            }
+                            
+                            self.routePolylineArray.removeAll()
                             
                         }
                         
-                    }
-                    
-                    //get flight path
-                    let path = GMSMutablePath()
-                    let polylinePath = GMSMutablePath()
-                    
-                    //remove current path
-                    DispatchQueue.main.async {
                         
-                        polylinePath.removeAllCoordinates()
                         
-                        if self.routePolyline != nil {
+                        for position in positionsCheck {
                             
-                            self.routePolyline.map = nil
+                            let dict = position as! NSDictionary
+                            let source = dict["source"] as! String
+                            
+                            let lat = dict["lat"] as! Double
+                            let lon = dict["lon"] as! Double
+                            let coordinates = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                            polylinePath.add(coordinates)
+                            path.add(coordinates)
+                            
+                            /*if source == "ADS-B" || source == "ASDI" {
+                                
+                                let lat = dict["lat"] as! Double
+                                let lon = dict["lon"] as! Double
+                                let coordinates = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+                                polylinePath.add(coordinates)
+                                path.add(coordinates)
+                             
+                            }*/
                             
                         }
                         
-                        for line in self.routePolylineArray {
+                        DispatchQueue.main.async {
                             
-                            line.map = nil
+                            self.routePolyline = GMSPolyline(path: path)
+                            self.routePolyline.accessibilityLabel = "routePolyline, \(index)"
+                            self.routePolyline.strokeWidth = 5.0
+                            self.routePolyline.geodesic = true
+                            self.routePolylineArray.append(self.routePolyline)
+                            
+                            self.routePolyline.map = self.mapView
+                            
+                            let styles = [GMSStrokeStyle.solidColor(.clear),
+                                          GMSStrokeStyle.solidColor(.white)]
+                            
+                            let scale = 1.0 / self.mapView.projection.points(forMeters: 1,
+                                                                             at: self.mapView.camera.target)
+                            
+                            let lengths: [Double] = [(Double(8.0 * scale)),
+                                                     (Double(5.0 * scale))]
+                            
+                            self.routePolyline.spans = GMSStyleSpans(self.routePolyline.path!,
+                                                                     styles,
+                                                                     lengths as [NSNumber],
+                                                                     GMSLengthKind.rhumb)
                             
                         }
-                        
-                        self.routePolylineArray.removeAll()
-                        
-                    }
-                        
-                    for position in positionsCheck {
-                        
-                        let dict = position as! NSDictionary
-                        let lat = dict["lat"] as! Double
-                        let lon = dict["lon"] as! Double
-                        let coordinates = CLLocationCoordinate2D(latitude: lat, longitude: lon)
-                        polylinePath.add(coordinates)
-                        path.add(coordinates)
-                        
-                    }
-                    
-                    DispatchQueue.main.async {
-                        
-                        self.routePolyline = GMSPolyline(path: path)
-                        self.routePolyline.accessibilityLabel = "routePolyline, \(index)"
-                        self.routePolyline.strokeWidth = 5.0
-                        self.routePolyline.geodesic = true
-                        self.routePolylineArray.append(self.routePolyline)
-                        
-                        self.routePolyline.map = self.mapView
-                        let styles = [GMSStrokeStyle.solidColor(.clear), GMSStrokeStyle.solidColor(.white)]
-                        let scale = 1.0 / self.mapView.projection.points(forMeters: 1, at: self.mapView.camera.target)
-                        let lengths: [Double] = [(Double(8.0 * scale)), (Double(5.0 * scale))]
-                        self.routePolyline.spans = GMSStyleSpans(self.routePolyline.path!,
-                                                                 styles,
-                                                                 lengths as [NSNumber],
-                                                                 GMSLengthKind.rhumb)
                         
                     }
                     
@@ -2246,6 +2405,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         }
         
         let url = "flightstatus/rest/v2/json/flight/track/\(flightId)"
+        MakeHttpRequest.sharedInstance.flightTrack = true
         MakeHttpRequest.sharedInstance.getRequest(api: url, completion: getDict)
         
     }
@@ -2371,7 +2531,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
                 DispatchQueue.main.async {
                     
-                    let countDownLabels = countDown(departureDate: dateForCountDown, departureUtcOffset: offsetForCountdown)
+                    let countDownLabels = countDown(departureDate: dateForCountDown,
+                                                    departureUtcOffset: offsetForCountdown)
+                    
                     self.countDownView.months.text = "\(countDownLabels.months)"
                     self.countDownView.days.text = "\(countDownLabels.days)"
                     self.countDownView.hours.text = "\(countDownLabels.hours)"
@@ -2392,15 +2554,33 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
         switch device {
             
-        case "Simulator iPhone X", "iPhone X", "Simulator iPhone XS", "Simulator iPhone XR", "Simulator iPhone XS Max":
+        case "Simulator iPhone X",
+             "iPhone X",
+             "Simulator iPhone XS",
+             "Simulator iPhone XR",
+             "Simulator iPhone XS Max":
             
-            cityLableFrame = CGRect(x: 10, y: 112, width: 190, height: 32)
-            departureInfoFrame = CGRect(x: view.frame.maxX - 110, y: 148, width: 100, height: 32)
+            cityLableFrame = CGRect(x: 10,
+                                    y: 112,
+                                    width: 190,
+                                    height: 32)
+            
+            departureInfoFrame = CGRect(x: view.frame.maxX - 110,
+                                        y: 148,
+                                        width: 100,
+                                        height: 32)
             
         default:
             
-            cityLableFrame = CGRect(x: 10, y: 92, width: 190, height: 32)
-            departureInfoFrame = CGRect(x: view.frame.maxX - 110, y: 129, width: 100, height: 32)
+            cityLableFrame = CGRect(x: 10,
+                                    y: 92,
+                                    width: 190,
+                                    height: 32)
+            
+            departureInfoFrame = CGRect(x: view.frame.maxX - 110,
+                                        y: 129,
+                                        width: 100,
+                                        height: 32)
             
         }
         
@@ -2419,6 +2599,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
             }
             
+            var sharedFromUserId = String()
             let sharedFlightquery = PFQuery(className: "SharedFlight")
             sharedFlightquery.whereKey("shareToUsername", equalTo: (PFUser.current()?.username)!)
             
@@ -2431,8 +2612,6 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         UIApplication.shared.isNetworkActivityIndicatorVisible = false
                         
                     }
-                    
-                    displayAlert(viewController: self, title: "Error", message: "We had an error trying to fetch shared flights in the background, please try again later.")
                     
                 } else {
                     
@@ -2450,8 +2629,9 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                 dispatchGroup.enter()
                                 let flightDictionary = flight["flightDictionary"]
                                 let dictionary = flightDictionary as! NSDictionary
+                                sharedFromUserId = flight["shareFromUsername"] as! String
                                 let query = PFQuery(className: "Posts")
-                                query.whereKey("userid", equalTo: flight["shareFromUsername"] as! String)
+                                query.whereKey("userid", equalTo: sharedFromUserId)
                                 
                                 query.findObjectsInBackground(block: { (objects, error) in
                                     
@@ -2480,23 +2660,139 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                             
                                         }
                                         
-                                        dispatchGroup.leave()
-                                        
                                     }
                                     
                                 })
                                 
                             }
                             
-                            dispatchGroup.notify(queue: .main) {
+                            var profilePic = UIImage()
+                            
+                            func getProfilePic(completion: @escaping () -> Void) {
                                 
+                                var imageToReturn = UIImage()
+                                let query = PFQuery(className: "Posts")
+                                query.whereKey("userid", equalTo: sharedFromUserId)
+                                query.findObjectsInBackground(block: { (objects, error) in
+                                    
+                                    if let posts = objects {
+                                        
+                                        if posts.count > 0 {
+                                            
+                                            let success = saveFollowedUserToCoreData(viewController: self, username: sharedFrom, userId: sharedFromUserId)
+                                            
+                                            if success {
+                                                
+                                                print("automatically followed \(sharedFrom)")
+                                                
+                                                if let imagedata = posts[0]["userProfile"] as? PFFileObject {
+                                                    
+                                                    if let photo = imagedata as? PFFileObject {
+                                                        photo.getDataInBackground(block: {
+                                                            PFDataResultBlock in
+                                                            if PFDataResultBlock.1 == nil {//PFDataResultBlock.1 is Error
+                                                                saveImageToCoreData(viewController: self, imageData: PFDataResultBlock.0!, userId: sharedFromUserId)
+                                                                
+                                                                profilePic = UIImage(data: PFDataResultBlock.0!)!
+                                                                completion()
+                                                                
+                                                            }
+                                                        })
+                                                        
+                                                    }
+                                                } else {
+                                                    
+                                                    let users = getFollowedUsers()
+                                                    
+                                                    for u in users {
+                                                        
+                                                        if u["userid"] as! String == sharedFromUserId {
+                                                            
+                                                            if let data = u["profileImage"] as? Data {
+                                                                
+                                                                profilePic = UIImage(data: data)!
+                                                                completion()
+                                                                
+                                                            } else {
+                                                                
+                                                                profilePic = UIImage(named: "icons8-male-user-filled-50.png")!
+                                                                completion()
+                                                                
+                                                            }
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                    
+                                                }
+                                                
+                                            } else {
+                                                
+                                                //already following just show pic
+                                                if let imagedata = posts[0]["userProfile"] as? PFFileObject {
+                                                    
+                                                    if let photo = imagedata as? PFFileObject {
+                                                        photo.getDataInBackground(block: {
+                                                            PFDataResultBlock in
+                                                            if PFDataResultBlock.1 == nil {//PFDataResultBlock.1 is Error
+                                                                
+                                                                profilePic = UIImage(data: PFDataResultBlock.0!)!
+                                                                completion()
+                                                                
+                                                            }
+                                                        })
+                                                        
+                                                    }
+                                                } else {
+                                                    
+                                                    let users = getFollowedUsers()
+                                                    
+                                                    for u in users {
+                                                        
+                                                        if u["userid"] as! String == sharedFromUserId {
+                                                            
+                                                            if let data = u["profileImage"] as? Data {
+                                                                
+                                                                profilePic = UIImage(data: data)!
+                                                                completion()
+                                                                
+                                                            } else {
+                                                                
+                                                                profilePic = UIImage(named: "icons8-male-user-filled-50.png")!
+                                                                completion()
+                                                                
+                                                            }
+                                                            
+                                                        }
+                                                        
+                                                    }
+                                                    
+                                                }
+                                                
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    
+                                })
+                                
+                            }
+                                
+                            func showAlert() {
+                                
+                                let sharedFlightAlert = FlightSharedAlertView()
                                 let unique = Array(Set(sharedFromArray))
                                 var string = (unique.description).replacingOccurrences(of: "[", with: "")
+                                string = string.replacingOccurrences(of: "\"", with: "")
                                 string = string.replacingOccurrences(of: "]", with: "")
                                 
-                                let alert = UIAlertController(title: "\(string) has shared \(sharedFlightArray.count) flights with you." , message: "Would you like to add them to TripKey?", preferredStyle: UIAlertControllerStyle.alert)
+                                sharedFlightAlert.nameLabelText = string
+                                sharedFlightAlert.labelText = "Shared \(sharedFlightArray.count) flights with you.\nWould you like to add them to TripKey?"
                                 
-                                alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { (action) in
+                                sharedFlightAlert.yesButtonAction = {
+                                    
+                                    var added = Bool()
                                     
                                     for sharedFlight in sharedFlightArray {
                                         
@@ -2505,7 +2801,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                         
                                         if success {
                                             
-                                            print("succesfully converted flight dict to coredata")
+                                            print("saved flight")
+                                            added = true
                                             
                                         } else {
                                             
@@ -2518,14 +2815,29 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                                     self.flightArray = getFlightArray()
                                     self.getAirportCoordinates(flight: self.flightArray[0], index: 0)
                                     
-                                }))
+                                    if added {
+                                        
+                                        let successView = SuccessAlertView()
+                                        successView.labelText = "Added \(sharedFlightArray.count) flights from \(string)!"
+                                        successView.addSuccessView(viewController: self)
+                                        
+                                    }
+                                    
+                                }
                                 
-                                alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: { (action) in }))
+                                sharedFlightAlert.noButtonAction = {
+                                    
+                                    sharedFlightAlert.removeSuccessView()
+                                    
+                                }
                                 
-                                self.present(alert, animated: true, completion: nil)
+                                sharedFlightAlert.profileImage = profilePic
+                                sharedFlightAlert.addSuccessView(viewController: self)
                                 
                             }
                             
+                            getProfilePic(completion: showAlert)
+                                
                         }
                         
                     }
@@ -2584,7 +2896,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
     func getFlightData(flightDictionary: [String:Any], completion: @escaping () -> Void) {
         print("getFlightData")
         
-        self.addActivityIndicatorCenter()
+        self.addActivityIndicatorCenter(description: "Updating Flight Data")
             
         let flight = FlightStruct(dictionary: flightDictionary)
         let departureDateTime = flight.publishedDepartureUtc
@@ -2602,47 +2914,49 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 func getDict() {
                     print("getDict")
                     
-                    let jsonFlightStatusData = MakeHttpRequest.sharedInstance.dictToReturn
-                    
-                    //check status
-                    if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
+                    if let jsonFlightStatusData = MakeHttpRequest.sharedInstance.dictToReturn as? NSDictionary {
                         
-                        if flightStatusesArray.count == 0 {
+                        //check status
+                        if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
                             
-                            self.removeSpinner()
-                            completion()
-                            
-                        } else if flightStatusesArray.count > 0 {
-                            
-                            parseFlightStatus(jsonFlightStatusData: jsonFlightStatusData, id: id)
-                            completion()
-                            self.removeSpinner()
-                            
-                        } else {
-                            
-                            if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
+                            if flightStatusesArray.count == 0 {
                                 
-                                DispatchQueue.main.async {
+                                self.activityCenter.remove()
+                                completion()
+                                
+                            } else if flightStatusesArray.count > 0 {
+                                
+                                parseFlightStatus(jsonFlightStatusData: jsonFlightStatusData, id: id)
+                                completion()
+                                self.activityCenter.remove()
+                                
+                            } else {
+                                
+                                if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
                                     
-                                    self.removeSpinner()
-                                    completion()
-                                    
-                                    displayAlert(viewController: self,
-                                                 title: NSLocalizedString("Error", comment: ""),
-                                                 message: NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: ""))
+                                    DispatchQueue.main.async {
+                                        
+                                        self.activityCenter.remove()
+                                        completion()
+                                        
+                                        displayAlert(viewController: self,
+                                                     title: NSLocalizedString("Error", comment: ""),
+                                                     message: NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: ""))
+                                        
+                                    }
                                     
                                 }
                                 
                             }
                             
-                        }
-                        
-                    } else {
-                        
-                        DispatchQueue.main.async {
+                        } else {
                             
-                            self.removeSpinner()
-                            completion()
+                            DispatchQueue.main.async {
+                                
+                                self.activityCenter.remove()
+                                completion()
+                                
+                            }
                             
                         }
                         
@@ -2659,7 +2973,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                 
                 DispatchQueue.main.async {
                     
-                    self.removeSpinner()
+                    self.activityCenter.remove()
                     completion()
                     
                 }
@@ -2671,7 +2985,7 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
             DispatchQueue.main.async {
                 
                 completion()
-                self.removeSpinner()
+                self.activityCenter.remove()
                 print("updated less then five minutes ago")
                 
             }
@@ -3044,8 +3358,8 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
         
     }
     
-    func parseLeg2Only(dictionary: [String:Any], index: Int) {
-        print("parseLeg2Only")
+    func parseFlight(dictionary: [String:Any], index: Int) {
+        print("parseFlight")
         
         DispatchQueue.main.async {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
@@ -3073,47 +3387,49 @@ class NearMeViewController: UIViewController, GMSMapViewDelegate, CLLocationMana
                         
                     }
                     
-                    let jsonFlightStatusData = MakeHttpRequest.sharedInstance.dictToReturn
-                    
-                    //check status
-                    if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
+                    if let jsonFlightStatusData = MakeHttpRequest.sharedInstance.dictToReturn as? NSDictionary {
                         
-                        if flightStatusesArray.count == 0 {
+                        //check status
+                        if let flightStatusesArray = jsonFlightStatusData["flightStatuses"] as? NSArray {
+                            
+                            if flightStatusesArray.count == 0 {
+                                
+                                DispatchQueue.main.async {
+                                    
+                                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                                    
+                                }
+                                
+                            } else if flightStatusesArray.count > 0 {
+                                
+                                self.parseFlightStatus(jsonFlightStatusData: jsonFlightStatusData, id: id)
+                                
+                            } else {
+                                
+                                if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
+                                    
+                                    DispatchQueue.main.async {
+                                        
+                                        UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                                        
+                                        let errorTitle = NSLocalizedString("Error", comment: "")
+                                        let errorMessage = NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: "")
+                                        
+                                        displayAlert(viewController: self, title: errorTitle, message: errorMessage)
+                                        
+                                    }
+                                    
+                                }
+                                
+                            }
+                            
+                        } else {
                             
                             DispatchQueue.main.async {
                                 
                                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                                 
                             }
-                            
-                        } else if flightStatusesArray.count > 0 {
-                            
-                            self.parseFlightStatus(jsonFlightStatusData: jsonFlightStatusData, id: id)
-                            
-                        } else {
-                            
-                            if (((jsonFlightStatusData)["error"] as? NSDictionary)?["errorMessage"] as? String) != nil {
-                                
-                                DispatchQueue.main.async {
-                                    
-                                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                                    
-                                    let errorTitle = NSLocalizedString("Error", comment: "")
-                                    let errorMessage = NSLocalizedString("It looks like the flight number was changed by the airline, please check with your airline to ensure you have the updated flight number.", comment: "")
-                                    
-                                    displayAlert(viewController: self, title: errorTitle, message: errorMessage)
-                                    
-                                }
-                                
-                            }
-                            
-                        }
-                        
-                    } else {
-                        
-                        DispatchQueue.main.async {
-                            
-                            UIApplication.shared.isNetworkActivityIndicatorVisible = false
                             
                         }
                         

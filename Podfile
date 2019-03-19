@@ -5,4 +5,5 @@ target 'TripKey' do
     pod 'GoogleMaps'
     pod 'Parse'
     pod 'EFQRCode', '~> 4.5.0'
+    pod 'SwiftKeychainWrapper'
 end

@@ -13,6 +13,9 @@
 		D00BBF7F1D73C05500057B58 /* Podfile in Resources */ = {isa = PBXBuildFile; fileRef = D00BBF7E1D73C05500057B58 /* Podfile */; };
 		D016EB7E1F078AAD00DEE5CD /* DatePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */; };
 		D016EB801F078AEB00DEE5CD /* Date Picker.xib in Resources */ = {isa = PBXBuildFile; fileRef = D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */; };
+		D01CAFE9223E417A00DC77E1 /* BlurAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01CAFE8223E417A00DC77E1 /* BlurAlert.swift */; };
+		D01CAFEB223E54A600DC77E1 /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01CAFEA223E54A600DC77E1 /* ActivityView.swift */; };
+		D01CAFED224089B400DC77E1 /* FlightSharedAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01CAFEC224089B400DC77E1 /* FlightSharedAlert.swift */; };
 		D01E95022230E8FF00BB0FF4 /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01E95012230E8FF00BB0FF4 /* HTTPRequest.swift */; };
 		D01E95052231389200BB0FF4 /* ShareFlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01E95042231389200BB0FF4 /* ShareFlight.swift */; };
 		D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01EE9B51D692B780048D6CE /* AppDelegate.swift */; };
@@ -101,6 +104,9 @@
 		D00BBF7E1D73C05500057B58 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerView.swift; sourceTree = "<group>"; };
 		D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Date Picker.xib"; sourceTree = "<group>"; };
+		D01CAFE8223E417A00DC77E1 /* BlurAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurAlert.swift; sourceTree = "<group>"; };
+		D01CAFEA223E54A600DC77E1 /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
+		D01CAFEC224089B400DC77E1 /* FlightSharedAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightSharedAlert.swift; sourceTree = "<group>"; };
 		D01E95012230E8FF00BB0FF4 /* HTTPRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
 		D01E95042231389200BB0FF4 /* ShareFlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareFlight.swift; sourceTree = "<group>"; };
 		D01EE9B21D692B780048D6CE /* TripKey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TripKey.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -261,7 +267,7 @@
 		D01EE9B41D692B780048D6CE /* TripKey2 */ = {
 			isa = PBXGroup;
 			children = (
-				D01E95042231389200BB0FF4 /* ShareFlight.swift */,
+				D01CAFEC224089B400DC77E1 /* FlightSharedAlert.swift */,
 				D0CE61942207FAA0006F5D75 /* Model.xcdatamodeld */,
 				D05F116F1ECD474A00BFA3F2 /* Main.storyboard */,
 				D01E9503223126E600BB0FF4 /* Home */,
@@ -342,6 +348,7 @@
 		D0A10F041D8AB6C200CE88BA /* Flights */ = {
 			isa = PBXGroup;
 			children = (
+				D01E95042231389200BB0FF4 /* ShareFlight.swift */,
 				D016EB7D1F078AAD00DEE5CD /* DatePickerView.swift */,
 				D016EB7F1F078AEB00DEE5CD /* Date Picker.xib */,
 				D001872E2199402500EEE21E /* Flight Table New */,
@@ -356,6 +363,8 @@
 		D0B9EB121DC12331000C837B /* Miscellaneous */ = {
 			isa = PBXGroup;
 			children = (
+				D01CAFEA223E54A600DC77E1 /* ActivityView.swift */,
+				D01CAFE8223E417A00DC77E1 /* BlurAlert.swift */,
 				D0C49B411F19EEB700D47983 /* Localizable.strings */,
 				D0A47C1A222277BE00CC03B8 /* watchShot.swift */,
 				D01E95012230E8FF00BB0FF4 /* HTTPRequest.swift */,
@@ -531,6 +540,7 @@
 				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
 				"${BUILT_PRODUCTS_DIR}/EFQRCode/EFQRCode.framework",
 				"${BUILT_PRODUCTS_DIR}/Parse/Parse.framework",
+				"${BUILT_PRODUCTS_DIR}/SwiftKeychainWrapper/SwiftKeychainWrapper.framework",
 				"${BUILT_PRODUCTS_DIR}/swift_qrcodejs/swift_qrcodejs.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -538,6 +548,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/EFQRCode.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Parse.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwiftKeychainWrapper.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/swift_qrcodejs.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -597,8 +608,10 @@
 				D01EE9B81D692B780048D6CE /* ViewController.swift in Sources */,
 				D00187342199556B00EEE21E /* TableViewCell.swift in Sources */,
 				D01EE9B61D692B780048D6CE /* AppDelegate.swift in Sources */,
+				D01CAFED224089B400DC77E1 /* FlightSharedAlert.swift in Sources */,
 				D099B1B82228F7D8008CDF9A /* DepartureInfo.swift in Sources */,
 				D0CE619C22100B6A006F5D75 /* FlightStruct.swift in Sources */,
+				D01CAFEB223E54A600DC77E1 /* ActivityView.swift in Sources */,
 				D0A1328422252A6200DBA953 /* CountDown.swift in Sources */,
 				D0F6DC481EC984A10026817A /* FeedTableViewCell.swift in Sources */,
 				D069FBBB22013D6C00864659 /* Helpers.swift in Sources */,
@@ -608,6 +621,7 @@
 				D01E95052231389200BB0FF4 /* ShareFlight.swift in Sources */,
 				D0A47C1B222277BE00CC03B8 /* watchShot.swift in Sources */,
 				D099B1BD2229551E008CDF9A /* TopLabelView.swift in Sources */,
+				D01CAFE9223E417A00DC77E1 /* BlurAlert.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

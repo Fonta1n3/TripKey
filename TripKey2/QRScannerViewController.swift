@@ -12,6 +12,7 @@ import Parse
 
 class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    let activityCenter = CenterActivityView()
     let imagePicker = UIImagePickerController()
     let backButton = UIButton()
     let uploadButton = UIButton()
@@ -206,31 +207,72 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
     }
     
     func followUser(userid: String) {
+        
+        self.addActivityIndicatorCenter(description: "Searching for user")
+        
         //follow user
         let query = PFQuery(className: "Posts")
         query.whereKey("userid", equalTo: userid)
+        
         query.findObjectsInBackground(block: { (objects, error) in
+            
             if let posts = objects {
+                
                 if posts.count > 0 {
+                    
                     //user exists, follow them, add username to coredata
                     let username = posts[0]["username"] as! String
-                    let followed = saveFollowedUserToCoreData(viewController: self, username: username, userId: userid)
+                    
+                   let followed = saveFollowedUserToCoreData(viewController: self, username: username, userId: userid)
+                    
                     if followed {
                         
-                        let alert = UIAlertController(title: NSLocalizedString("Success", comment: ""), message: NSLocalizedString("You followed \(username), now you can easliy share flights with them!", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
-                        
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("Ok", comment: ""), style: .default, handler: { (action) in
+                        func success() {
+                           
+                            self.activityCenter.remove()
+                            let successView = SuccessAlertView()
+                            successView.labelText = "You followed \(username)"
+                            successView.addSuccessView(viewController: self)
                             
-                            DispatchQueue.main.async {
-                                self.dismiss(animated: true)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                
+                                self.dismiss(animated: true, completion: nil)
+                                
                             }
                             
-                        }))
+                        }
                         
-                        self.present(alert, animated: true, completion: nil)
+                        if let imagedata = posts[0]["userProfile"] as? PFFileObject {
+                            
+                            if let photo = imagedata as? PFFileObject {
+                                photo.getDataInBackground(block: {
+                                    PFDataResultBlock in
+                                    if PFDataResultBlock.1 == nil {//PFDataResultBlock.1 is Error
+                                        saveImageToCoreData(viewController: self, imageData: PFDataResultBlock.0!, userId: userid)
+                                        success()
+                                    } else {
+                                        success()
+                                    }
+                                })
+                            } else {
+                                success()
+                            }
+                        } else {
+                            
+                            success()
+                        }
                         
+                    } else {
+                        
+                        self.activityCenter.remove()
+                        displayAlert(viewController: self, title: "Error", message: "We had an error following that user, please check your internet connection")
                     }
+                    
+                    
                 } else {
+                    
+                    self.activityCenter.remove()
+                    
                     //user doesnt exist
                     let alert = UIAlertController(title: NSLocalizedString("Error", comment: ""), message: NSLocalizedString("\(userid), does not exist!", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
                     
@@ -241,10 +283,26 @@ class QRScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsD
                         }
                         
                     }))
+                    
                     self.present(alert, animated: true, completion: nil)
+                    
                 }
+                
             }
+            
         })
+        
+    }
+    
+    func addActivityIndicatorCenter(description: String) {
+        
+        DispatchQueue.main.async {
+            
+            self.activityCenter.activityDescription = description
+            self.activityCenter.add(viewController: self)
+            
+        }
+        
     }
 
 }

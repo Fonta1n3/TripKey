@@ -12,11 +12,13 @@ PODS:
   - Parse/Core (1.17.2):
     - Bolts/Tasks (~> 1.9)
   - swift_qrcodejs (1.0.1)
+  - SwiftKeychainWrapper (3.2.0)
 
 DEPENDENCIES:
   - EFQRCode (~> 4.5.0)
   - GoogleMaps
   - Parse
+  - SwiftKeychainWrapper
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -25,6 +27,7 @@ SPEC REPOS:
     - GoogleMaps
     - Parse
     - swift_qrcodejs
+    - SwiftKeychainWrapper
 
 SPEC CHECKSUMS:
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
@@ -32,7 +35,8 @@ SPEC CHECKSUMS:
   GoogleMaps: fd5c9fa58871781b9fb94d4936f19c69fe60ce32
   Parse: 3b31a3dd1777b07ee7f0caee32fafbff544483a5
   swift_qrcodejs: c181fe5c849d30c699546a23762d7e3dd143ab37
+  SwiftKeychainWrapper: 82c4c02cdc36f9a24f7edfcaab3e336401caa1a1
 
-PODFILE CHECKSUM: d17c18140d5dfcbe65b24924f0a2deeda56a431a
+PODFILE CHECKSUM: efd3d80f3d3c14123838126b580af44552be2d75
 
 COCOAPODS: 1.5.3

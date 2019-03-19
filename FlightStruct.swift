@@ -11,6 +11,7 @@ import Foundation
 
 public struct FlightStruct: CustomStringConvertible {
     
+    let sharedFrom:String
     let lastUpdated:String
     let flightNumber:String
     let publishedDepartureUtc:String
@@ -76,6 +77,8 @@ public struct FlightStruct: CustomStringConvertible {
         self.publishedDeparture = dictionary["publishedDeparture"] as? String ?? ""
         self.urlArrivalDate = dictionary["urlArrivalDate"] as? String ?? ""
         self.lastUpdated = dictionary["lastUpdated"] as? String ?? ""
+        self.sharedFrom = dictionary["sharedFrom"] as? String ?? ""
+        
     }
     
     public var description: String {

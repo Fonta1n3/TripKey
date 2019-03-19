@@ -11,8 +11,7 @@ import GoogleMaps
 
 class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
     
-    let blurEffectViewActivity = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.regular))
-    var activityLabel = UILabel()
+    let activityCenter = CenterActivityView()
     @IBOutlet var actionLabel: UILabel!
     @IBOutlet var callLabel: UILabel!
     let gradientLayer = CAGradientLayer()
@@ -290,13 +289,18 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
             
             alert.addAction(UIAlertAction(title: "\(String(describing: user["username"]!))", style: .default, handler: { (action) in
                 
+                self.addActivityIndicatorCenter(description: "Sharing Flight")
+                
                 let shareFlight = ShareFlight.sharedInstance
                 
                 func success() {
                     
                     if !shareFlight.errorBool {
                         
-                        displayAlert(viewController: self, title: "\(NSLocalizedString("Flight shared to", comment: "")) \(String(describing: user["username"]!))", message: "")
+                        self.activityCenter.remove()
+                        let successView = SuccessAlertView()
+                        successView.labelText = "Flight Shared to \(user["username"]!)"
+                        successView.addSuccessView(viewController: self)
                         
                     } else {
                         
@@ -306,7 +310,7 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
                     
                 }
                 
-                shareFlight.shareFlight(flightToShare: self.flightArray[indexPath], toUserID: user["userid"]!, completion: success)
+                shareFlight.shareFlight(flightToShare: self.flightArray[indexPath], toUserID: user["userid"] as! String, completion: success)
                 
             }))
         }
@@ -318,6 +322,17 @@ class FlightTableNewViewController: UIViewController, UITableViewDelegate, UITab
         }))
         
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func addActivityIndicatorCenter(description: String) {
+        
+        DispatchQueue.main.async {
+            
+            self.activityCenter.activityDescription = description
+            self.activityCenter.add(viewController: self)
+            
+        }
+        
     }
     
     func secondsTillLanding(arrivalDateUTC: String) -> Int {

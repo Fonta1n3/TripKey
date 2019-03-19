@@ -12,12 +12,23 @@ final class MakeHttpRequest {
     
     static let sharedInstance = MakeHttpRequest()
     let url_base = "https://api.flightstats.com/flex/"
-    let apiKey = "?appId=16d11b16&appKey=821a18ad545a57408964a537526b1e87"
+    var apiKey = "?appId=16d11b16&appKey=821a18ad545a57408964a537526b1e87"
     var dictToReturn = NSDictionary()
+    let sourceType = "&sourceType=derived"
+    var flightTrack = Bool()
+    
+    
     
     func getRequest(api: String, completion: @escaping () -> Void) {
         
+        if flightTrack {
+            
+            apiKey = apiKey + sourceType
+            
+        }
+        
         guard let destination = URL(string: url_base + api + apiKey) else { return }
+        print("destination = \(destination)")
         let request = URLRequest(url: destination)
         //request.timeoutInterval = 5
         let session = URLSession.shared

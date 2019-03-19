@@ -376,7 +376,7 @@ public func saveFollowedUserToCoreData(viewController: UIViewController, usernam
                         
                         //already following
                         userAlreadySaved = true
-                        displayAlert(viewController: viewController, title: "Error", message: "You are already following \(username)")
+                        //displayAlert(viewController: viewController, title: "Error", message: "You are already following \(username)")
                         
                     } else {
                         
@@ -447,7 +447,7 @@ public func saveFollowedUserToCoreData(viewController: UIViewController, usernam
     return success
 }
 
-public func deleteUserFromCoreData(viewController: UIViewController, username: String) {
+public func deleteUserFromCoreData(viewController: UIViewController, userid: String) {
     
     var appDelegate = AppDelegate()
     
@@ -473,10 +473,10 @@ public func deleteUserFromCoreData(viewController: UIViewController, username: S
             
             for (index, data) in results.enumerated() {
                 
-                if username == data.value(forKey: "username") as? String {
+                if userid == data.value(forKey: "userid") as? String {
                     
                     context.delete(results[index] as NSManagedObject)
-                    print("deleted \(username) succesfully")
+                    print("deleted \(userid) succesfully")
                     
                     do {
                         
@@ -504,11 +504,11 @@ public func deleteUserFromCoreData(viewController: UIViewController, username: S
     }
 }
 
-public func getFollowedUsers() -> [[String:String]] {
+public func getFollowedUsers() -> [[String:Any]] {
     
     print("getFollowedUsers")
     
-    var followedUsers = [[String:String]]()
+    var followedUsers = [[String:Any]]()
     
     guard let appDelegate =
         UIApplication.shared.delegate as? AppDelegate else {
@@ -523,7 +523,9 @@ public func getFollowedUsers() -> [[String:String]] {
     
     do {
         
-        if let results = try context.fetch(fetchRequest) as? [[String:String]] {
+        if let results = try context.fetch(fetchRequest) as? [[String:Any]] {
+            
+            print("results = \(results)")
             
             if results.count > 0 {
                 
@@ -546,7 +548,75 @@ public func getFollowedUsers() -> [[String:String]] {
     
 }
 
-public func saveFlight(viewController: UIViewController, flight: FlightStruct/*departureAirport: String, departureLat: Double, departureLon: Double, arrivalLat: Double, arrivalLon: Double, airlineCode: String, arrivalAirportCode: String, arrivalCity: String, arrivalDate: String, arrivalGate: String, arrivalTerminal: String, arrivalUtcOffset: Double, baggageClaim: String, departureCity: String, departureGate: String, departureTerminal: String, departureTime: String, departureUtcOffset: Double, flightDuration: String, flightNumber: String, flightStatus: String, primaryCarrier: String, flightEquipment: String, identifier: String, phoneNumber: String, publishedDepartureUtc: String, urlArrivalDate: String, publishedDeparture: String, publishedArrival: String*/) -> Bool {
+public func saveImageToCoreData(viewController: UIViewController, imageData: Data, userId: String) {
+    print("saveImageToCoreData")
+    
+    var appDelegate = AppDelegate()
+    
+    if let appDelegateCheck = UIApplication.shared.delegate as? AppDelegate {
+        print("appDelegateCheck")
+        
+        appDelegate = appDelegateCheck
+        
+    } else {
+        
+        displayAlert(viewController: viewController, title: "Error", message: "Something strange has happened and we do not have access to app delegate, please try again.")
+        
+    }
+    
+    let context = appDelegate.persistentContainer.viewContext
+    print("context")
+    let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "FollowedUsers")
+    fetchRequest.returnsObjectsAsFaults = false
+    
+    do {
+        
+        let results = try context.fetch(fetchRequest) as [NSManagedObject]
+        
+        if results.count > 0 {
+            print("results exist")
+            
+            for data in results {
+                
+                if userId == data.value(forKey: "userid") as? String {
+                    
+                    //overwrite profile pic
+                    data.setValue(imageData, forKey: "profileImage")
+                    
+                    do {
+                        
+                        try context.save()
+                        print("updated \(userId) profile pic succesfully")
+                        
+                    } catch {
+                        
+                        print("error updating profile pic")
+                        
+                    }
+                    
+                } else {
+                    
+                    
+                }
+                
+            }
+            
+        } else {
+            
+            print("no results")
+            
+        }
+        
+        
+    } catch {
+        
+        print("Failed")
+        
+    }
+    
+}
+
+public func saveFlight(viewController: UIViewController, flight: FlightStruct) -> Bool {
     
     print("saveFlight")
     
@@ -581,7 +651,8 @@ public func saveFlight(viewController: UIViewController, flight: FlightStruct/*d
                 "publishedDepartureUtc",
                 "urlArrivalDate",
                 "publishedDeparture",
-                "publishedArrival"]
+                "publishedArrival",
+                "sharedFrom"]
  
     let values = [flight.departureAirport,
                   flight.departureLat,
@@ -611,7 +682,8 @@ public func saveFlight(viewController: UIViewController, flight: FlightStruct/*d
                   flight.publishedDepartureUtc,
                   flight.urlArrivalDate,
                   flight.publishedDeparture,
-                  flight.publishedArrival] as [Any]
+                  flight.publishedArrival,
+                  flight.sharedFrom] as [Any]
     
     var appDelegate = AppDelegate()
     
@@ -638,34 +710,17 @@ public func saveFlight(viewController: UIViewController, flight: FlightStruct/*d
             
             for data in results {
                 
-                for _ in keys {
-                    
-                    if (values[22] as! String) == data.value(forKey: "identifier") as? String {
+                if (values[23] as! String) == data.value(forKey: "identifier") as? String {
                         
-                        alreadySaved = true
+                    alreadySaved = true
                         
-                        for (index, key) in keys.enumerated() {
-                            
-                            data.setValue(values[index], forKey: key)
-                            
-                            do {
-                                
-                                try context.save()
-                                success = true
-                                print("updated flight data")
-                                
-                            } catch {
-                                
-                                print("Failed updating flight data")
-                                success = false
-                                
-                            }
-                        }
-                    }
+                    print("flight already saved")
+                        
                 }
+                
             }
             
-            if alreadySaved != true {
+            if !alreadySaved {
                 
                 let entity = NSEntityDescription.entity(forEntityName: "Flight", in: context)
                 let flight = NSManagedObject(entity: entity!, insertInto: context)
@@ -727,7 +782,7 @@ public func saveFlight(viewController: UIViewController, flight: FlightStruct/*d
 }
 
 public func checkCoreDataFlights(viewController: UIViewController) -> Bool {
-    print("saveUserToCoreData")
+    print("checkCoreDataFlights")
     
     var appDelegate = AppDelegate()
     var success = Bool()
@@ -747,7 +802,6 @@ public func checkCoreDataFlights(viewController: UIViewController) -> Bool {
     }
     
     let context = appDelegate.persistentContainer.viewContext
-    print("context")
     let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Flight")
     fetchRequest.returnsObjectsAsFaults = false
     
@@ -756,14 +810,12 @@ public func checkCoreDataFlights(viewController: UIViewController) -> Bool {
         let results = try context.fetch(fetchRequest) as [NSManagedObject]
         
         if results.count > 0 {
+            
             print("results exist")
-            
-            
             
         } else {
             
             print("no flights")
-            
             
         }
         

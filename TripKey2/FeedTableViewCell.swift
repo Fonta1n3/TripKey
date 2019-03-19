@@ -13,6 +13,8 @@ class FeedTableViewCell: UITableViewCell {
     @IBOutlet var shareFlightLabel: UIButton!
     var tapShareFlightAction: ((UITableViewCell) -> Void)?
     @IBOutlet var userName: UILabel!
+    var profileImageAction: ((UITableViewCell) -> Void)?
+    @IBOutlet var profile: UIButton!
     
     @IBAction func shareFlight(_ sender: Any) {
         
@@ -21,10 +23,18 @@ class FeedTableViewCell: UITableViewCell {
     }
     
     
+    @IBAction func updateImage(_ sender: Any) {
+        
+        profileImageAction?(self)
+        
+    }
+    
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
